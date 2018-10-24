@@ -22,7 +22,7 @@ namespace Ramsey.NET.Controllers
         [HttpGet]
         public async Task<IActionResult> SuggestAsync(string search)
         {
-            var ingredients = await _ramseyContext.Ingredients.Where(x => x.Name.StartsWith(search)).Include(y => y.RecipeParts).ToListAsync();
+            var ingredients = await _ramseyContext.Ingredients.Where(x => x.Name.StartsWith(search)).ToListAsync();
             return Json(ingredients);
         }
     }
