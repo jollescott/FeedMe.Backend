@@ -4,14 +4,16 @@ using GusteauSharp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    partial class GusteauContextModelSnapshot : ModelSnapshot
+    [Migration("20181024120620_DirectionMigration")]
+    partial class DirectionMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

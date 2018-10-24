@@ -5,29 +5,19 @@ using System.Threading.Tasks;
 
 namespace GusteauSharp.Dto
 {
-    public class RecipeDto
+    public class RecipeUploadDto
     {
-        public int RecipeID { get; set; }
-        public string Name { get; set; }
+        public List<string> Directions { get; set; }
+        public List<string> Categories { get; set; }
+        public List<string> Ingredients { get; set; }
 
-        public int NumberOfServings { get; set; }
-        public double TotalTimeInSeconds { get; set; }
-
-        public int Rating { get; set; }
-
-        public string Cuisine { get; set; }
-        public string Course { get; set; }
-
-        public string MediumImage { get; set; }
-        public string SmallImage { get; set; }
-
-        public float Bitter { get; set; }
-        public float Meaty { get; set; }
-        public float Piquant { get; set; }
-        public float Salty { get; set; }
-        public float Sour { get; set; }
-        public float Sweet { get; set; }
-
-        public double Coverage { get; set; }
+        public double Fat { get; set; }
+        public double Calories { get; set; }
+        public string Desc { get; set; }
+        public double Protein { get; set; }
+        public double Rating { get; set; }
+        
+        public string Title { get; set; }
+        public double Sodium { get; set; }
     }
 }

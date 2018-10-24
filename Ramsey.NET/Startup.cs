@@ -32,9 +32,9 @@ namespace Ramsey.NET
             });
 
 #if DEBUG
-            services.AddDbContext<GusteauContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=gusteautest;Trusted_Connection=True;MultipleActiveResultSets=true"));
+            services.AddDbContext<RamseyContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=gusteautest;Trusted_Connection=True;MultipleActiveResultSets=true"));
 #else
-            services.AddDbContext<GusteauContext>(options => options.UseSqlServer("Server=tcp:feedmesql.database.windows.net,1433;Database=feedmedb;User ID=jarvis;Password=@JagGillarJulmust;Encrypt=true;Connection Timeout=30;"));
+            services.AddDbContext<RamseyContext>(options => options.UseSqlServer("Server=tcp:feedmesql.database.windows.net,1433;Database=feedmedb;User ID=jarvis;Password=@JagGillarJulmust;Encrypt=true;Connection Timeout=30;"));
 #endif
         }
 

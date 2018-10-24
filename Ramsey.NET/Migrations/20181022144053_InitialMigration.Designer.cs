@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ramsey.NET.Migrations
 {
-    [DbContext(typeof(GusteauContext))]
+    [DbContext(typeof(RamseyContext))]
     [Migration("20181022144053_InitialMigration")]
     partial class InitialMigration
     {

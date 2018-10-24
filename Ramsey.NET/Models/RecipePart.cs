@@ -17,6 +17,7 @@ namespace GusteauSharp.Models
         public virtual Recipe Recipe { get; set; }
         public virtual Ingredient Ingredient { get; set; }
 
-        public decimal Quantity { get; set; }
+        public string Unit { get; set; }
+        public double Quantity { get; set; }
     }
 }

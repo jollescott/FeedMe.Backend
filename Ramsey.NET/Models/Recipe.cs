@@ -17,16 +17,16 @@ namespace GusteauSharp.Models
 
         public virtual ICollection<RecipePart> RecipeParts { get; set; }
         public virtual ICollection<RecipeDirection> Directions { get; set; }
+        public virtual ICollection<RecipeCategory> Categories { get; set; }
 
-        public int Fat { get; set; }
+        public double Fat { get; set; }
         public DateTime Date { get; set; }
 
         [DefaultValue("")]
         public string Desc { get; set; }
 
-        public int Protein { get; set; }
+        public double Protein { get; set; }
         public double Rating { get; set; }
-        public string Title { get; set; }
-        public int Sodium { get; set; }
+        public double Sodium { get; set; }
     }
 }

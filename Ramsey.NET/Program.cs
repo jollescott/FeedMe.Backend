@@ -23,9 +23,8 @@ namespace Ramsey.NET
             {
                 var services = scope.ServiceProvider;
 
-                var context = services.GetRequiredService<GusteauContext>();
+                var context = services.GetRequiredService<RamseyContext>();
                 context.Database.Migrate();
-                SeedData.Initialize(services);
             }
 
             host.Run();
