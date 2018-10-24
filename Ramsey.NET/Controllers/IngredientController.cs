@@ -20,9 +20,9 @@ namespace Ramsey.NET.Controllers
 
         [Route("suggest")]
         [HttpGet]
-        public async Task<IActionResult> SuggestAsync(string search)
+        public IActionResult Suggest(string search)
         {
-            var ingredients = await _ramseyContext.Ingredients.Where(x => x.Name.StartsWith(search)).ToListAsync();
+            var ingredients = _ramseyContext.Ingredients.Where(x => x.Name.StartsWith(search)).Include(x => x.RecipeParts).ToList();
             return Json(ingredients);
         }
     }

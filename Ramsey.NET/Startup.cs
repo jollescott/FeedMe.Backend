@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 
 namespace Ramsey.NET
@@ -24,6 +25,10 @@ namespace Ramsey.NET
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
