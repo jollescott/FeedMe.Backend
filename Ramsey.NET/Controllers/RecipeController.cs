@@ -63,6 +63,8 @@ namespace Ramsey.NET.Controllers
                     var recipeCategory = new RecipeCategory();
                     recipeCategory.Name = category;
                     recipeCategory.RecipeID = recipe.RecipeID;
+
+                    _ramseyContext.RecipeCategories.Add(recipeCategory);
                 }
             }
 
