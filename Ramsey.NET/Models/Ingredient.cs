@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GusteauSharp.Models
+namespace Ramsey.NET.Models
 {
     public class Ingredient
     {

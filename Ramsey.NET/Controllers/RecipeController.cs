@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using GusteauSharp.Dto;
 using GusteauSharp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Ramsey.NET.Dto;
 using Ramsey.NET.Models;
 
 namespace Ramsey.NET.Controllers
@@ -138,5 +140,83 @@ namespace Ramsey.NET.Controllers
             return new StatusCodeResult(200);
         }
 
+        [Route("suggest")]
+        [HttpPost]
+        public async Task<IActionResult> SuggestAsync([FromBody]List<IngredientDto> ingredients)
+        {
+            var ids = new HashSet<int>();
+            foreach (var ingredient in ingredients)
+            {
+                foreach (var part in ingredient.RecipeParts.Where(x => ingredients.Select(y => y.RecipeParts)
+                    .All(y => y.Any(z => z.RecipeID.Equals(x.RecipeID)))))
+                    ids.Add(part.RecipeID);
+            }
+
+            var recipes = await _ramseyContext.Recipes.Where(x => ids.Contains(x.RecipeID))
+                .Include(y => y.RecipeParts)
+                .Include(x => x.Categories)
+                .Include(x => x.Directions)
+                .ToListAsync();
+
+            List<RecipeDto> dtos = new List<RecipeDto>();
+            foreach(var recipe in recipes)
+            {
+                var dto = new RecipeDto
+                {
+                    Name = recipe.Name,
+                    RecipeID = recipe.RecipeID,
+                    Date = recipe.Date,
+                    Desc = recipe.Desc,
+                    Fat = recipe.Fat,
+                    Protein = recipe.Protein,
+                    Rating = recipe.Rating,
+                    Sodium = recipe.Sodium,
+                };
+
+                if(recipe.Categories != null)
+                {
+                    foreach(var category in recipe.Categories)
+                    {
+                        dto.Categories.Add(new RecipeCategoryDto
+                        {
+                            CategoryID = category.CategoryID,
+                            Name = category.Name,
+                            RecipeID = category.RecipeID
+                        });
+                    }
+                }
+
+                if(recipe.Directions != null)
+                {
+                    foreach(var direction in recipe.Directions)
+                    {
+                        dto.Directions.Add(new RecipeDirectionDto
+                        {
+                            DirectionID = direction.DirectionID,
+                            Instruction = direction.Instruction,
+                            RecipeID = direction.RecipeID
+                        });
+                    }
+                }
+
+                if(recipe.RecipeParts != null)
+                {
+                    foreach(var part in recipe.RecipeParts)
+                    {
+                        dto.RecipeParts.Add(new RecipePartDto
+                        {
+                            IngredientID = part.IngredientID,
+                            Quantity = part.Quantity,
+                            RecipeID = part.RecipeID,
+                            Unit = part.Unit
+                        });
+                    }
+                }
+
+                dtos.Add(dto);
+            }
+            
+            return Json(dtos);
+        }
     }
 }
