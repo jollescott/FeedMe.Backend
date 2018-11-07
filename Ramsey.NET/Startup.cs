@@ -36,11 +36,14 @@ namespace Ramsey.NET
                 configuration.RootPath = "ClientApp/dist";
             });
 
-#if DEBUG
-            services.AddDbContext<RamseyContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=gusteautest;Trusted_Connection=True;MultipleActiveResultSets=true"));
-#else
-            services.AddDbContext<RamseyContext>(options => options.UseSqlServer("Server=tcp:feedmesql.database.windows.net,1433;Database=feedmedb;User ID=jarvis;Password=@JagGillarJulmust;Encrypt=true;Connection Timeout=30;"));
-#endif
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                services.AddDbContext<RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
+            }
+            else
+            {
+                services.AddDbContext<RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyDebug")));
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
