@@ -144,15 +144,28 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         public async Task<IActionResult> SuggestAsync([FromBody]List<IngredientDto> ingredients)
         {
-            var ids = new HashSet<int>();
+            /*var ids = new HashSet<int>();
             foreach (var ingredient in ingredients)
             {
                 foreach (var part in ingredient.RecipeParts.Where(x => ingredients.Select(y => y.RecipeParts)
                     .All(y => y.Any(z => z.RecipeID.Equals(x.RecipeID)))))
                     ids.Add(part.RecipeID);
+            }*/
+
+            /*var recipes = await _ramseyContext.Recipes.Where(x => ids.Contains(x.RecipeID))
+                .Include(y => y.RecipeParts)
+                .Include(x => x.Categories)
+                .Include(x => x.Directions)
+                .ToListAsync();*/
+
+            var recipePartIds = new HashSet<int>();
+
+            foreach(var ing in ingredients)
+            {
+                ing.RecipeParts.ForEach(x => recipePartIds.Add(x.RecipeID));
             }
 
-            var recipes = await _ramseyContext.Recipes.Where(x => ids.Contains(x.RecipeID))
+            var recipes = await _ramseyContext.Recipes.Where(x => recipePartIds.Contains(x.RecipeID))
                 .Include(y => y.RecipeParts)
                 .Include(x => x.Categories)
                 .Include(x => x.Directions)
