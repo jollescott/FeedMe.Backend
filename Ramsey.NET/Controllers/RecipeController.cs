@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,17 @@ namespace Ramsey.NET.Controllers
     public class RecipeController : Controller
     {
         private readonly RamseyContext _ramseyContext;
+        private CookieContainer _cookieContainer;
+        private HttpClientHandler _httpHandler;
         private readonly HttpClient _httpClient;
 
         public RecipeController(RamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
-            _httpClient = new HttpClient(); 
+            _cookieContainer = new CookieContainer();
+            _httpHandler = new HttpClientHandler { AllowAutoRedirect = true, UseCookies = true, CookieContainer = _cookieContainer };
+            _httpClient = new HttpClient(_httpHandler);
+            _httpClient.BaseAddress = new Uri("https://kokboken.ikv.uu.se/");
         }
 
         [Route("upload")]
@@ -149,24 +155,37 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         public async Task<IActionResult> SuggestAsync([FromBody]List<string> ingredients)
         {
-            var content = new FormUrlEncodedContent(new[]
+            await _httpClient.GetAsync("/sok.php");
+
+            using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://kokboken.ikv.uu.se/sok.php"))
             {
-                new KeyValuePair<string, string>("offset", "20"),
-                new KeyValuePair<string, string>("rec_cats[]", "all"),
-                new KeyValuePair<string, string>("search_text", "tomat"),
-                new KeyValuePair<string, string>("search_type", "all")
-            });
+                request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
+                request.Headers.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                request.Headers.TryAddWithoutValidation("Accept-Language", "sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3");
+                request.Headers.TryAddWithoutValidation("Cookie", "_ga=GA1.2.1641912861.1542728984; _gid=GA1.2.984168996.1542728984");
+                request.Headers.TryAddWithoutValidation("Referer", "https://kokboken.ikv.uu.se/sok.php");
+                request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0");
+                request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
 
-            var response = await _httpClient.PostAsync("https://kokboken.ikv.uu.se/sok.php", content);
-            var html = await response.Content.ReadAsStreamAsync();
+                request.Content = new StringContent("search_text=test&dummy=&search_type=all&rec_cats", Encoding.UTF8, "application/x-www-form-urlencoded");
 
-            var website = new HtmlDocument();
+                var response = await _httpClient.SendAsync(request);
+
+                var html = await response.Content.ReadAsStringAsync();
+                return Content(html);
+            }
+
+            /*var website = new HtmlDocument();
             website.Load(html);
 
             var main_wrapper = website.DocumentNode.Descendants().Where(x => x.Id.Equals("mainwrapper")).FirstOrDefault();
             var main_content = main_wrapper.Descendants().Where(x => x.Id.Equals("maincontent")).FirstOrDefault();
 
-            var table = main_wrapper.Descendants().Where(x => x.)
+            var table = main_wrapper.SelectNodes("//table[@id]")[1];
+
+            var nodes = table.SelectNodes("/tr/td/strong/a");
+
+            return Json(nodes);*/
         }
     }
 }
