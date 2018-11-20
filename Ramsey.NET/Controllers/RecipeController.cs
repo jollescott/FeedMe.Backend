@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using GusteauSharp.Dto;
 using GusteauSharp.Models;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Dto;
@@ -15,10 +18,12 @@ namespace Ramsey.NET.Controllers
     public class RecipeController : Controller
     {
         private readonly RamseyContext _ramseyContext;
+        private readonly HttpClient _httpClient;
 
         public RecipeController(RamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
+            _httpClient = new HttpClient(); 
         }
 
         [Route("upload")]
@@ -142,94 +147,26 @@ namespace Ramsey.NET.Controllers
 
         [Route("suggest")]
         [HttpPost]
-        public async Task<IActionResult> SuggestAsync([FromBody]List<IngredientDto> ingredients)
+        public async Task<IActionResult> SuggestAsync([FromBody]List<string> ingredients)
         {
-            /*var ids = new HashSet<int>();
-            foreach (var ingredient in ingredients)
+            var content = new FormUrlEncodedContent(new[]
             {
-                foreach (var part in ingredient.RecipeParts.Where(x => ingredients.Select(y => y.RecipeParts)
-                    .All(y => y.Any(z => z.RecipeID.Equals(x.RecipeID)))))
-                    ids.Add(part.RecipeID);
-            }*/
+                new KeyValuePair<string, string>("offset", "20"),
+                new KeyValuePair<string, string>("rec_cats[]", "all"),
+                new KeyValuePair<string, string>("search_text", "tomat"),
+                new KeyValuePair<string, string>("search_type", "all")
+            });
 
-            /*var recipes = await _ramseyContext.Recipes.Where(x => ids.Contains(x.RecipeID))
-                .Include(y => y.RecipeParts)
-                .Include(x => x.Categories)
-                .Include(x => x.Directions)
-                .ToListAsync();*/
+            var response = await _httpClient.PostAsync("https://kokboken.ikv.uu.se/sok.php", content);
+            var html = await response.Content.ReadAsStreamAsync();
 
-            var recipePartIds = new HashSet<int>();
+            var website = new HtmlDocument();
+            website.Load(html);
 
-            foreach(var ing in ingredients)
-            {
-                ing.RecipeParts.ForEach(x => recipePartIds.Add(x.RecipeID));
-            }
+            var main_wrapper = website.DocumentNode.Descendants().Where(x => x.Id.Equals("mainwrapper")).FirstOrDefault();
+            var main_content = main_wrapper.Descendants().Where(x => x.Id.Equals("maincontent")).FirstOrDefault();
 
-            var recipes = await _ramseyContext.Recipes.Where(x => recipePartIds.Contains(x.RecipeID))
-                .Include(y => y.RecipeParts)
-                .Include(x => x.Categories)
-                .Include(x => x.Directions)
-                .ToListAsync();
-
-            List<RecipeDto> dtos = new List<RecipeDto>();
-            foreach(var recipe in recipes)
-            {
-                var dto = new RecipeDto
-                {
-                    Name = recipe.Name,
-                    RecipeID = recipe.RecipeID,
-                    Date = recipe.Date,
-                    Desc = recipe.Desc,
-                    Fat = recipe.Fat,
-                    Protein = recipe.Protein,
-                    Rating = recipe.Rating,
-                    Sodium = recipe.Sodium,
-                };
-
-                if(recipe.Categories != null)
-                {
-                    foreach(var category in recipe.Categories)
-                    {
-                        dto.Categories.Add(new RecipeCategoryDto
-                        {
-                            CategoryID = category.CategoryID,
-                            Name = category.Name,
-                            RecipeID = category.RecipeID
-                        });
-                    }
-                }
-
-                if(recipe.Directions != null)
-                {
-                    foreach(var direction in recipe.Directions)
-                    {
-                        dto.Directions.Add(new RecipeDirectionDto
-                        {
-                            DirectionID = direction.DirectionID,
-                            Instruction = direction.Instruction,
-                            RecipeID = direction.RecipeID
-                        });
-                    }
-                }
-
-                if(recipe.RecipeParts != null)
-                {
-                    foreach(var part in recipe.RecipeParts)
-                    {
-                        dto.RecipeParts.Add(new RecipePartDto
-                        {
-                            IngredientID = part.IngredientID,
-                            Quantity = part.Quantity,
-                            RecipeID = part.RecipeID,
-                            Unit = part.Unit
-                        });
-                    }
-                }
-
-                dtos.Add(dto);
-            }
-            
-            return Json(dtos);
+            var table = main_wrapper.Descendants().Where(x => x.)
         }
     }
 }
