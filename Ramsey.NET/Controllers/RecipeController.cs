@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using CurlThin;
 using CurlThin.Enums;
 using CurlThin.Native;
+using CurlThin.SafeHandles;
 using GusteauSharp.Dto;
 using GusteauSharp.Models;
 using HtmlAgilityPack;
@@ -24,11 +25,32 @@ namespace Ramsey.NET.Controllers
     public class RecipeController : Controller
     {
         private readonly RamseyContext _ramseyContext;
+        private CURLcode _global;
+        private SafeEasyHandle _easy;
         private readonly string HEMMETS_ROOT = "https://kokboken.ikv.uu.se/";
 
         public RecipeController(RamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
+
+            _global = CurlNative.Init();
+            // curl_easy_init() to create easy handle.
+            _easy = CurlNative.Easy.Init();
+
+            CurlNative.Easy.SetOpt(_easy, CURLoption.CAINFO, CurlResources.CaBundlePath);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.COOKIESESSION, 1);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.USERAGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _easy.Dispose();
+
+            if (_global == CURLcode.OK)
+            {
+                CurlNative.Cleanup();
+            }
+            base.Dispose(disposing);
         }
 
         [Route("upload")]
@@ -154,57 +176,22 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         public IActionResult Suggest([FromBody]List<string> ingredients)
         {
-            // curl_global_init() with default flags.
-            var global = CurlNative.Init();
-            string html = string.Empty;
+            var html = DoCurl("", HEMMETS_ROOT + "sok.php");
 
-            // curl_easy_init() to create easy handle.
-            var easy = CurlNative.Easy.Init();
-            try
+            var query = new StringBuilder();
+            foreach (var ing in ingredients)
             {
-                StringBuilder query = new StringBuilder();
-
-                foreach(var ing in ingredients)
-                {
-                    query = query.Append(ing).Append(' ');
-                }
-                
-                var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&scode=YWxsI2FsbCN0ZXN0&searchid=";
-
-                CurlNative.Easy.SetOpt(easy, CURLoption.URL, HEMMETS_ROOT + "sok.php");
-
-                // This one has to be called before setting COPYPOSTFIELDS.
-                CurlNative.Easy.SetOpt(easy, CURLoption.POSTFIELDSIZE, Encoding.ASCII.GetByteCount(postData));
-                CurlNative.Easy.SetOpt(easy, CURLoption.COPYPOSTFIELDS, postData);
-                CurlNative.Easy.SetOpt(easy, CURLoption.CAINFO, CurlResources.CaBundlePath);
-
-                var stream = new MemoryStream();
-                CurlNative.Easy.SetOpt(easy, CURLoption.WRITEFUNCTION, (data, size, nmemb, user) =>
-                {
-                    var length = (int)size * (int)nmemb;
-                    var buffer = new byte[length];
-                    Marshal.Copy(data, buffer, 0, length);
-                    stream.Write(buffer, 0, length);
-                    return (UIntPtr)length;
-                });
-
-                var result = CurlNative.Easy.Perform(easy);
-                html = Encoding.GetEncoding(1252).GetString(stream.ToArray());
-            }
-            finally
-            {
-                easy.Dispose();
-
-                if (global == CURLcode.OK)
-                {
-                    CurlNative.Cleanup();
-                }
+                query = query.Append(ing).Append(' ');
             }
 
-            if (html != string.Empty)
+            var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&searchid=";
+
+            var recipe_html = DoCurl(postData, HEMMETS_ROOT + "sok.php");
+
+            if (recipe_html != string.Empty)
             {
                 var home_document = new HtmlDocument();
-                home_document.LoadHtml(html);
+                home_document.LoadHtml(recipe_html);
 
                 var main_wrapper = home_document.DocumentNode.Descendants().Where(x => x.Id.Equals("mainwrapper")).FirstOrDefault();
 
@@ -239,8 +226,8 @@ namespace Ramsey.NET.Controllers
         {
             var recipeDto = new RecipeDto();
             HtmlWeb web = new HtmlWeb();
-            var recipe_document = web.Load(link);
 
+            var recipe_document = web.Load(link);
 
             var recept_info = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptinfo\"]");
             recipeDto.Name = recept_info.SelectSingleNode("//h1").InnerText;
@@ -248,13 +235,53 @@ namespace Ramsey.NET.Controllers
             var recept_bild = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptbild\"]/img");
             recipeDto.Image = new StringBuilder().Append(HEMMETS_ROOT).Append(recept_bild.Attributes["src"].Value).ToString();
 
-            var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr/td").Select(x => x.InnerText);
-            var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr").Descendants().Select(x => x.InnerText);
+            var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr")
+                .Skip(1)
+                .Select(x => WebUtility.HtmlDecode(x.InnerText?.Trim()))
+                .Select(y => y.Replace("\n",""))
+                .Select(z => z.Replace("\t", ""))
+                .ToList();
 
-            recipeDto.Directions = directions.ToList();
-            recipeDto.Ingredients = ingredients.ToList();
+            var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
+                .Where(x => !x.Attributes.Contains("align"))
+                .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
+                .Select(z => z.Replace("\n", ""))
+                .Select(d => d.Replace("\t", ""))
+                .ToList();
+
+            recipeDto.Ingredients = ingredients;
+            recipeDto.Directions = directions;
+
+            recipeDto.Source = link;
 
             return recipeDto;
+        }
+
+        private string DoCurl(string postData, string url)
+        {
+            string html = string.Empty;
+            StringBuilder query = new StringBuilder();
+
+            CurlNative.Easy.SetOpt(_easy, CURLoption.URL, url);
+
+            // This one has to be called before setting COPYPOSTFIELDS.
+            CurlNative.Easy.SetOpt(_easy, CURLoption.POSTFIELDSIZE, Encoding.ASCII.GetByteCount(postData));
+            CurlNative.Easy.SetOpt(_easy, CURLoption.COPYPOSTFIELDS, postData);
+
+            var stream = new MemoryStream();
+            CurlNative.Easy.SetOpt(_easy, CURLoption.WRITEFUNCTION, (data, size, nmemb, user) =>
+            {
+                var length = (int)size * (int)nmemb;
+                var buffer = new byte[length];
+                Marshal.Copy(data, buffer, 0, length);
+                stream.Write(buffer, 0, length);
+                return (UIntPtr)length;
+            });
+
+            var result = CurlNative.Easy.Perform(_easy);
+            html = Encoding.GetEncoding(1252).GetString(stream.ToArray());
+
+            return html;
         }
     }
 }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core'
-import { GusteauService, Ingredient, Recipe } from '../gusteau.service'
+import { Component, Pipe, PipeTransform } from '@angular/core'
+import { GusteauService, Recipe } from '../gusteau.service'
 
 @Component({
   selector: 'test-editor',
@@ -7,30 +7,24 @@ import { GusteauService, Ingredient, Recipe } from '../gusteau.service'
 })
 export class TestComponent {
   search: string = '';
-  suggestions: Ingredient[];
   recipes: Recipe[];
 
-  ingredients: Ingredient[] = new Array<Ingredient>();
+  ingredients: string[] = new Array<string>();
 
   constructor(private gusteau: GusteauService) {
 
   }
 
-  searchChanged(event): void{
-    this.gusteau.getSuggestions(this.search).then(data => {
-      this.suggestions = data;
-    });
-  }
-
-  onSuggestionSelect(suggestion: Ingredient): void {
-    this.ingredients.push(suggestion);
-  }
-
-  onIngredientSelect(suggestion: Ingredient): void {
+  onIngredientSelect(suggestion: string): void {
     const index = this.ingredients.indexOf(suggestion, 0);
     if (index > -1) {
       this.ingredients.splice(index, 1);
     }
+  }
+
+  addIng(): void {
+    this.ingredients.push(this.search);
+    this.search = "";
   }
 
   findRecipe(): void {

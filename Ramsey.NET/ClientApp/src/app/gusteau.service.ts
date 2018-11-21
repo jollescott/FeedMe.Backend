@@ -8,58 +8,23 @@ export class GusteauService {
   constructor(private http: HttpClient) {
   }
 
-  async getSuggestions(search: string): Promise<Ingredient[]> {
-    const url = window.location.origin + '/ingredient/suggest?search=' + search;
-    console.log(url);
-
-    return await this.http.get<Ingredient[]>(url).toPromise();
-  }
-
-  async getRecipes(ingredients: Ingredient[]): Promise<Recipe[]> {
+  async getRecipes(ingredients: string[]): Promise<Recipe[]> {
     const url = window.location.origin + '/recipe/suggest';
 
     return await this.http.post<Recipe[]>(url, ingredients).toPromise();
   }
 }
 
-export interface Ingredient {
-  ingredientID: number;
-  name: string;
-  recipeParts: RecipePart[];
-}
-
-export interface RecipePart {
-  recipePartID: number;
-
-  ingredientID: number;
-  recipeID: number;
-
-  decimal: number;
-}
-
 export interface Recipe {
   recipeID: string;
   name: string;
 
-  recipeParts: RecipePart[];
-  directions: RecipeDirection[];
-  categories: RecipeCategory[];
+  ingredients: string[];
+  directions: string[];
 
-  fat: number;
-  desc: number;
-  rating: number;
-  sodium: number;
+  desc: string;
+
+  source: string;
+  image: string;
 }
 
-export interface RecipeCategory {
-  categoryID: number;
-  name: string;
-  recipeID: number;
-}
-
-export interface RecipeDirection {
-  directionID: number;
-  instruction: string;
-
-  recipeID: number;
-}
