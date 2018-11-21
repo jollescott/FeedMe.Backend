@@ -17,6 +17,7 @@ namespace Ramsey.NET
     {
         public static void Main(string[] args)
         {
+            CurlThin.Native.CurlResources.Init();
             var host = CreateWebHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
