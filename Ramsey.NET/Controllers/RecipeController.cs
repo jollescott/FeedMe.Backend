@@ -65,7 +65,14 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         public IActionResult Suggest([FromBody]List<string> ingredients)
         {
-            var postData = "search_text=tomat&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&searchid=";
+            StringBuilder query = new StringBuilder();
+
+            foreach(var ing in ingredients)
+            {
+                query = query.Append(ing).Append(" ");
+            }
+
+            var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats%5B%5D=all&submit_search=S%F6k&recid=&offset=0&searchid=";
 
             var recipe_html = DoCurl(postData, HEMMETS_ROOT + "sok.php");
 
@@ -84,11 +91,12 @@ namespace Ramsey.NET.Controllers
                     var recipe_table = tables[2];
                     var recipe_links = recipe_table.SelectNodes("//tr/td/strong/a").Select(x => x.Attributes["href"].Value).ToList();
 
+                    List<RecipeDto> recipes = new List<RecipeDto>();
 
-                    var recipes = recipe_links.Select(x => LoadRecipeFromLink(new StringBuilder()
+                    recipe_links.ForEach(x => LoadRecipeFromLink(new StringBuilder()
                         .Append(HEMMETS_ROOT)
                         .Append(x)
-                        .ToString()));
+                        .ToString(), ref recipes));
 
                     return Json(recipes);
                 }
@@ -103,39 +111,46 @@ namespace Ramsey.NET.Controllers
             }
         }
 
-        private RecipeDto LoadRecipeFromLink(string link)
+        private void LoadRecipeFromLink(string link, ref List<RecipeDto> recipes)
         {
-            var recipeDto = new RecipeDto();
-            HtmlWeb web = new HtmlWeb();
+            try
+            {
+                var recipeDto = new RecipeDto();
+                HtmlWeb web = new HtmlWeb();
 
-            var recipe_document = web.Load(link);
+                var recipe_document = web.Load(link);
 
-            var recept_info = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptinfo\"]");
-            recipeDto.Name = recept_info.SelectSingleNode("//h1").InnerText;
+                var recept_info = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptinfo\"]");
+                recipeDto.Name = recept_info.SelectSingleNode("//h1").InnerText;
 
-            var recept_bild = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptbild\"]/img");
-            recipeDto.Image = new StringBuilder().Append(HEMMETS_ROOT).Append(recept_bild.Attributes["src"].Value).ToString();
+                var recept_bild = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptbild\"]/img");
+                recipeDto.Image = new StringBuilder().Append(HEMMETS_ROOT).Append(recept_bild.Attributes["src"].Value).ToString();
 
-            var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr")
-                .Skip(1)
-                .Select(x => WebUtility.HtmlDecode(x.InnerText?.Trim()))
-                .Select(y => y.Replace("\n",""))
-                .Select(z => z.Replace("\t", ""))
-                .ToList();
+                var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr")
+                    .Skip(1)
+                    .Select(x => WebUtility.HtmlDecode(x.InnerText?.Trim()))
+                    .Select(y => y.Replace("\n", ""))
+                    .Select(z => z.Replace("\t", ""))
+                    .ToList();
 
-            var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
-                .Where(x => !x.Attributes.Contains("align"))
-                .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
-                .Select(z => z.Replace("\n", ""))
-                .Select(d => d.Replace("\t", ""))
-                .ToList();
+                var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
+                    .Where(x => !x.Attributes.Contains("align"))
+                    .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
+                    .Select(z => z.Replace("\n", ""))
+                    .Select(d => d.Replace("\t", ""))
+                    .ToList();
 
-            recipeDto.Ingredients = ingredients;
-            recipeDto.Directions = directions;
+                recipeDto.Ingredients = ingredients;
+                recipeDto.Directions = directions;
 
-            recipeDto.Source = link;
+                recipeDto.Source = link;
 
-            return recipeDto;
+                recipes.Add(recipeDto);
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         private string DoCurl(string postData, string url)
@@ -146,8 +161,8 @@ namespace Ramsey.NET.Controllers
             CurlNative.Easy.SetOpt(_easy, CURLoption.URL, url);
 
             // This one has to be called before setting COPYPOSTFIELDS.
-            CurlNative.Easy.SetOpt(_easy, CURLoption.POSTFIELDS, postData);
-            CurlNative.Easy.SetOpt(_easy, CURLoption.POST, 1);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.POSTFIELDSIZE, Encoding.ASCII.GetByteCount(postData));
+            CurlNative.Easy.SetOpt(_easy, CURLoption.COPYPOSTFIELDS, postData); 
             CurlNative.Easy.SetOpt(_easy, CURLoption.SSL_VERIFYHOST, 0);
             CurlNative.Easy.SetOpt(_easy, CURLoption.SSL_VERIFYPEER, 0);
 
