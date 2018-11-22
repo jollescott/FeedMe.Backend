@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using CurlThin;
 using CurlThin.Enums;
+using CurlThin.Helpers;
 using CurlThin.Native;
 using CurlThin.SafeHandles;
 using GusteauSharp.Dto;
 using GusteauSharp.Models;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Dto;
 using Ramsey.NET.Models;
 
@@ -38,8 +36,18 @@ namespace Ramsey.NET.Controllers
             _easy = CurlNative.Easy.Init();
 
             CurlNative.Easy.SetOpt(_easy, CURLoption.CAINFO, CurlResources.CaBundlePath);
-            CurlNative.Easy.SetOpt(_easy, CURLoption.COOKIESESSION, 1);
-            CurlNative.Easy.SetOpt(_easy, CURLoption.USERAGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36");
+            CurlNative.Easy.SetOpt(_easy, CURLoption.USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0");
+
+            var headers = CurlNative.Slist.Append(SafeSlistHandle.Null, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            // Add one more value to existing HTTP header list.
+            CurlNative.Slist.Append(headers, "Accept-Language: sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3");
+            CurlNative.Slist.Append(headers, "Referer: https://kokboken.ikv.uu.se/sok.php");
+            CurlNative.Slist.Append(headers, "Content-Type: application/x-www-form-urlencoded");
+            CurlNative.Slist.Append(headers, "Connection: keep-alive");
+            CurlNative.Slist.Append(headers, "Upgrade-Insecure-Requests: 1");
+
+            // Configure libcurl easy handle to send HTTP headers we configured.
+            CurlNative.Easy.SetOpt(_easy, CURLoption.HTTPHEADER, headers.DangerousGetHandle());
         }
 
         protected override void Dispose(bool disposing)
@@ -53,138 +61,11 @@ namespace Ramsey.NET.Controllers
             base.Dispose(disposing);
         }
 
-        [Route("upload")]
-        [HttpPost]
-        public IActionResult Upload([FromBody]RecipeUploadDto recipeDto)
-        {
-            if (recipeDto == null)
-                return new StatusCodeResult(200);
-
-            Recipe recipe = new Recipe
-            {
-                Name = recipeDto.Title,
-                Rating = recipeDto.Rating,
-                
-                Fat = recipeDto.Fat,
-                Protein = recipeDto.Protein,
-                Sodium = recipeDto.Sodium
-            };
-
-            if (recipeDto.Desc != null)
-                recipe.Desc = recipeDto.Desc;
-
-            _ramseyContext.Recipes.Add(recipe);
-            _ramseyContext.SaveChanges();
-            
-            if(recipeDto.Directions != null)
-            {
-                foreach (var direction in recipeDto.Directions)
-                {
-                    var recipeDirection = new RecipeDirection();
-                    recipeDirection.Instruction = direction;
-                    recipeDirection.RecipeID = recipe.RecipeID;
-
-                    _ramseyContext.RecipeDirections.Add(recipeDirection);
-                }
-            }
-
-            _ramseyContext.SaveChanges();
-
-            if(recipeDto.Categories != null)
-            {
-                foreach (var category in recipeDto.Categories)
-                {
-                    var recipeCategory = new RecipeCategory();
-                    recipeCategory.Name = category;
-                    recipeCategory.RecipeID = recipe.RecipeID;
-
-                    _ramseyContext.RecipeCategories.Add(recipeCategory);
-                }
-            }
-
-            _ramseyContext.SaveChanges();
-
-            foreach(var ingredientLine in recipeDto.Ingredients)
-            {
-                var parts = ingredientLine.Split(' ');
-
-                double quantity;
-
-                if(parts[0].Contains('/'))
-                {
-                    var nums = parts[0].Split('/');
-
-                    double num1, num2;
-                    if (!double.TryParse(nums[0], out num1))
-                        num1 = 1;
-
-                    if (!double.TryParse(nums[1], out num2))
-                        num2 = 1;
-
-                    parts[0] = (num1 / num2).ToString();
-                }
-
-                if (!double.TryParse(parts[0], out quantity))
-                    quantity = 1;
-
-                string unit;
-
-                try
-                {
-                    unit = parts[1];
-                }
-                catch(IndexOutOfRangeException)
-                {
-                    unit = "";
-                }
- 
-                string name = string.Join(' ', parts.Skip(2));
-
-                Ingredient ingredient;
-
-                if(_ramseyContext.Ingredients.Where(x => x.Name.Equals(name)).FirstOrDefault() == null)
-                {
-                    ingredient = new Ingredient
-                    {
-                        Name = name
-                    };
-
-                    _ramseyContext.Ingredients.Add(ingredient);
-                    _ramseyContext.SaveChanges();
-                }
-                else
-                {
-                    ingredient = _ramseyContext.Ingredients.Where(x => x.Name.Equals(name)).First();
-                }
-
-                var part = new RecipePart();
-
-                part.Unit = unit;
-                part.Quantity = quantity;
-                part.IngredientID = ingredient.IngredientID;
-                part.RecipeID = recipe.RecipeID;
-
-                _ramseyContext.RecipeParts.Add(part);
-            }
-
-            _ramseyContext.SaveChanges();
-
-            return new StatusCodeResult(200);
-        }
-
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<string> ingredients)
         {
-            var html = DoCurl("", HEMMETS_ROOT + "sok.php");
-
-            var query = new StringBuilder();
-            foreach (var ing in ingredients)
-            {
-                query = query.Append(ing).Append(' ');
-            }
-
-            var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&searchid=";
+            var postData = "search_text=tomat&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&searchid=";
 
             var recipe_html = DoCurl(postData, HEMMETS_ROOT + "sok.php");
 
@@ -265,8 +146,10 @@ namespace Ramsey.NET.Controllers
             CurlNative.Easy.SetOpt(_easy, CURLoption.URL, url);
 
             // This one has to be called before setting COPYPOSTFIELDS.
-            CurlNative.Easy.SetOpt(_easy, CURLoption.POSTFIELDSIZE, Encoding.ASCII.GetByteCount(postData));
-            CurlNative.Easy.SetOpt(_easy, CURLoption.COPYPOSTFIELDS, postData);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.POSTFIELDS, postData);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.POST, 1);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.SSL_VERIFYHOST, 0);
+            CurlNative.Easy.SetOpt(_easy, CURLoption.SSL_VERIFYPEER, 0);
 
             var stream = new MemoryStream();
             CurlNative.Easy.SetOpt(_easy, CURLoption.WRITEFUNCTION, (data, size, nmemb, user) =>
