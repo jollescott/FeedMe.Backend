@@ -22,12 +22,13 @@ namespace Ramsey.NET.Implementations
 
             _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0");
             _client.DefaultRequestHeaders.Add("Accept-Language", "sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3");
+            _client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             _client.DefaultRequestHeaders.Add("Referer", "https://kokboken.ikv.uu.se/sok.php");
-            _client.DefaultRequestHeaders.Add("Content-Type", "Content-Type: application/x-www-form-urlencoded");
+            //_client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
             _client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
         }
 
-        public async Task<List<RecipeDto>> ScrapeRecipiesAsync(string ingredients)
+        public async Task<List<RecipeDto>> ScrapeRecipiesAsync(List<string> ingredients)
         {
             StringBuilder query = new StringBuilder();
 
@@ -36,9 +37,9 @@ namespace Ramsey.NET.Implementations
                 query = query.Append(ing).Append(" ");
             }
 
-            var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats\"%\"5B\"%\"5D=all&submit_search=S\"%\"F6k&recid=&offset=0&searchid=";
+            var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats%5B%5D=all&submit_search=S%F6k&recid=&offset=0&searchid=";
 
-            var response = _client.PostAsync("https://kokboken.ikv.uu.se/sok.php", new StringContent(postData)).Result;
+            var response = await _client.PostAsync("https://kokboken.ikv.uu.se/sok.php", new StringContent(postData, Encoding.GetEncoding(1252), "application/x-www-form-urlencoded"));
             var recipe_html = response.Content.ReadAsStringAsync().Result;
 
             if (recipe_html != string.Empty)
@@ -77,6 +78,7 @@ namespace Ramsey.NET.Implementations
 
         private Task<RecipeDto> LoadRecipeFromLinkAsync(string link)
         {
+            System.Diagnostics.Debug.WriteLine(link);
             var recipeDto = new RecipeDto();
             HtmlWeb web = new HtmlWeb();
 
