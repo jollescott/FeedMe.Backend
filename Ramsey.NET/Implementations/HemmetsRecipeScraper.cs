@@ -40,7 +40,8 @@ namespace Ramsey.NET.Implementations
             var postData = $"search_text={query.ToString()}&dummy=&search_type=all&rec_cats%5B%5D=all&submit_search=S%F6k&recid=&offset=0&searchid=";
 
             var response = await _client.PostAsync("https://kokboken.ikv.uu.se/sok.php", new StringContent(postData, Encoding.GetEncoding(1252), "application/x-www-form-urlencoded"));
-            var recipe_html = response.Content.ReadAsStringAsync().Result;
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            var recipe_html = Encoding.GetEncoding(1252).GetString(bytes);
 
             if (recipe_html != string.Empty)
             {
@@ -52,10 +53,10 @@ namespace Ramsey.NET.Implementations
                 if (main_wrapper != null)
                 {
                     var main_content = main_wrapper.Descendants().Where(x => x.Id.Equals("maincontent")).FirstOrDefault();
-                    var tables = main_content.SelectNodes("//table");
+                    var tables = main_content.SelectNodes(".//table");
 
                     var recipe_table = tables[2];
-                    var recipe_links = recipe_table.SelectNodes("//tr/td/strong/a").Select(x => x.Attributes["href"].Value).ToList();
+                    var recipe_links = recipe_table.SelectNodes(".//tr/td/strong/a").Select(x => x.Attributes["href"].Value).ToList();
 
                     var tasks = recipe_links.Select(x => LoadRecipeFromLinkAsync(new StringBuilder()
                         .Append(HEMMETS_ROOT)
@@ -63,7 +64,9 @@ namespace Ramsey.NET.Implementations
                         .ToString()));
 
                     var recipes = await Task.WhenAll(tasks);
-                    return recipes.ToList();
+                    var sortedRecipes = recipes.Where(x => x.Ingredients.All(y => ingredients.Any(s => s.Equals(y, StringComparison.OrdinalIgnoreCase))));
+
+                    return sortedRecipes.ToList();
                 }
                 else
                 {
@@ -76,13 +79,16 @@ namespace Ramsey.NET.Implementations
             }
         }
 
-        private Task<RecipeDto> LoadRecipeFromLinkAsync(string link)
+        private async Task<RecipeDto> LoadRecipeFromLinkAsync(string link)
         {
             System.Diagnostics.Debug.WriteLine(link);
             var recipeDto = new RecipeDto();
-            HtmlWeb web = new HtmlWeb();
 
-            var recipe_document = web.Load(link);
+            var bytes = await _client.GetByteArrayAsync(link);
+            var html = Encoding.GetEncoding(1252).GetString(bytes);
+
+            var recipe_document = new HtmlDocument();
+            recipe_document.LoadHtml(html);
 
             var recept_info = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptinfo\"]");
             recipeDto.Name = recept_info.SelectSingleNode("//h1").InnerText;
@@ -109,7 +115,7 @@ namespace Ramsey.NET.Implementations
 
             recipeDto.Source = link;
 
-            return Task.FromResult(recipeDto);
+            return recipeDto;
         }
     }
 }
