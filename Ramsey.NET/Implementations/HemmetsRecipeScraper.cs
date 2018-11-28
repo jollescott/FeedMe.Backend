@@ -64,9 +64,9 @@ namespace Ramsey.NET.Implementations
                         .ToString()));
 
                     var recipes = await Task.WhenAll(tasks);
-                    var sortedRecipes = recipes.Where(x => x.Ingredients.All(y => ingredients.Any(s => s.Equals(y, StringComparison.OrdinalIgnoreCase))));
+                    //var sortedRecipes = recipes.Where(x => x.Ingredients.All(y => ingredients.Any(s => s.Equals(y, StringComparison.OrdinalIgnoreCase))));
 
-                    return sortedRecipes.ToList();
+                    return recipes.ToList();
                 }
                 else
                 {
