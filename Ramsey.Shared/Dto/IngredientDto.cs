@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ramsey.NET.Dto
+namespace Ramsey.Shared.Dto
 {
     public class IngredientDto
     {

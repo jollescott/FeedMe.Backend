@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Joel Linder</Authors>
+    <Company>Ananas Software</Company>
+    <Product>FeedMe</Product>
+    <Copyright>DO NOT TOUCH MY SPAGHET</Copyright>
+  </PropertyGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
-using Ramsey.NET.Dto;
 using Ramsey.NET.Interfaces;
+using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;

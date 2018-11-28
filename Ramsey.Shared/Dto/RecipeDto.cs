@@ -1,12 +1,7 @@
-﻿using GusteauSharp.Models;
-using Ramsey.NET.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Ramsey.NET.Dto
+namespace Ramsey.Shared.Dto
 {
     public class RecipeDto
     {

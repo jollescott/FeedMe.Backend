@@ -1,7 +1,5 @@
-﻿using Ramsey.NET.Dto;
-using System;
+﻿using Ramsey.Shared.Dto;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Interfaces

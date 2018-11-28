@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Collections.Generic;
 using GusteauSharp.Models;
-using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Ramsey.NET.Dto;
 using Ramsey.NET.Interfaces;
 
 namespace Ramsey.NET.Controllers
