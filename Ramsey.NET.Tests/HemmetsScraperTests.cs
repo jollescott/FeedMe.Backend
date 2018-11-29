@@ -3,6 +3,7 @@ using Ramsey.NET.Crawlers.Implementations;
 using Ramsey.NET.Crawlers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace Ramsey.NET.Tests
     [TestFixture]
     public class HemmetsScraperTests
     {
-        IHemmetsRecipeCrawler crawler = new HemmetsRecipeCrawler();
+        AHemmetsRecipeCrawler crawler = new HemmetsRecipeCrawler();
 
         [SetUp]
         public void Setup()
@@ -36,10 +37,20 @@ namespace Ramsey.NET.Tests
         }
 
         [Test]
-        public async Task ScapePageAsync()
+        public async Task ScrapePageAsync()
         {
             var result = await crawler.ScrapePageAsync(0);
             Assert.IsNotEmpty(result);
+        }
+
+        [Test]
+        public async Task ScrapeAllPagesAsync()
+        {
+            System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            var result = await crawler.ScrapeRecipesAsync();
+            Console.WriteLine("All recipes scraped");
+
+            Assert.AreEqual(764, result.Count);
         }
     }
 }

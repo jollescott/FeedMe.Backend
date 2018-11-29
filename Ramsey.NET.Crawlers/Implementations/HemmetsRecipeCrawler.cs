@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ramsey.NET.Crawlers.Interfaces;
+using Ramsey.NET.Crawlers.Misc;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
 using System;
@@ -12,26 +13,19 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Crawlers.Implementations
 {
-    public class HemmetsRecipeCrawler : IHemmetsRecipeCrawler
+    public class HemmetsRecipeCrawler : AHemmetsRecipeCrawler
     {
-        private readonly HttpClient _client;
+        private readonly HemmetsHttpClient _client;
 
         private readonly string RECIPE_LIST_URL = "https://kokboken.ikv.uu.se/receptlista.php?cat=0";
         private readonly string HEMMETS_ROOT = "https://kokboken.ikv.uu.se/";
 
         public HemmetsRecipeCrawler()
         {
-            _client = new HttpClient();
-
-            _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0");
-            _client.DefaultRequestHeaders.Add("Accept-Language", "sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3");
-            _client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            _client.DefaultRequestHeaders.Add("Referer", "https://kokboken.ikv.uu.se/sok.php");
-            //_client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
-            _client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
+            _client = new HemmetsHttpClient();
         }
 
-        public async Task<int> GetRecipeCountAsync()
+        public override async Task<int> GetRecipeCountAsync()
         {
             var httpResponse = await _client.GetAsync(RECIPE_LIST_URL);
             
@@ -46,7 +40,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
         }
 
-        public int ScrapeRecipeCount(string html)
+        public override int ScrapeRecipeCount(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -64,12 +58,14 @@ namespace Ramsey.NET.Crawlers.Implementations
             return (int)Math.Ceiling(doub);
         }
 
-        public async Task<RecipeDto> ScrapeRecipeAsync(string url)
+        public override async Task<RecipeDto> ScrapeRecipeAsync(string url)
         {
             System.Diagnostics.Debug.WriteLine(url);
             var recipeDto = new RecipeDto();
 
-            var bytes = await _client.GetByteArrayAsync(url);
+            var client = new HemmetsHttpClient();
+
+            var bytes = await client.GetByteArrayAsync(url);
             var html = Encoding.GetEncoding(1252).GetString(bytes);
 
             var recipe_document = new HtmlDocument();
@@ -104,7 +100,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipeDto;
         }
 
-        public async Task<List<RecipeDto>> ScrapeRecipeAsync()
+        public override async Task<List<RecipeDto>> ScrapeRecipesAsync()
         {
             var recipeCount = await GetRecipeCountAsync();
             var pageCount = (int)Math.Ceiling((double)recipeCount / 20);
@@ -113,25 +109,23 @@ namespace Ramsey.NET.Crawlers.Implementations
         }
 
 
-        public async Task<List<RecipeDto>> ScrapePagesAsync(int count, int offset)
+        public override async Task<List<RecipeDto>> ScrapePagesAsync(int count, int offset)
         {
             var tasks = new List<Task<List<RecipeDto>>>();
-
-            for(var i = 0; i < count; i++)
-            {
-                tasks.Add(ScrapePageAsync(offset * i));
-            }
-
-            var recipes = await Task.WhenAll(tasks);
-
             var allRecipes = new List<RecipeDto>();
-            recipes.ToList().ForEach(x => allRecipes.AddRange(x));
+
+            for (var i = 0; i < count; i++)
+            {
+                await Task.Delay(1000);
+                var recipes = await ScrapePageAsync(offset * i);
+                recipes.ToList().ForEach(x => allRecipes.Add(x));
+            }
 
             return new HashSet<RecipeDto>(allRecipes).ToList();
         }
 
 
-        public async Task<List<RecipeDto>> ScrapePageAsync(int offset)
+        public override async Task<List<RecipeDto>> ScrapePageAsync(int offset)
         {
             var postData = $"offset={offset}";
 
@@ -148,7 +142,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipes.ToList();
         }
 
-        public IEnumerable<string> ScapeRecipeLinks(string html)
+        public override IEnumerable<string> ScapeRecipeLinks(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -156,8 +150,8 @@ namespace Ramsey.NET.Crawlers.Implementations
             var main_content = doc.DocumentNode.Descendants().Where(x => x.Id.Equals("maincontent")).FirstOrDefault();
             var tables = main_content.SelectNodes("//table");
 
-            var recipe_table = tables[1];
-            var recipe_links = recipe_table.SelectNodes("//tr/td/strong/a").Select(x => x.Attributes["href"].Value).ToList();
+            var recipe_table = tables[0];
+            var recipe_links = recipe_table.SelectNodes(".//tr/td/strong/a").Select(x => x.Attributes["href"].Value).ToList();
             return recipe_links;
         }
     }
