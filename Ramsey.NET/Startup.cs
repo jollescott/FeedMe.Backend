@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Ramsey.NET.Implementations;
+using Ramsey.NET.Interfaces;
 using System;
 
 namespace Ramsey.NET
@@ -35,6 +37,8 @@ namespace Ramsey.NET
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddScoped<IRecipeScraper, HemmetsRecipeScraper>();
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {

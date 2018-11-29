@@ -1,20 +1,13 @@
 <div>
-  <textarea cols="25" [(ngModel)]="search" (keyup)="searchChanged($event)"></textarea>
+  <textarea cols="25" [(ngModel)]="search"></textarea>
+  <button (click)="addIng()">Add ingredietn b0ss.</button>
   <button (click)="findRecipe()">Gimme the food b0ss.</button>
   <div class='row'>
-    <div class='col-sm-3'>
-      <h1>Suggestions</h1>
-      <ul>
-        <li *ngFor="let sug of suggestions" (click)="onSuggestionSelect(sug)">
-          {{sug.name}}
-        </li>
-      </ul>
-    </div>
     <div class='col-sm-3'>
       <h1>Ingredients</h1>
       <ul>
         <li *ngFor="let ing of ingredients" (click)="onIngredientSelect(ing)">
-          <span>{{ing.name}}</span>
+          <span>{{ing}}</span>
         </li>
       </ul>
     </div>
@@ -22,9 +15,12 @@
       <h1>Recipes</h1>
       <ul>
         <li *ngFor="let recipe of recipes">
-          <span>{{recipe.name}}</span>
-          <p>Total Time: {{recipe.totalTimeInSeconds}}</p>
-          <img src="{{recipe.smallImage}}" />
+          <div>
+            <span>{{recipe.name}}</span>
+            <img src="{{recipe.image}}" />
+
+            <a href="{{recipe.source}}"> Source</a>
+          </div>
         </li>
       </ul>
     </div>

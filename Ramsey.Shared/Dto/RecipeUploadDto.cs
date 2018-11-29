@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GusteauSharp.Dto
+namespace Ramsey.Shared.Dto
 {
     public class RecipeUploadDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Ramsey.NET.Dto
+﻿namespace Ramsey.Shared.Dto
 {
     public class RecipePartDto
     {
