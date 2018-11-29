@@ -19,6 +19,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 
         private readonly string RECIPE_LIST_URL = "https://kokboken.ikv.uu.se/receptlista.php?cat=0";
         private readonly string HEMMETS_ROOT = "https://kokboken.ikv.uu.se/";
+        private int _currentIndex = 0;
 
         public HemmetsRecipeCrawler()
         {
@@ -96,6 +97,9 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             recipeDto.Source = url;
             recipeDto.Owner = HEMMETS_ROOT;
+
+            _currentIndex++;
+            recipeDto.NativeID = _currentIndex;
 
             return recipeDto;
         }

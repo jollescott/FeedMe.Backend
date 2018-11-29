@@ -17,5 +17,6 @@ namespace Ramsey.Shared.Dto
         public string Source { get; set; }
         public string Owner { get; set; }
         public string Image { get; set; }
+        public int NativeID { get; set; }
     }
 }

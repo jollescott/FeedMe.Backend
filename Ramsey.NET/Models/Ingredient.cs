@@ -11,7 +11,5 @@ namespace Ramsey.NET.Models
     {
         public int IngredientID { get; set; }
         public string Name { get; set; }
-
-        public virtual ICollection<RecipePart> RecipeParts { get; set; }
     }
 }

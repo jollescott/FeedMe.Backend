@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-using GusteauSharp.Models;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Ramsey.NET.Models;
+using Ramsey.NET.Services;
 
 namespace Ramsey.NET.Controllers
 {
@@ -16,8 +18,9 @@ namespace Ramsey.NET.Controllers
 
         [Route("suggest")]
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> SuggestAsync([FromBody]List<string> ingredients)
+        public IActionResult Suggest([FromBody]List<string> ingredients)
         {
+            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
             return StatusCode(200);
         }
     }

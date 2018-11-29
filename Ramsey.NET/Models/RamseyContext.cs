@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GusteauSharp.Models
+namespace Ramsey.NET.Models
 {
     public class RamseyContext : DbContext
     {
@@ -13,10 +13,19 @@ namespace GusteauSharp.Models
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Ingredient>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Recipe>()
+                .HasIndex(p => p.NativeID)
+                .IsUnique();
+        }
+
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
-        public DbSet<RecipeDirection> RecipeDirections { get; set; }
-        public DbSet<RecipeCategory> RecipeCategories { get; set; }
     }
 }
