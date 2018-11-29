@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ramsey.NET.Models;
 
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    partial class RamseyContextModelSnapshot : ModelSnapshot
+    [Migration("20181129223402_RemovedUniqueRecipePart")]
+    partial class RemovedUniqueRecipePart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
