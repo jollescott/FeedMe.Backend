@@ -1,4 +1,5 @@
 using GusteauSharp.Models;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Interfaces;
 using System;
+using System.Text;
 
 namespace Ramsey.NET
 {
@@ -19,6 +21,7 @@ namespace Ramsey.NET
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public IConfiguration Configuration { get; }
@@ -43,10 +46,12 @@ namespace Ramsey.NET
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
+                services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease")));
             }
             else
             {
                 services.AddDbContext<RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyDebug")));
+                services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyDebug")));
             }
         }
 
@@ -73,6 +78,9 @@ namespace Ramsey.NET
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseSpa(spa =>
             {
