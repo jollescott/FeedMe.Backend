@@ -99,7 +99,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             recipeDto.Owner = HEMMETS_ROOT;
 
             _currentIndex++;
-            recipeDto.NativeID = _currentIndex;
+            recipeDto.RecipeID = "HEMMETS" + _currentIndex.ToString();
 
             return recipeDto;
         }

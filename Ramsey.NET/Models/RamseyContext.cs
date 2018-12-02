@@ -13,17 +13,6 @@ namespace Ramsey.NET.Models
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Ingredient>()
-                .HasIndex(p => p.Name)
-                .IsUnique();
-
-            modelBuilder.Entity<Recipe>()
-                .HasIndex(p => p.NativeID)
-                .IsUnique();
-        }
-
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }

@@ -12,9 +12,8 @@ namespace Ramsey.NET.Models
     public class Recipe
     {
         [Key]
-        public int RecipeID { get; set; }
-
-        public int NativeID { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string RecipeId { get; set; }
 
         public string Name { get; set; }
 

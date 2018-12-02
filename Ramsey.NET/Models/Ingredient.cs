@@ -9,7 +9,10 @@ namespace Ramsey.NET.Models
 {
     public class Ingredient
     {
-        public int IngredientID { get; set; }
-        public string Name { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string IngredientID { get; set; }
+
+        public virtual ICollection<RecipePart> RecipeParts { get; set; }
     }
 }

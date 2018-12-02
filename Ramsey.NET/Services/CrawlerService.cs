@@ -29,55 +29,48 @@ namespace Ramsey.NET.Services
 
                 foreach(var i in r.Ingredients)
                 {
-                    Ingredient ingredient;
+                    Ingredient ingredient = _context.Ingredients.Find(i.ToLower());
 
-                    if (_context.Ingredients.Any(x => x.Name.Equals(i)))
-                    {
-                        ingredient = _context.Ingredients.Where(x => x.Name.Equals(i)).FirstOrDefault();
-                    }
-                    else
+                    if(ingredient == null)
                     {
                         ingredient = new Ingredient
                         {
-                            Name = i
+                            IngredientID = i.ToLower()
                         };
 
                         _context.Ingredients.Add(ingredient);
-                        await _context.SaveChangesAsync();
                     }
 
                     ings.Add(ingredient);
                 }
 
-                Recipe recipe;
+                await _context.SaveChangesAsync();
 
-                if(_context.Recipes.Any(x => x.Name.Equals(r.Name)))
-                {
-                    recipe = _context.Recipes.Where(x => x.Name.Equals(r.Name)).FirstOrDefault();
-                }
-                else
+                Recipe recipe = _context.Recipes.Find(r.RecipeID);
+
+                if(recipe == null)
                 {
                     recipe = new Recipe
                     {
                         Image = r.Image,
                         Name = r.Name,
-                        NativeID = r.NativeID,
                         Owner = r.Owner,
-                        Source = r.Source
+                        Source = r.Source,
+                        RecipeId = r.RecipeID
                     };
 
                     _context.Recipes.Add(recipe);
                     await _context.SaveChangesAsync();
+
+                    var recipeParts = ings.Select(x => new RecipePart
+                    {
+                        IngredientId = x.IngredientID,
+                        RecipeId = recipe.RecipeId
+                    });
+
+                    _context.RecipeParts.AddRange(recipeParts);
+                    await _context.SaveChangesAsync();
                 }
-
-                var recipeParts = ings.Select(x => new RecipePart
-                {
-                    IngredientID = x.IngredientID,
-                    RecipeID = recipe.RecipeID
-                });
-
-                _context.RecipeParts.AddRange(recipeParts);
-                await _context.SaveChangesAsync();
             }
         }
     }

@@ -11,9 +11,7 @@ namespace Ramsey.NET.Migrations
                 name: "Recipes",
                 columns: table => new
                 {
-                    RecipeID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    NativeID = table.Column<int>(nullable: false),
+                    RecipeId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Source = table.Column<string>(nullable: true),
                     Owner = table.Column<string>(nullable: true),
@@ -21,26 +19,24 @@ namespace Ramsey.NET.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recipes", x => x.RecipeID);
+                    table.PrimaryKey("PK_Recipes", x => x.RecipeId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Ingredients",
                 columns: table => new
                 {
-                    IngredientID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    RecipeID = table.Column<int>(nullable: true)
+                    IngredientID = table.Column<string>(nullable: false),
+                    RecipeId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
                     table.ForeignKey(
-                        name: "FK_Ingredients_Recipes_RecipeID",
-                        column: x => x.RecipeID,
+                        name: "FK_Ingredients_Recipes_RecipeId",
+                        column: x => x.RecipeId,
                         principalTable: "Recipes",
-                        principalColumn: "RecipeID",
+                        principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -48,56 +44,42 @@ namespace Ramsey.NET.Migrations
                 name: "RecipeParts",
                 columns: table => new
                 {
-                    RecipePartID = table.Column<int>(nullable: false)
+                    RecipePartId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IngredientID = table.Column<int>(nullable: false),
-                    RecipeID = table.Column<int>(nullable: false)
+                    IngredientId = table.Column<string>(nullable: true),
+                    RecipeId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeParts", x => x.RecipePartID);
+                    table.PrimaryKey("PK_RecipeParts", x => x.RecipePartId);
                     table.ForeignKey(
-                        name: "FK_RecipeParts_Ingredients_IngredientID",
-                        column: x => x.IngredientID,
+                        name: "FK_RecipeParts_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
                         principalTable: "Ingredients",
                         principalColumn: "IngredientID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RecipeParts_Recipes_RecipeID",
-                        column: x => x.RecipeID,
+                        name: "FK_RecipeParts_Recipes_RecipeId",
+                        column: x => x.RecipeId,
                         principalTable: "Recipes",
-                        principalColumn: "RecipeID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_Name",
+                name: "IX_Ingredients_RecipeId",
                 table: "Ingredients",
-                column: "Name",
-                unique: true,
-                filter: "[Name] IS NOT NULL");
+                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_RecipeID",
-                table: "Ingredients",
-                column: "RecipeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeParts_IngredientID",
+                name: "IX_RecipeParts_IngredientId",
                 table: "RecipeParts",
-                column: "IngredientID");
+                column: "IngredientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeParts_RecipeID_IngredientID",
+                name: "IX_RecipeParts_RecipeId",
                 table: "RecipeParts",
-                columns: new[] { "RecipeID", "IngredientID" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Recipes_NativeID",
-                table: "Recipes",
-                column: "NativeID",
-                unique: true);
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
