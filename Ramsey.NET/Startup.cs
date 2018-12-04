@@ -80,8 +80,8 @@ namespace Ramsey.NET
 
             GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
 
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            //app.UseHangfireServer();
+            //app.UseHangfireDashboard();
 
             app.UseSpa(spa =>
             {

@@ -1,35 +1,42 @@
 import { Component, Pipe, PipeTransform } from '@angular/core'
-import { GusteauService, Recipe } from '../gusteau.service'
+import { RamseyService, Recipe, Ingredient } from '../ramsey.service'
 
 @Component({
   selector: 'test-editor',
-  templateUrl: './test.component.html'
+  templateUrl: './test.component.html',
+  styleUrls: ['./test.component.css']
 })
 export class TestComponent {
   search: string = '';
   recipes: Recipe[];
 
-  ingredients: string[] = new Array<string>();
+  ingredients: Ingredient[] = new Array<Ingredient>();
+  selected: Ingredient[] = new Array<Ingredient>();
 
-  constructor(private gusteau: GusteauService) {
+  constructor(private ramsey: RamseyService) {
 
   }
 
-  onIngredientSelect(suggestion: string): void {
-    const index = this.ingredients.indexOf(suggestion, 0);
+  onIngredientSelect(suggestion: Ingredient): void {
+    const index = this.selected.indexOf(suggestion, 0);
     if (index > -1) {
-      this.ingredients.splice(index, 1);
+      this.selected.splice(index, 1);
     }
   }
 
-  addIng(): void {
-    this.ingredients.push(this.search);
-    this.search = "";
+  onSearchSelect(suggestion: Ingredient): void {
+    this.selected.push(suggestion);
+  }
+
+  findIngredients(): void {
+    this.ramsey.getIngredients(this.search).then(data => {
+      this.ingredients = data;
+    });
   }
 
   findRecipe(): void {
     if (this.ingredients.length > 0) {
-      this.gusteau.getRecipes(this.ingredients).then(data => {
+      this.ramsey.getRecipes(this.selected).then(data => {
         this.recipes = data;
       })
     }

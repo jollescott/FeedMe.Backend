@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Ramsey.NET.Models;
@@ -17,18 +18,13 @@ namespace Ramsey.NET.Controllers
             _ramseyContext = ramseyContext;
         }
 
-        [Route("index")]
-        public IActionResult Index()
-        {
-            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
-            return StatusCode(200);
-        }
-
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDto> ingredients)
         {
-            var recipes = new List<RecipeDto>();
+            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).ToList();
+            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
+
             return Json(recipes);
         }
     }

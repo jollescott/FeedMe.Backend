@@ -4,14 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class GusteauService {
+export class RamseyService {
   constructor(private http: HttpClient) {
   }
 
-  async getRecipes(ingredients: string[]): Promise<Recipe[]> {
+  async getRecipes(ingredients: Ingredient[]): Promise<Recipe[]> {
     const url = window.location.origin + '/recipe/suggest';
 
     return await this.http.post<Recipe[]>(url, ingredients).toPromise();
+  }
+
+  async getIngredients(search: string): Promise<Ingredient[]> {
+    const url = window.location.origin + '/ingredient/suggest?search=' + search;
+    return await this.http.get<Ingredient[]>(url).toPromise();
   }
 }
 
@@ -26,5 +31,15 @@ export interface Recipe {
 
   source: string;
   image: string;
+}
+
+export interface Ingredient {
+  ingredientId: string;
+  recipeParts: RecipePart[];
+}
+
+export interface RecipePart {
+  ingredientId: string;
+  recipeId: string;
 }
 
