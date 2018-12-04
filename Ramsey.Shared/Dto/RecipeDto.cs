@@ -15,7 +15,12 @@ namespace Ramsey.Shared.Dto
         public string Desc { get; set; }
 
         public string Source { get; set; }
-        public string Owner { get; set; }
+        public RecipeProvider Owner { get; set; }
         public string Image { get; set; }
+    }
+
+    public enum RecipeProvider
+    {
+        ICA, Hemmets
     }
 }

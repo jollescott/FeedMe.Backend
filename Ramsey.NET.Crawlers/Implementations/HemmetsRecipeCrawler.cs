@@ -96,7 +96,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             recipeDto.Directions = directions;
 
             recipeDto.Source = url;
-            recipeDto.Owner = HEMMETS_ROOT;
+            recipeDto.Owner = RecipeProvider.Hemmets;
 
             _currentIndex++;
             recipeDto.RecipeID = "HEMMETS" + _currentIndex.ToString();

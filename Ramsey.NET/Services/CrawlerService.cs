@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Crawlers.Implementations;
 using Ramsey.NET.Models;
+using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -12,7 +13,8 @@ namespace Ramsey.NET.Services
     public class CrawlerService : ICrawlerService
     {
         private RamseyContext _context;
-        private AHemmetsRecipeCrawler _crawler = new HemmetsRecipeCrawler();
+        private AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
+        private AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
 
         public CrawlerService(RamseyContext context)
         {
@@ -21,17 +23,26 @@ namespace Ramsey.NET.Services
 
         public async Task UpdateIndexAsync()
         {
-            var recipes = await _crawler.ScrapeRecipesAsync();
+            var recipes = await _hCrawler.ScrapeRecipesAsync();
+            await AddRecipesAsync(recipes);
+            recipes.Clear();
 
-            foreach (var r in recipes)
+            recipes = await _iCrawler.ScrapeRecipesAsync();
+            await AddRecipesAsync(recipes);
+            System.Diagnostics.Debug.WriteLine("All done!");
+        }
+
+        public async Task AddRecipesAsync(List<RecipeDto> recipeDtos)
+        {
+            foreach (var r in recipeDtos)
             {
                 List<Ingredient> ings = new List<Ingredient>();
 
-                foreach(var i in r.Ingredients)
+                foreach (var i in r.Ingredients)
                 {
                     Ingredient ingredient = _context.Ingredients.Find(i.ToLower());
 
-                    if(ingredient == null)
+                    if (ingredient == null)
                     {
                         ingredient = new Ingredient
                         {
@@ -48,7 +59,7 @@ namespace Ramsey.NET.Services
 
                 Recipe recipe = _context.Recipes.Find(r.RecipeID);
 
-                if(recipe == null)
+                if (recipe == null)
                 {
                     recipe = new Recipe
                     {

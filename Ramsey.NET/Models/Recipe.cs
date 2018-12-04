@@ -1,4 +1,5 @@
 ﻿using Ramsey.NET.Models;
+using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace Ramsey.NET.Models
         public virtual ICollection<Ingredient> RecipeParts { get; set; }
 
         public string Source { get; set; }
-        public string Owner { get; set; }
+        public RecipeProvider Owner { get; set; }
         public string Image { get; set; }
     }
 }

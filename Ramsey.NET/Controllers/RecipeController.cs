@@ -18,6 +18,13 @@ namespace Ramsey.NET.Controllers
             _ramseyContext = ramseyContext;
         }
 
+        [Route("reindex")]
+        public IActionResult ReIndex()
+        {
+            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
+            return StatusCode(200);
+        }
+
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDto> ingredients)

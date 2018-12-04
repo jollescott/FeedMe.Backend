@@ -15,6 +15,7 @@ namespace Ramsey.NET.Crawlers.Implementations
     {
         private readonly string QUERY = "https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=0&num=1000";
         private readonly HttpClient _httpClient;
+        private int _currentIndex = 0;
 
         public IcaRecipeCrawler()
         {
@@ -53,8 +54,28 @@ namespace Ramsey.NET.Crawlers.Implementations
             doc.LoadHtml(html);
 
             dto.Name = doc.DocumentNode.SelectSingleNode("//h1[@class = \"recipepage__headline\"]").InnerText;
-            var img = doc.DocumentNode.SelectSingleNode("/html/body/form/div[4]/div/div[2]/main/header/div/div[2]/div/div");
-            dto.Image = Regex.Match(img.GetAttributeValue("style", ""), @"(?<=url\()(.*)(?=\))").Groups[1].Value.Replace("&#39;", string.Empty);
+
+            try
+            {
+                var square = doc.DocumentNode.SelectSingleNode("//div[contains(@class,'recipe-image-square__image')]");
+                var hero = doc.DocumentNode.SelectSingleNode("//div[contains(@class,'hero__image__background')]");
+                var imgurl = string.Empty;
+
+                if(square == null)
+                {
+                    imgurl = Regex.Match(hero.GetAttributeValue("style", ""), @"(?<=url\()(.*)(?=\))").Groups[1].Value;
+                }
+                else
+                {
+                    imgurl = Regex.Match(square.GetAttributeValue("style", ""), @"(?<=url\()(.*)(?=\))").Groups[1].Value;
+                }
+
+                dto.Image = imgurl.Replace("&#39;", string.Empty);
+            }
+            catch(NullReferenceException)
+            {
+
+            }
 
             var ingredientList = doc.DocumentNode.SelectSingleNode("//ul[@class= \"ingredients__list\"]");
             var ingredients = ingredientList.SelectNodes(".//span[@class = \"ingredient\"]")
@@ -68,6 +89,12 @@ namespace Ramsey.NET.Crawlers.Implementations
             //var directions = directionsList.SelectNodes("//div[@class=\"cooking-step__content__instruction\"]").Select(x => x.InnerText).ToList();
 
             //dto.Directions = directions;
+
+            dto.RecipeID = "ICA" + _currentIndex.ToString();
+            _currentIndex++;
+
+            dto.Source = url;
+            dto.Owner = RecipeProvider.ICA;
 
             return dto;
         }
