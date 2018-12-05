@@ -14,7 +14,7 @@ namespace Ramsey.NET.Models
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<RecipeMeta> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
     }
 }

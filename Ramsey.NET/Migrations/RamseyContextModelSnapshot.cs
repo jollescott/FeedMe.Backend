@@ -22,16 +22,12 @@ namespace Ramsey.NET.Migrations
                 {
                     b.Property<string>("IngredientID");
 
-                    b.Property<string>("RecipeId");
-
                     b.HasKey("IngredientID");
-
-                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("Ramsey.NET.Models.Recipe", b =>
+            modelBuilder.Entity("Ramsey.NET.Models.RecipeMeta", b =>
                 {
                     b.Property<string>("RecipeId");
 
@@ -40,6 +36,8 @@ namespace Ramsey.NET.Migrations
                     b.Property<string>("Name");
 
                     b.Property<int>("Owner");
+
+                    b.Property<string>("OwnerLogo");
 
                     b.Property<string>("Source");
 
@@ -67,21 +65,14 @@ namespace Ramsey.NET.Migrations
                     b.ToTable("RecipeParts");
                 });
 
-            modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
-                {
-                    b.HasOne("Ramsey.NET.Models.Recipe")
-                        .WithMany("RecipeParts")
-                        .HasForeignKey("RecipeId");
-                });
-
             modelBuilder.Entity("Ramsey.NET.Models.RecipePart", b =>
                 {
                     b.HasOne("Ramsey.NET.Models.Ingredient", "Ingredient")
                         .WithMany("RecipeParts")
                         .HasForeignKey("IngredientId");
 
-                    b.HasOne("Ramsey.NET.Models.Recipe", "Recipe")
-                        .WithMany()
+                    b.HasOne("Ramsey.NET.Models.RecipeMeta", "Recipe")
+                        .WithMany("RecipeParts")
                         .HasForeignKey("RecipeId");
                 });
 #pragma warning restore 612, 618

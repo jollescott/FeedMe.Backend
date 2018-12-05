@@ -14,7 +14,7 @@ namespace Ramsey.NET.Crawlers.Implementations
         public abstract Task<List<RecipeDto>> ScrapePagesAsync(int count, int offset);
 
         public abstract Task<List<RecipeDto>> ScrapePageAsync(int offset);
-        public abstract Task<RecipeDto> ScrapeRecipeAsync(string url);
+        public abstract Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false);
 
         public abstract int ScrapeRecipeCount(string html);
         public abstract IEnumerable<string> ScapeRecipeLinks(string html);

@@ -9,7 +9,7 @@ using Ramsey.NET.Models;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20181202113846_InitialCreate")]
+    [Migration("20181205124855_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,16 +24,16 @@ namespace Ramsey.NET.Migrations
                 {
                     b.Property<string>("IngredientID");
 
-                    b.Property<string>("RecipeId");
+                    b.Property<string>("RecipeMetaRecipeId");
 
                     b.HasKey("IngredientID");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("RecipeMetaRecipeId");
 
                     b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("Ramsey.NET.Models.Recipe", b =>
+            modelBuilder.Entity("Ramsey.NET.Models.RecipeMeta", b =>
                 {
                     b.Property<string>("RecipeId");
 
@@ -41,7 +41,9 @@ namespace Ramsey.NET.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Owner");
+                    b.Property<int>("Owner");
+
+                    b.Property<string>("OwnerLogo");
 
                     b.Property<string>("Source");
 
@@ -71,18 +73,18 @@ namespace Ramsey.NET.Migrations
 
             modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
                 {
-                    b.HasOne("Ramsey.NET.Models.Recipe")
+                    b.HasOne("Ramsey.NET.Models.RecipeMeta")
                         .WithMany("RecipeParts")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeMetaRecipeId");
                 });
 
             modelBuilder.Entity("Ramsey.NET.Models.RecipePart", b =>
                 {
                     b.HasOne("Ramsey.NET.Models.Ingredient", "Ingredient")
-                        .WithMany()
+                        .WithMany("RecipeParts")
                         .HasForeignKey("IngredientId");
 
-                    b.HasOne("Ramsey.NET.Models.Recipe", "Recipe")
+                    b.HasOne("Ramsey.NET.Models.RecipeMeta", "Recipe")
                         .WithMany()
                         .HasForeignKey("RecipeId");
                 });

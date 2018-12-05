@@ -13,7 +13,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 {
     public class IcaRecipeCrawler : AIcaRecipeCrawler
     {
-        private readonly string QUERY = "https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=0&num=1000";
+        private readonly string QUERY = "https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=0&num=50";
         private readonly HttpClient _httpClient;
         private int _currentIndex = 0;
 
@@ -42,7 +42,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
         }
 
-        public override async Task<RecipeDto> ScrapeRecipeAsync(string url)
+        public override async Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             var doc = new HtmlDocument();
             var client = new HttpClient();
@@ -84,8 +84,12 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             dto.Ingredients = ingredients.ToList();
 
-            var directionsParent = doc.DocumentNode.SelectSingleNode("//*[@id=\"recipe-howto-steps\"]");
-            var directions = directionsParent.SelectNodes(".//li").Select(x => x.InnerText).ToList();
+            if(includeAll)
+            {
+                var directionsParent = doc.DocumentNode.SelectSingleNode("//*[@id=\"recipe-howto-steps\"]");
+                var directions = directionsParent.SelectNodes(".//li").Select(x => x.InnerText).ToList();
+                dto.Directions = directions;
+            }
             //var directions = directionsList.SelectNodes("//div[@class=\"cooking-step__content__instruction\"]").Select(x => x.InnerText).ToList();
 
             //dto.Directions = directions;
@@ -95,6 +99,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             dto.Source = url;
             dto.Owner = RecipeProvider.ICA;
+            dto.OwnerLogo = "https://upload.wikimedia.org/wikipedia/commons/7/74/ICA-logotyp.png";
 
             return dto;
         }

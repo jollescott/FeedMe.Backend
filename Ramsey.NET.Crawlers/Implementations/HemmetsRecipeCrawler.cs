@@ -59,7 +59,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return (int)Math.Ceiling(doub);
         }
 
-        public override async Task<RecipeDto> ScrapeRecipeAsync(string url)
+        public override async Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             System.Diagnostics.Debug.WriteLine(url);
             var recipeDto = new RecipeDto();
@@ -78,12 +78,17 @@ namespace Ramsey.NET.Crawlers.Implementations
             var recept_bild = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptbild\"]/img");
             recipeDto.Image = new StringBuilder().Append(HEMMETS_ROOT).Append(recept_bild.Attributes["src"].Value).ToString();
 
-            var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr")
+            if(includeAll)
+            {
+                var directions = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptrightcol\"]/table/tr")
                 .Skip(1)
                 .Select(x => WebUtility.HtmlDecode(x.InnerText?.Trim()))
                 .Select(y => y.Replace("\n", ""))
                 .Select(z => z.Replace("\t", ""))
                 .ToList();
+
+                recipeDto.Directions = directions;
+            }
 
             var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
                 .Where(x => !x.Attributes.Contains("align"))
@@ -93,21 +98,22 @@ namespace Ramsey.NET.Crawlers.Implementations
                 .ToList();
 
             recipeDto.Ingredients = new HashSet<string>(ingredients).ToList();
-            recipeDto.Directions = directions;
 
             recipeDto.Source = url;
             recipeDto.Owner = RecipeProvider.Hemmets;
 
             _currentIndex++;
             recipeDto.RecipeID = "HEMMETS" + _currentIndex.ToString();
+            recipeDto.OwnerLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/UU_logo.jpg/628px-UU_logo.jpg";
 
             return recipeDto;
         }
 
         public override async Task<List<RecipeDto>> ScrapeRecipesAsync()
         {
-            var recipeCount = await GetRecipeCountAsync();
-            var pageCount = (int)Math.Ceiling((double)recipeCount / 20);
+            double recipeCount = await GetRecipeCountAsync();
+            recipeCount = recipeCount * 0.1;
+            var pageCount = (int)Math.Ceiling(recipeCount / 20);
 
             return await ScrapePagesAsync(pageCount, 20);
         }
@@ -120,7 +126,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             for (var i = 0; i < count; i++)
             {
-                await Task.Delay(1000);
+                await Task.Delay(2000);
                 var recipes = await ScrapePageAsync(offset * i);
                 recipes.ToList().ForEach(x => allRecipes.Add(x));
             }

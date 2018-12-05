@@ -14,7 +14,8 @@ namespace Ramsey.NET.Migrations
                     RecipeId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Source = table.Column<string>(nullable: true),
-                    Owner = table.Column<string>(nullable: true),
+                    Owner = table.Column<int>(nullable: false),
+                    OwnerLogo = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -27,14 +28,14 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     IngredientID = table.Column<string>(nullable: false),
-                    RecipeId = table.Column<string>(nullable: true)
+                    RecipeMetaRecipeId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
                     table.ForeignKey(
-                        name: "FK_Ingredients_Recipes_RecipeId",
-                        column: x => x.RecipeId,
+                        name: "FK_Ingredients_Recipes_RecipeMetaRecipeId",
+                        column: x => x.RecipeMetaRecipeId,
                         principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
@@ -67,9 +68,9 @@ namespace Ramsey.NET.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_RecipeId",
+                name: "IX_Ingredients_RecipeMetaRecipeId",
                 table: "Ingredients",
-                column: "RecipeId");
+                column: "RecipeMetaRecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeParts_IngredientId",

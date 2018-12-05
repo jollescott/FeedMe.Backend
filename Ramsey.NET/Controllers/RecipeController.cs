@@ -2,6 +2,7 @@
 using System.Linq;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Models;
 using Ramsey.NET.Services;
 using Ramsey.Shared.Dto;
@@ -33,6 +34,22 @@ namespace Ramsey.NET.Controllers
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
 
             return Json(recipes);
+        }
+
+        [Route("retrieve")]
+        [HttpGet]
+        public async System.Threading.Tasks.Task<IActionResult> RetrieveAsync(string id)
+        {
+            var recipe = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
+
+            if(recipe != null)
+            {
+                return Json(recipe);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
         }
     }
 }

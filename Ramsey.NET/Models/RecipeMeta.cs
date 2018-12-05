@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
-    public class Recipe
+    public class RecipeMeta
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -18,10 +18,11 @@ namespace Ramsey.NET.Models
 
         public string Name { get; set; }
 
-        public virtual ICollection<Ingredient> RecipeParts { get; set; }
+        public virtual ICollection<RecipePart> RecipeParts { get; set; }
 
         public string Source { get; set; }
         public RecipeProvider Owner { get; set; }
+        public string OwnerLogo { get; set; }
         public string Image { get; set; }
     }
 }

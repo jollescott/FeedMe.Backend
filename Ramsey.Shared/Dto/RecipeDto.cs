@@ -16,6 +16,7 @@ namespace Ramsey.Shared.Dto
 
         public string Source { get; set; }
         public RecipeProvider Owner { get; set; }
+        public string OwnerLogo { get; set; }
         public string Image { get; set; }
     }
 

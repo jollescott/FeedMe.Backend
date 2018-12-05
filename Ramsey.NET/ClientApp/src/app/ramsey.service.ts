@@ -21,13 +21,8 @@ export class RamseyService {
 }
 
 export interface Recipe {
-  recipeID: string;
+  recipeId: string;
   name: string;
-
-  ingredients: string[];
-  directions: string[];
-
-  desc: string;
 
   source: string;
   image: string;

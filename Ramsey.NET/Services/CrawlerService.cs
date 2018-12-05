@@ -57,11 +57,11 @@ namespace Ramsey.NET.Services
 
                 await _context.SaveChangesAsync();
 
-                Recipe recipe = _context.Recipes.Find(r.RecipeID);
+                RecipeMeta recipe = _context.Recipes.Find(r.RecipeID);
 
                 if (recipe == null)
                 {
-                    recipe = new Recipe
+                    recipe = new RecipeMeta
                     {
                         Image = r.Image,
                         Name = r.Name,

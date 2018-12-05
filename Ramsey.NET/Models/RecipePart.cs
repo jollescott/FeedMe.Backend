@@ -7,7 +7,7 @@
         public string IngredientId { get; set; }
         public string RecipeId { get; set; }
 
-        public virtual Recipe Recipe { get; set; }
+        public virtual RecipeMeta Recipe { get; set; }
         public virtual Ingredient Ingredient { get; set; }
     }
 }
