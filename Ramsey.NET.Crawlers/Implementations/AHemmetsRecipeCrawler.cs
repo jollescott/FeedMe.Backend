@@ -11,14 +11,14 @@ namespace Ramsey.NET.Crawlers.Implementations
     {
         public abstract Task<int> GetRecipeCountAsync();
 
-        public abstract Task<List<RecipeDto>> ScrapePagesAsync(int count, int offset);
+        public abstract Task<List<RecipeMetaDto>> ScrapePagesAsync(int count, int offset);
 
-        public abstract Task<List<RecipeDto>> ScrapePageAsync(int offset);
+        public abstract Task<List<RecipeMetaDto>> ScrapePageAsync(int offset);
         public abstract Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false);
 
         public abstract int ScrapeRecipeCount(string html);
         public abstract IEnumerable<string> ScapeRecipeLinks(string html);
 
-        public abstract Task<List<RecipeDto>> ScrapeRecipesAsync();
+        public abstract Task<List<RecipeMetaDto>> ScrapeRecipesAsync();
     }
 }

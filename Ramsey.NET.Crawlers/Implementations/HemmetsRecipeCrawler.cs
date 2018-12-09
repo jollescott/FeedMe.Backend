@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Crawlers.Implementations
@@ -92,9 +93,9 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
                 .Where(x => !x.Attributes.Contains("align"))
+                .Where(x => x.Name != "strong")
                 .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
-                .Select(z => z.Replace("\n", ""))
-                .Select(d => d.Replace("\t", ""))
+                .Select(x => x.ParseIngredient())
                 .ToList();
 
             recipeDto.Ingredients = new HashSet<string>(ingredients).ToList();
@@ -109,7 +110,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipeDto;
         }
 
-        public override async Task<List<RecipeDto>> ScrapeRecipesAsync()
+        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync()
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = recipeCount * 0.1;
@@ -119,10 +120,9 @@ namespace Ramsey.NET.Crawlers.Implementations
         }
 
 
-        public override async Task<List<RecipeDto>> ScrapePagesAsync(int count, int offset)
+        public override async Task<List<RecipeMetaDto>> ScrapePagesAsync(int count, int offset)
         {
-            var tasks = new List<Task<List<RecipeDto>>>();
-            var allRecipes = new List<RecipeDto>();
+            var allRecipes = new List<RecipeMetaDto>();
 
             for (var i = 0; i < count; i++)
             {
@@ -131,11 +131,11 @@ namespace Ramsey.NET.Crawlers.Implementations
                 recipes.ToList().ForEach(x => allRecipes.Add(x));
             }
 
-            return new HashSet<RecipeDto>(allRecipes).ToList();
+            return new HashSet<RecipeMetaDto>(allRecipes).ToList();
         }
 
 
-        public override async Task<List<RecipeDto>> ScrapePageAsync(int offset)
+        public override async Task<List<RecipeMetaDto>> ScrapePageAsync(int offset)
         {
             var postData = $"offset={offset}";
 
@@ -149,7 +149,9 @@ namespace Ramsey.NET.Crawlers.Implementations
                        .ToString()));
 
             var recipes = await Task.WhenAll(tasks);
-            return recipes.ToList();
+            var metas = recipes.Select(x => (RecipeMetaDto)x);
+
+            return metas.ToList();
         }
 
         public override IEnumerable<string> ScapeRecipeLinks(string html)

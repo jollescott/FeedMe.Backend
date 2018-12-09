@@ -41,4 +41,8 @@ export class TestComponent {
       })
     }
   }
+
+  viewRecipe(id: string) {
+    window.open(window.location.origin + "/recipe/retrieve?id=" + id)
+  }
 }

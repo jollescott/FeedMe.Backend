@@ -27,12 +27,12 @@ namespace Ramsey.NET.Services
             await AddRecipesAsync(recipes);
             recipes.Clear();
 
-            recipes = await _iCrawler.ScrapeRecipesAsync();
-            await AddRecipesAsync(recipes);
+            //recipes = await _iCrawler.ScrapeRecipesAsync();
+            //await AddRecipesAsync(recipes);
             System.Diagnostics.Debug.WriteLine("All done!");
         }
 
-        public async Task AddRecipesAsync(List<RecipeDto> recipeDtos)
+        public async Task AddRecipesAsync(List<RecipeMetaDto> recipeDtos)
         {
             foreach (var r in recipeDtos)
             {
@@ -54,8 +54,6 @@ namespace Ramsey.NET.Services
 
                     ings.Add(ingredient);
                 }
-
-                await _context.SaveChangesAsync();
 
                 RecipeMeta recipe = _context.Recipes.Find(r.RecipeID);
 
@@ -80,9 +78,10 @@ namespace Ramsey.NET.Services
                     });
 
                     _context.RecipeParts.AddRange(recipeParts);
-                    await _context.SaveChangesAsync();
                 }
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

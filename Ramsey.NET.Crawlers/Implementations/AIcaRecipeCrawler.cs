@@ -9,7 +9,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 {
     public abstract class AIcaRecipeCrawler : IRecipeCrawler
     {
-        abstract public Task<List<RecipeDto>> ScrapeRecipesAsync();
+        abstract public Task<List<RecipeMetaDto>> ScrapeRecipesAsync();
 
         abstract public Task<List<string>> ScrapeLinksAsync();
         abstract public Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false);

@@ -118,10 +118,10 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
         }
 
-        public override async Task<List<RecipeDto>> ScrapeRecipesAsync()
+        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync()
         {
             var links = await ScrapeLinksAsync();
-            var recipes = new List<RecipeDto>();
+            var recipes = new List<RecipeMetaDto>();
 
             var step = links.Count / 10;
             var index = 0;
@@ -133,8 +133,9 @@ namespace Ramsey.NET.Crawlers.Implementations
 
                 var rTasks = cLinks.Select(x => ScrapeRecipeAsync(x));
                 var sRecipes = await Task.WhenAll(rTasks);
+                var sMetas = sRecipes.Select(x => (RecipeMetaDto)x);
 
-                recipes.AddRange(sRecipes);
+                recipes.AddRange(sMetas);
             }
 
             return recipes;
