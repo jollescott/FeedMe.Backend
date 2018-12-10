@@ -7,6 +7,7 @@
     <Company>Ananas Software</Company>
     <Product>FeedMe</Product>
     <Copyright>DO NOT TOUCH MY SPAGHET</Copyright>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>
