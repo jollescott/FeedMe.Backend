@@ -13,6 +13,10 @@
     <UserSecretsId>018c6936-fc54-43d4-af42-b354fb9f018b</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
   </ItemGroup>
