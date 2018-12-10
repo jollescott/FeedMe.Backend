@@ -8,6 +8,17 @@ namespace Ramsey.NET.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    IngredientID = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Recipes",
                 columns: table => new
                 {
@@ -21,24 +32,6 @@ namespace Ramsey.NET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipes", x => x.RecipeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    IngredientID = table.Column<string>(nullable: false),
-                    RecipeMetaRecipeId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
-                    table.ForeignKey(
-                        name: "FK_Ingredients_Recipes_RecipeMetaRecipeId",
-                        column: x => x.RecipeMetaRecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,11 +59,6 @@ namespace Ramsey.NET.Migrations
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_RecipeMetaRecipeId",
-                table: "Ingredients",
-                column: "RecipeMetaRecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeParts_IngredientId",

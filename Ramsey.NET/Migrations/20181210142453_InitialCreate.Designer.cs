@@ -9,7 +9,7 @@ using Ramsey.NET.Models;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20181205124855_InitialCreate")]
+    [Migration("20181210142453_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,11 +24,7 @@ namespace Ramsey.NET.Migrations
                 {
                     b.Property<string>("IngredientID");
 
-                    b.Property<string>("RecipeMetaRecipeId");
-
                     b.HasKey("IngredientID");
-
-                    b.HasIndex("RecipeMetaRecipeId");
 
                     b.ToTable("Ingredients");
                 });
@@ -71,13 +67,6 @@ namespace Ramsey.NET.Migrations
                     b.ToTable("RecipeParts");
                 });
 
-            modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
-                {
-                    b.HasOne("Ramsey.NET.Models.RecipeMeta")
-                        .WithMany("RecipeParts")
-                        .HasForeignKey("RecipeMetaRecipeId");
-                });
-
             modelBuilder.Entity("Ramsey.NET.Models.RecipePart", b =>
                 {
                     b.HasOne("Ramsey.NET.Models.Ingredient", "Ingredient")
@@ -85,7 +74,7 @@ namespace Ramsey.NET.Migrations
                         .HasForeignKey("IngredientId");
 
                     b.HasOne("Ramsey.NET.Models.RecipeMeta", "Recipe")
-                        .WithMany()
+                        .WithMany("RecipeParts")
                         .HasForeignKey("RecipeId");
                 });
 #pragma warning restore 612, 618
