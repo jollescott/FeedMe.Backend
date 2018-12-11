@@ -83,5 +83,10 @@ namespace Ramsey.NET.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public Task<RecipeDto> ScrapeRecipeAsync(string url, RecipeProvider provider)
+        {
+            return _hCrawler.ScrapeRecipeAsync(url, true);
+        }
     }
 }

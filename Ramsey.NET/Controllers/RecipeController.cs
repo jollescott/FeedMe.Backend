@@ -13,10 +13,12 @@ namespace Ramsey.NET.Controllers
     public class RecipeController : Controller
     {
         private readonly RamseyContext _ramseyContext;
+        private readonly ICrawlerService _crawlerService;
 
-        public RecipeController(RamseyContext ramseyContext)
+        public RecipeController(RamseyContext ramseyContext, ICrawlerService crawlerService)
         {
             _ramseyContext = ramseyContext;
+            _crawlerService = crawlerService;
         }
 
         [Route("reindex")]
@@ -37,19 +39,12 @@ namespace Ramsey.NET.Controllers
         }
 
         [Route("retrieve")]
-        [HttpGet]
         public async System.Threading.Tasks.Task<IActionResult> RetrieveAsync(string id)
         {
-            var recipe = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
+            var meta = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
+            var recipe = await _crawlerService.ScrapeRecipeAsync(meta.Source, meta.Owner);
 
-            if(recipe != null)
-            {
-                return Json(recipe);
-            }
-            else
-            {
-                return StatusCode(404);
-            }
+            return Json(recipe);
         }
     }
 }
