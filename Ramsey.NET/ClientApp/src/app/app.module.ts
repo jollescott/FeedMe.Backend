@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { TestComponent } from './test/test.component'
 
-import { GusteauService } from './gusteau.service'
+import { RamseyService } from './ramsey.service'
 
 @NgModule({
   declarations: [
@@ -24,7 +24,7 @@ import { GusteauService } from './gusteau.service'
       { path: '', component: TestComponent, pathMatch: 'full' },
     ])
   ],
-  providers: [GusteauService],
+  providers: [RamseyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

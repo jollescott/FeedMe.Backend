@@ -1,24 +1,13 @@
-﻿using GusteauSharp.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Ramsey.NET.Models
+﻿namespace Ramsey.NET.Models
 {
     public class RecipePart
     {
-        public int RecipePartID { get; set; }
+        public int RecipePartId { get; set; }
 
-        public int IngredientID { get; set; }
-        public int RecipeID { get; set; }
+        public string IngredientId { get; set; }
+        public string RecipeId { get; set; }
 
-        public virtual Recipe Recipe { get; set; }
+        public virtual RecipeMeta Recipe { get; set; }
         public virtual Ingredient Ingredient { get; set; }
-
-        public string Unit { get; set; }
-        public double Quantity { get; set; }
     }
 }

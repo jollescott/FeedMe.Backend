@@ -5,7 +5,7 @@ namespace Ramsey.Shared.Dto
 {
     public class RecipeDto
     {
-        public int RecipeID { get; set; }
+        public string RecipeID { get; set; }
         public string Name { get; set; }
 
         public List<string> Ingredients { get; set; }
@@ -15,21 +15,13 @@ namespace Ramsey.Shared.Dto
         public string Desc { get; set; }
 
         public string Source { get; set; }
+        public RecipeProvider Owner { get; set; }
+        public string OwnerLogo { get; set; }
         public string Image { get; set; }
     }
 
-    public class RecipeCategoryDto
+    public enum RecipeProvider
     {
-        public int CategoryID { get; set; }
-        public string Name { get; set; }
-        public int RecipeID { get; set; }
-    }
-
-    public class RecipeDirectionDto
-    {
-        public int DirectionID { get; set; }
-        public string Instruction { get; set; }
-
-        public int RecipeID { get; set; }
+        ICA, Hemmets
     }
 }
