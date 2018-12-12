@@ -65,7 +65,8 @@ namespace Ramsey.NET.Services
                         Name = r.Name,
                         Owner = r.Owner,
                         Source = r.Source,
-                        RecipeId = r.RecipeID
+                        RecipeId = r.RecipeID,
+                        OwnerLogo = r.OwnerLogo
                     };
 
                     _context.Recipes.Add(recipe);
