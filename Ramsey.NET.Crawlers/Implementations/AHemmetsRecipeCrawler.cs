@@ -19,6 +19,6 @@ namespace Ramsey.NET.Crawlers.Implementations
         public abstract int ScrapeRecipeCount(string html);
         public abstract IEnumerable<string> ScapeRecipeLinks(string html);
 
-        public abstract Task<List<RecipeMetaDto>> ScrapeRecipesAsync();
+        public abstract Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = -1);
     }
 }

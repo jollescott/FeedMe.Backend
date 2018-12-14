@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Ramsey.NET.Implementations;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
-using Ramsey.NET.Services;
 using System;
 using System.Text;
 
@@ -51,6 +52,7 @@ namespace Ramsey.NET
                 services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyDebug")));
             }
 
+            services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<ICrawlerService, CrawlerService>();
         }
 

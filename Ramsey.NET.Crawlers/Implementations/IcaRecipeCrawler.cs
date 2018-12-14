@@ -13,7 +13,6 @@ namespace Ramsey.NET.Crawlers.Implementations
 {
     public class IcaRecipeCrawler : AIcaRecipeCrawler
     {
-        private readonly string QUERY = "https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=0&num=50";
         private readonly HttpClient _httpClient;
         private int _currentIndex = 0;
 
@@ -22,9 +21,10 @@ namespace Ramsey.NET.Crawlers.Implementations
             _httpClient = new HttpClient();
         }
 
-        public override async Task<List<string>> ScrapeLinksAsync()
+        public override async Task<List<string>> ScrapeLinksAsync(int amount)
         {
-            var response = await _httpClient.GetAsync(QUERY);
+            var query = $"https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=0&num={amount}";
+            var response = await _httpClient.GetAsync(query);
 
             if(response.IsSuccessStatusCode)
             {
@@ -118,9 +118,9 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
         }
 
-        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync()
+        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = 50)
         {
-            var links = await ScrapeLinksAsync();
+            var links = await ScrapeLinksAsync(amount);
             var recipes = new List<RecipeMetaDto>();
 
             var step = links.Count / 10;

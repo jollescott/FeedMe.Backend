@@ -110,10 +110,10 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipeDto;
         }
 
-        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync()
+        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
-            recipeCount = recipeCount * 0.1;
+            recipeCount = amount > -1 ? amount : recipeCount;
             var pageCount = (int)Math.Ceiling(recipeCount / 20);
 
             return await ScrapePagesAsync(pageCount, 20);

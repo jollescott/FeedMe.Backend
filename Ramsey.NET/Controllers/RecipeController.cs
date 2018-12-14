@@ -3,8 +3,8 @@ using System.Linq;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
-using Ramsey.NET.Services;
 using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers

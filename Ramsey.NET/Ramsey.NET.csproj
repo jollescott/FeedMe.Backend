@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ClientApp\dist\**\*.*"/>
+    <Content Include="ClientApp\dist\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>

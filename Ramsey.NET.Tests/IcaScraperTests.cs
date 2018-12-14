@@ -21,7 +21,7 @@ namespace Ramsey.NET.Tests
         [Test]
         public async Task LoadLinksAsync()
         {
-            var links = await _cralwer.ScrapeLinksAsync();
+            var links = await _cralwer.ScrapeLinksAsync(10);
             Assert.IsNotEmpty(links);
         }
 
