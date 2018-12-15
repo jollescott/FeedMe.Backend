@@ -16,6 +16,7 @@ namespace Ramsey.NET.Tests
     public class RecipeManagerTests 
     {
         IRecipeCrawler hCrawler = new HemmetsRecipeCrawler();
+        IRecipeCrawler iCrawler = new IcaRecipeCrawler();
         IRecipeManager _recipeManager = new SqlRecipeManager();
         private RamseyContext _context;
 
@@ -37,9 +38,16 @@ namespace Ramsey.NET.Tests
         }
 
         [Test]
-        public async Task TestFullRefresh()
+        public async Task TestHemmetsFullRefresh()
         {
             var recipes = await hCrawler.ScrapeRecipesAsync(4);
+            await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
+        }
+
+        [Test]
+        public async Task TestIcaFullRefresh()
+        {
+            var recipes = await iCrawler.ScrapeRecipesAsync(5);
             await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
         }
     }

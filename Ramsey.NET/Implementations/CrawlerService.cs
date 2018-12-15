@@ -30,8 +30,8 @@ namespace Ramsey.NET.Implementations
             await _recipeManager.UpdateRecipeDatabaseAsync(_context,hRecipes);
             hRecipes.Clear();
 
-            //recipes = await _iCrawler.ScrapeRecipesAsync();
-            //await AddRecipesAsync(recipes);
+            var iRecipes = await _iCrawler.ScrapeRecipesAsync();
+            await _recipeManager.UpdateRecipeDatabaseAsync(_context, iRecipes);
             System.Diagnostics.Debug.WriteLine("All done!");
         }
 

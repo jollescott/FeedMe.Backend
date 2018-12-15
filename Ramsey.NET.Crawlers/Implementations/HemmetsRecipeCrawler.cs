@@ -95,7 +95,7 @@ namespace Ramsey.NET.Crawlers.Implementations
                 .Where(x => !x.Attributes.Contains("align"))
                 .Where(x => x.Name != "strong")
                 .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
-                .Select(x => x.ParseIngredient())
+                .Select(x => x.ParseHemmetsIngredient())
                 .ToList();
 
             recipeDto.Ingredients = new HashSet<string>(ingredients).ToList();

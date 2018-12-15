@@ -94,7 +94,10 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             //dto.Directions = directions;
 
-            dto.RecipeID = "ICA" + _currentIndex.ToString();
+            Regex idregex = new Regex(@"\d+");
+            var id = idregex.Match(url).Value;
+
+            dto.RecipeID = "ICA" + id;
             _currentIndex++;
 
             dto.Source = url;
@@ -106,16 +109,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 
         private string SortIngredient(string z)
         {
-            var words = z.Split(' ');
-
-            if (words.Count() <= 2)
-            {
-                return z;
-            }
-            else
-            {
-                return new StringBuilder().Append(words[words.Count() - 2]).Append(words.Last()).ToString();
-            }
+            return z.ParseIcaIngredient();
         }
 
         public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = 50)
@@ -123,7 +117,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             var links = await ScrapeLinksAsync(amount);
             var recipes = new List<RecipeMetaDto>();
 
-            var step = links.Count / 10;
+            var step = links.Count >= 10 ? links.Count / 10 : links.Count;
             var index = 0;
 
             for(var i = 0; i < step; i++)
