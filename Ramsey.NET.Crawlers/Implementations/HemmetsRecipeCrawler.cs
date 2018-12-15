@@ -104,7 +104,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             recipeDto.Owner = RecipeProvider.Hemmets;
 
             _currentIndex++;
-            recipeDto.RecipeID = "HEMMETS" + _currentIndex.ToString();
+            recipeDto.RecipeID = "HEMMETS" + url.Split('=').Last();
             recipeDto.OwnerLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/UU_logo.jpg/628px-UU_logo.jpg";
 
             return recipeDto;

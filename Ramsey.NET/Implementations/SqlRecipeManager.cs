@@ -1,4 +1,5 @@
-﻿using Ramsey.NET.Interfaces;
+﻿using Ramsey.NET.Extensions;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 using System;
@@ -25,47 +26,38 @@ namespace Ramsey.NET.Implementations
 
         public Task<bool> UpdateRecipeMeta(RamseyContext context, RecipeMetaDto recipeMetaDto)
         {
-            List<Ingredient> ings = new List<Ingredient>();
+            var recipe = context.Recipes.Find(recipeMetaDto.RecipeID);
+            if (recipe == null) recipe = new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };
+
+            recipe.Image = recipeMetaDto.Image;
+            recipe.Name = recipeMetaDto.Name;
+            recipe.Owner = recipeMetaDto.Owner;
+            recipe.OwnerLogo = recipeMetaDto.OwnerLogo;
+            recipe.Source = recipeMetaDto.Source;
+
+            context.AddOrUpdate(recipe);
 
             foreach (var i in recipeMetaDto.Ingredients)
             {
-                Ingredient ingredient = context.Ingredients.Find(i.ToLower());
+                var ingredient_id = i.ToLower();
+                var ingredient = context.Ingredients.Where(x => x != null && x.IngredientID == ingredient_id).SingleOrDefault();
 
                 if (ingredient == null)
                 {
-                    ingredient = new Ingredient
-                    {
-                        IngredientID = i.ToLower()
-                    };
-
-                    context.Ingredients.Add(ingredient);
+                    context.Ingredients.Add(new Ingredient { IngredientID = ingredient_id });
+                    context.SaveChanges();
                 }
 
-                ings.Add(ingredient);
-            }
-
-            RecipeMeta recipe = context.Recipes.Find(recipeMetaDto.RecipeID);
-
-            if (recipe == null)
-            {
-                recipe = new RecipeMeta
+                var part = context.RecipeParts.Where(x => x.IngredientId.Equals(ingredient_id) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).SingleOrDefault();
+                if (part == null)
                 {
-                    Image = recipeMetaDto.Image,
-                    Name = recipeMetaDto.Name,
-                    Owner = recipeMetaDto.Owner,
-                    Source = recipeMetaDto.Source,
-                    RecipeId = recipeMetaDto.RecipeID
-                };
+                    part = new RecipePart();
+                    part.RecipeId = recipe.RecipeId;
+                    part.IngredientId = ingredient_id;
 
-                context.Recipes.Add(recipe);
-
-                var recipeParts = ings.Select(x => new RecipePart
-                {
-                    IngredientId = x.IngredientID,
-                    RecipeId = recipe.RecipeId
-                });
-
-                context.RecipeParts.AddRange(recipeParts);
+                    context.RecipeParts.Add(part);
+                    context.SaveChanges();
+                }
             }
 
             return Task.FromResult(true);

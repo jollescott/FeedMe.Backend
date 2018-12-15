@@ -36,16 +36,10 @@ namespace Ramsey.NET.Tests
             _context.Database.EnsureCreated();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            _context?.Database?.EnsureDeleted();
-        }
-
         [Test]
         public async Task TestFullRefresh()
         {
-            var recipes = await hCrawler.ScrapeRecipesAsync(10);
+            var recipes = await hCrawler.ScrapeRecipesAsync(4);
             await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
         }
     }
