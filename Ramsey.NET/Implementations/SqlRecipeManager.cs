@@ -39,7 +39,7 @@ namespace Ramsey.NET.Implementations
 
             foreach (var i in recipeMetaDto.Ingredients)
             {
-                var ingredient_id = i.ToLower();
+                var ingredient_id = i;
                 var ingredient = context.Ingredients.Where(x => x != null && x.IngredientID == ingredient_id).SingleOrDefault();
 
                 if (ingredient == null)
@@ -49,11 +49,15 @@ namespace Ramsey.NET.Implementations
                 }
 
                 var part = context.RecipeParts.Where(x => x.IngredientId.Equals(ingredient_id) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).SingleOrDefault();
+                var partDto = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredient_id)).Single();
+
                 if (part == null)
                 {
                     part = new RecipePart();
                     part.RecipeId = recipe.RecipeId;
                     part.IngredientId = ingredient_id;
+                    part.Unit = partDto.Unit;
+                    part.Quantity = partDto.Quantity;
 
                     context.RecipeParts.Add(part);
                     context.SaveChanges();

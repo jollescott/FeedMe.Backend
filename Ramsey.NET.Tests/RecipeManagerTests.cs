@@ -40,7 +40,7 @@ namespace Ramsey.NET.Tests
         [Test]
         public async Task TestHemmetsFullRefresh()
         {
-            var recipes = await hCrawler.ScrapeRecipesAsync();
+            var recipes = await hCrawler.ScrapeRecipesAsync(10);
             await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
         }
 

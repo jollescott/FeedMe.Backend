@@ -11,6 +11,6 @@
         public virtual Ingredient Ingredient { get; set; }
 
         public string Unit { get; set; }
-        public float Amount { get; set; }
+        public float Quantity { get; set; }
     }
 }

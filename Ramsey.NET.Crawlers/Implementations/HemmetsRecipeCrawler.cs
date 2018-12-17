@@ -92,21 +92,32 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
 
             var ingredients_root = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptleftcol\"]/table");
-            var table_groups = ingredients_root.SelectNodes(".//tr").ToList();
-            var ingredient_groups = table_groups.Select(x => x.ChildNodes.Where(z => z.Name.Equals("td")).ToList().Select(y => y.InnerText)).ToList().Where(x => x.Count() > 0);
+            var table_groups = ingredients_root.SelectNodes(".//tr").ToList().Skip(1);
+            var ingredient_groups = table_groups.Select(x => x.ChildNodes.Where(z => z.Name.Equals("td")).Where(l => l.InnerText != "-").Select(y => y.InnerText)).ToList().Where(x => x.Count() > 0);
 
             var recipeParts = new List<RecipePartDtoV2>();
             foreach(var ing_group in ingredient_groups)
             {
                 var part = new RecipePartDtoV2();
-                part.IngredientID = ing_group.First();
+                part.IngredientID = ing_group.First().ToLower();
 
                 var unitGroup = ing_group.Last().Split(' ');
 
-                part.Amount = float.Parse(unitGroup.First());
-                part.Unit = unitGroup.Last();
+                if(unitGroup.Count() > 0)
+                {
+                    if(float.TryParse(unitGroup.First(), out float quantity))
+                    {
+                        part.Quantity = quantity;
+                        part.Unit = unitGroup.Last();
+                    }
+                    else
+                    {
+                        part.Quantity = 0;
+                        part.Unit = ing_group.Last();
+                    }
 
-                recipeParts.Add(part);
+                    recipeParts.Add(part);
+                }
             }
 
             recipeDto.RecipeParts = recipeParts;
