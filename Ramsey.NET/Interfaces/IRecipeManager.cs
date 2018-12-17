@@ -9,7 +9,7 @@ namespace Ramsey.NET.Interfaces
 {
     public interface IRecipeManager
     {
-        Task<bool> UpdateRecipeMeta(RamseyContext context,RecipeMetaDto recipe);
-        Task<Dictionary<string,bool>> UpdateRecipeDatabaseAsync(RamseyContext context,List<RecipeMetaDto> recipes);
+        Task<bool> UpdateRecipeMeta(RamseyContext context,RecipeMetaDtoV2 recipe);
+        Task<Dictionary<string,bool>> UpdateRecipeDatabaseAsync(RamseyContext context,List<RecipeMetaDtoV2> recipes);
     }
 }

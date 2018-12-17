@@ -9,6 +9,6 @@ namespace Ramsey.NET.Interfaces
     public interface ICrawlerService
     {
         Task UpdateIndexAsync();
-        Task<RecipeDto> ScrapeRecipeAsync(string url, RecipeProvider provider);
+        Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider);
     }
 }

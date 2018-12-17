@@ -11,7 +11,7 @@ namespace Ramsey.NET.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
-        public async Task<Dictionary<string, bool>> UpdateRecipeDatabaseAsync(RamseyContext context,List<RecipeMetaDto> recipes)
+        public async Task<Dictionary<string, bool>> UpdateRecipeDatabaseAsync(RamseyContext context,List<RecipeMetaDtoV2> recipes)
         {
             var results = new Dictionary<string, bool>();
 
@@ -24,7 +24,7 @@ namespace Ramsey.NET.Implementations
             return results;
         }
 
-        public Task<bool> UpdateRecipeMeta(RamseyContext context, RecipeMetaDto recipeMetaDto)
+        public Task<bool> UpdateRecipeMeta(RamseyContext context, RecipeMetaDtoV2 recipeMetaDto)
         {
             var recipe = context.Recipes.Find(recipeMetaDto.RecipeID);
             if (recipe == null) recipe = new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };

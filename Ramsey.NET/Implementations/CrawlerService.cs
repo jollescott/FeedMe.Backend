@@ -35,7 +35,7 @@ namespace Ramsey.NET.Implementations
             System.Diagnostics.Debug.WriteLine("All done!");
         }
 
-        public Task<RecipeDto> ScrapeRecipeAsync(string url, RecipeProvider provider)
+        public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider)
         {
             return _hCrawler.ScrapeRecipeAsync(url, true);
         }

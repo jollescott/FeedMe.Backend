@@ -60,10 +60,10 @@ namespace Ramsey.NET.Crawlers.Implementations
             return (int)Math.Ceiling(doub);
         }
 
-        public override async Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false)
+        public override async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             System.Diagnostics.Debug.WriteLine(url);
-            var recipeDto = new RecipeDto();
+            var recipeDto = new RecipeDtoV2();
 
             var client = new HemmetsHttpClient();
 
@@ -91,14 +91,26 @@ namespace Ramsey.NET.Crawlers.Implementations
                 recipeDto.Directions = directions;
             }
 
-            var ingredients = recipe_document.DocumentNode.SelectNodes("//div[@class=\"receptleftcol\"]/table/tr/td")
-                .Where(x => !x.Attributes.Contains("align"))
-                .Where(x => x.Name != "strong")
-                .Select(y => WebUtility.HtmlDecode(y.InnerText?.Trim()))
-                .Select(x => x.ParseHemmetsIngredient())
-                .ToList();
+            var ingredients_root = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptleftcol\"]/table");
+            var table_groups = ingredients_root.SelectNodes(".//tr").ToList();
+            var ingredient_groups = table_groups.Select(x => x.ChildNodes.Where(z => z.Name.Equals("td")).ToList().Select(y => y.InnerText)).ToList().Where(x => x.Count() > 0);
 
-            recipeDto.Ingredients = new HashSet<string>(ingredients).ToList();
+            var recipeParts = new List<RecipePartDtoV2>();
+            foreach(var ing_group in ingredient_groups)
+            {
+                var part = new RecipePartDtoV2();
+                part.IngredientID = ing_group.First();
+
+                var unitGroup = ing_group.Last().Split(' ');
+
+                part.Amount = float.Parse(unitGroup.First());
+                part.Unit = unitGroup.Last();
+
+                recipeParts.Add(part);
+            }
+
+            recipeDto.RecipeParts = recipeParts;
+            recipeDto.Ingredients = recipeParts.Select(x => x.IngredientID).ToList();
 
             recipeDto.Source = url;
             recipeDto.Owner = RecipeProvider.Hemmets;
@@ -110,7 +122,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipeDto;
         }
 
-        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = -1)
+        public override async Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = amount > -1 ? amount : recipeCount;
@@ -120,9 +132,9 @@ namespace Ramsey.NET.Crawlers.Implementations
         }
 
 
-        public override async Task<List<RecipeMetaDto>> ScrapePagesAsync(int count, int offset)
+        public override async Task<List<RecipeMetaDtoV2>> ScrapePagesAsync(int count, int offset)
         {
-            var allRecipes = new List<RecipeMetaDto>();
+            var allRecipes = new List<RecipeMetaDtoV2>();
 
             for (var i = 0; i < count; i++)
             {
@@ -131,11 +143,11 @@ namespace Ramsey.NET.Crawlers.Implementations
                 recipes.ToList().ForEach(x => allRecipes.Add(x));
             }
 
-            return new HashSet<RecipeMetaDto>(allRecipes).ToList();
+            return new HashSet<RecipeMetaDtoV2>(allRecipes).ToList();
         }
 
 
-        public override async Task<List<RecipeMetaDto>> ScrapePageAsync(int offset)
+        public override async Task<List<RecipeMetaDtoV2>> ScrapePageAsync(int offset)
         {
             var postData = $"offset={offset}";
 
@@ -149,7 +161,7 @@ namespace Ramsey.NET.Crawlers.Implementations
                        .ToString()));
 
             var recipes = await Task.WhenAll(tasks);
-            var metas = recipes.Select(x => (RecipeMetaDto)x);
+            var metas = recipes.Select(x => (RecipeMetaDtoV2)x);
 
             return metas.ToList();
         }

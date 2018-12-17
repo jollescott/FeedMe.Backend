@@ -42,11 +42,11 @@ namespace Ramsey.NET.Crawlers.Implementations
             }
         }
 
-        public override async Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false)
+        public override async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             var doc = new HtmlDocument();
             var client = new HttpClient();
-            var dto = new RecipeDto();
+            var dto = new RecipeDtoV2();
 
             var response = await client.GetAsync(url);
             var html = await response.Content.ReadAsSwedishStringAsync();
@@ -112,10 +112,10 @@ namespace Ramsey.NET.Crawlers.Implementations
             return z.ParseIcaIngredient();
         }
 
-        public override async Task<List<RecipeMetaDto>> ScrapeRecipesAsync(int amount = 50)
+        public override async Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50)
         {
             var links = await ScrapeLinksAsync(amount);
-            var recipes = new List<RecipeMetaDto>();
+            var recipes = new List<RecipeMetaDtoV2>();
 
             var step = links.Count >= 10 ? links.Count / 10 : links.Count;
             var index = 0;
@@ -127,7 +127,7 @@ namespace Ramsey.NET.Crawlers.Implementations
 
                 var rTasks = cLinks.Select(x => ScrapeRecipeAsync(x));
                 var sRecipes = await Task.WhenAll(rTasks);
-                var sMetas = sRecipes.Select(x => (RecipeMetaDto)x);
+                var sMetas = sRecipes.Select(x => (RecipeMetaDtoV2)x);
 
                 recipes.AddRange(sMetas);
             }
