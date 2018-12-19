@@ -8,7 +8,7 @@ namespace Ramsey.Shared.Extensions
 {
     public static class IngredientStringExt
     {
-        public static string ParseIngredient(this string x)
+        public static string ParseHemmetsIngredient(this string x)
         {
             string ingredient = x;
 
@@ -27,6 +27,45 @@ namespace Ramsey.Shared.Extensions
             }
 
             ingredient = ingredient.Split(',').First();
+
+            System.Diagnostics.Debug.WriteLine("[BEFORE] " + x + " [AFTER] " + ingredient);
+
+            return ingredient.Trim();
+        }
+
+        public static string ParseIcaIngredient(this string x)
+        {
+            string ingredient = x;
+
+            ingredient = ingredient.ParseHemmetsIngredient();
+
+            Match ellerMatch = Regex.Match(ingredient, @"\w+(?=\s+eller)");
+
+            if(ellerMatch.Success)
+            {
+                ingredient = ellerMatch.Value;
+            }
+
+            Match tillMatch = Regex.Match(ingredient, @"\w+(?=\s+till)");
+
+            if (tillMatch.Success)
+            {
+                ingredient = tillMatch.Value;
+            }
+
+            Match unitMatch = Regex.Match(ingredient, @"[\d-]");
+
+            if(unitMatch.Success)
+            {
+                ingredient = ingredient.Replace(unitMatch.Value, string.Empty).Trim();
+            }
+
+            var parts = ingredient.Split(' ');
+
+            if(parts.Count() > 1)
+            {
+                ingredient = parts.Last();
+            }
 
             System.Diagnostics.Debug.WriteLine("[BEFORE] " + x + " [AFTER] " + ingredient);
 

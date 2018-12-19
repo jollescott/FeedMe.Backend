@@ -8,7 +8,7 @@ namespace Ramsey.NET.Crawlers.Interfaces
 {
     public interface IRecipeCrawler
     {
-        Task<List<RecipeMetaDto>> ScrapeRecipesAsync();
-        Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false);
+        Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50);
+        Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false);
     }
 }

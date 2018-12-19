@@ -9,9 +9,9 @@ namespace Ramsey.NET.Crawlers.Implementations
 {
     public abstract class AIcaRecipeCrawler : IRecipeCrawler
     {
-        abstract public Task<List<RecipeMetaDto>> ScrapeRecipesAsync();
+        abstract public Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50);
 
-        abstract public Task<List<string>> ScrapeLinksAsync();
-        abstract public Task<RecipeDto> ScrapeRecipeAsync(string url, bool includeAll = false);
+        abstract public Task<List<string>> ScrapeLinksAsync(int amount);
+        abstract public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false);
     }
 }

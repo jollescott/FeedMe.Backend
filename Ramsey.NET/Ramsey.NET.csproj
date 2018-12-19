@@ -36,12 +36,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ClientApp\dist\**\*.*"/>
+    <Content Include="ClientApp\dist\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\Interfaces\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
