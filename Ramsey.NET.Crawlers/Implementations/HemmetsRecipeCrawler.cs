@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Crawlers.Misc;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
@@ -9,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Crawlers.Implementations
@@ -93,7 +91,10 @@ namespace Ramsey.NET.Crawlers.Implementations
 
             var ingredients_root = recipe_document.DocumentNode.SelectSingleNode("//div[@class=\"receptleftcol\"]/table");
             var table_groups = ingredients_root.SelectNodes(".//tr").ToList().Skip(1);
-            var ingredient_groups = table_groups.Select(x => x.ChildNodes.Where(z => z.Name.Equals("td")).Where(l => l.InnerText != "-").Select(y => y.InnerText)).ToList().Where(x => x.Count() > 0);
+            var ingredient_groups = table_groups.Select(x => x.ChildNodes.Where(z => z.Name.Equals("td") && !z.InnerHtml.Contains("<strong>"))
+                .Where(l => l.InnerText != "-")
+                .Select(y => y.InnerText))
+                .ToList().Where(x => x.Count() > 0);
 
             var recipeParts = new List<RecipePartDtoV2>();
             foreach(var ing_group in ingredient_groups)

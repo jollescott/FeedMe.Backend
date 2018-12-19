@@ -48,19 +48,22 @@ namespace Ramsey.NET.Implementations
                     context.SaveChanges();
                 }
 
-                var part = context.RecipeParts.Where(x => x.IngredientId.Equals(ingredient_id) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).SingleOrDefault();
-                var partDto = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredient_id)).Single();
-
-                if (part == null)
+                var parts = context.RecipeParts.Where(x => x.IngredientId.Equals(ingredient_id) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).ToList();
+                var partDtos = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredient_id)).ToList();
+                
+                if (parts == null || parts.Count <= 0)
                 {
-                    part = new RecipePart();
-                    part.RecipeId = recipe.RecipeId;
-                    part.IngredientId = ingredient_id;
-                    part.Unit = partDto.Unit;
-                    part.Quantity = partDto.Quantity;
+                    foreach(var partDto in partDtos)
+                    {
+                        var part = new RecipePart();
+                        part.RecipeId = recipe.RecipeId;
+                        part.IngredientId = ingredient_id;
+                        part.Unit = partDto.Unit;
+                        part.Quantity = partDto.Quantity;
 
-                    context.RecipeParts.Add(part);
-                    context.SaveChanges();
+                        context.RecipeParts.Add(part);
+                        context.SaveChanges();
+                    }
                 }
             }
 
