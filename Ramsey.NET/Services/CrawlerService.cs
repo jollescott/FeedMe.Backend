@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Crawlers.Implementations;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 using System;
@@ -32,7 +33,7 @@ namespace Ramsey.NET.Services
             System.Diagnostics.Debug.WriteLine("All done!");
         }
 
-        public async Task AddRecipesAsync(List<RecipeMetaDto> recipeDtos)
+        public async Task AddRecipesAsync(List<RecipeMetaDtoV2> recipeDtos)
         {
             foreach (var r in recipeDtos)
             {
@@ -85,7 +86,7 @@ namespace Ramsey.NET.Services
             await _context.SaveChangesAsync();
         }
 
-        public Task<RecipeDto> ScrapeRecipeAsync(string url, RecipeProvider provider)
+        public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider)
         {
             return _hCrawler.ScrapeRecipeAsync(url, true);
         }
