@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers.V2
 {
     [Route("v2/ingredient")]
-    public class IngredientControllerV2 : Controller
+    public class IngredientControllerV2 : Controller, IIngredientController
     {
         private readonly RamseyContext _ramseyContext;
 
