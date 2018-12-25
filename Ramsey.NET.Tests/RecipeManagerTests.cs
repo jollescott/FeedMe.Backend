@@ -9,6 +9,7 @@ using Ramsey.NET.Models;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Ramsey.NET.Extensions;
 
 namespace Ramsey.NET.Tests
 {
@@ -30,7 +31,7 @@ namespace Ramsey.NET.Tests
                 .BuildServiceProvider();
 
             var options = new DbContextOptionsBuilder<RamseyContext>()
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ramsey_unit;Trusted_Connection=True;MultipleActiveResultSets=true")
+                .ConnectRamseyTestServer(null, true)
                 .Options;
 
             _context = new RamseyContext(options);
