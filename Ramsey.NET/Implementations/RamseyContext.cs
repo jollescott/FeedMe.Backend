@@ -4,13 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ramsey.NET.Interfaces;
 
-namespace Ramsey.NET.Models
+namespace Ramsey.NET.Implementations
 {
-    public class RamseyContext : DbContext
+    public class RamseyContext : DbContext, IRamseyContext
     {
         public RamseyContext(DbContextOptions<RamseyContext> options): base(options)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

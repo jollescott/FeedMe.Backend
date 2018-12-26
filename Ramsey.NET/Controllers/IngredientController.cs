@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Controllers.Interfaces;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 
@@ -13,9 +14,9 @@ namespace Ramsey.NET.Controllers
     [Route("ingredient")]
     public class IngredientController : Controller, IIngredientController
     {
-        private readonly RamseyContext _ramseyContext;
+        private readonly IRamseyContext _ramseyContext;
 
-        public IngredientController(RamseyContext ramseyContext)
+        public IngredientController(IRamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
         }

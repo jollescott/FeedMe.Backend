@@ -45,12 +45,12 @@ namespace Ramsey.NET
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
-                services.AddDbContext<RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
+                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
                 services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease")));
             }
             else
             {
-                services.AddDbContext<RamseyContext>(options => options.ConnectRamseyTestServer(Configuration));
+                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.ConnectRamseyTestServer(Configuration));
                 services.AddHangfire(config => config.ConnectHangfireTest(Configuration));
             }
 

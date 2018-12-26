@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Ramsey.Shared.Extensions;
 
-namespace Ramsey.NET.Tests
+namespace Ramsey.NET.Tests.Misc
 {
     [TestFixture]
     public class IngredientParserTests

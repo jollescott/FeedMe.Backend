@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ramsey.NET.Extensions;
 
-namespace Ramsey.NET.Tests
+namespace Ramsey.NET.Tests.Misc
 {
     [TestFixture]
     public class RecipeManagerTests 

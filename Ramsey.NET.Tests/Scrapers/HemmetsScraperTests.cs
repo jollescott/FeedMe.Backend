@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ramsey.NET.Tests
+namespace Ramsey.NET.Tests.Scrapers
 {
     [TestFixture]
     public class HemmetsScraperTests

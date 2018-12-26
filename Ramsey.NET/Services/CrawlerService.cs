@@ -13,11 +13,11 @@ namespace Ramsey.NET.Services
 {
     public class CrawlerService : ICrawlerService
     {
-        private RamseyContext _context;
+        private IRamseyContext _context;
         private AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
         private AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
 
-        public CrawlerService(RamseyContext context)
+        public CrawlerService(IRamseyContext context)
         {
             _context = context;
         }

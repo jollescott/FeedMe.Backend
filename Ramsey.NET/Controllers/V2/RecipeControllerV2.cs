@@ -15,10 +15,10 @@ namespace Ramsey.NET.Controllers.V2
     [Route("v2/recipe")]
     public class RecipeControllerV2 : Controller, IRecipeController<IngredientDtoV2>
     {
-        private readonly RamseyContext _ramseyContext;
+        private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
 
-        public RecipeControllerV2(RamseyContext ramseyContext, ICrawlerService crawlerService)
+        public RecipeControllerV2(IRamseyContext ramseyContext, ICrawlerService crawlerService)
         {
             _ramseyContext = ramseyContext;
             _crawlerService = crawlerService;
@@ -36,9 +36,28 @@ namespace Ramsey.NET.Controllers.V2
         public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients)
         {
             var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).ToList();
-            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
+            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z=> z.RecipeParts).Single(y => y.RecipeId.Equals(x)));
 
-            return Json(recipes);
+            var dtos = recipes.Select(x => new RecipeMetaDtoV2
+            {
+                Image = x.Image,
+                RecipeID = x.RecipeId,
+                Source = x.Source,
+                Name = x.Name,
+                OwnerLogo = x.OwnerLogo,
+                Owner = x.Owner,
+                Ingredients = x.RecipeParts.Select(y=> y.IngredientId),
+                RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
+                {
+                    IngredientID = y.IngredientId,
+                    Quantity = y.Quantity,
+                    RecipeID = y.RecipeId,
+                    Unit = y.Unit
+                }),
+                Coverage = (double)ingredients.Count / x.RecipeParts.Select(y=> y.IngredientId).Distinct().Count()
+            }).ToList();
+            
+            return Json(dtos);
         }
 
         [Route("retrieve")]

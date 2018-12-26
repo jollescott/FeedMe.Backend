@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ramsey.NET.Tests
+namespace Ramsey.NET.Tests.Scrapers
 {
     [TestFixture]
     public class IcaScraperTests
     {
-        AIcaRecipeCrawler _cralwer = new IcaRecipeCrawler();
+        readonly AIcaRecipeCrawler _cralwer = new IcaRecipeCrawler();
 
         [SetUp]
         public void Setup()

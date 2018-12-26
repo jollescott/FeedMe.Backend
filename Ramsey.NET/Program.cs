@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Ramsey.NET.Implementations;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 
 namespace Ramsey.NET
@@ -18,7 +20,7 @@ namespace Ramsey.NET
             {
                 var services = scope.ServiceProvider;
 
-                var context = services.GetRequiredService<RamseyContext>();
+                var context = services.GetRequiredService<IRamseyContext>();
                 context.Database.Migrate();
             }
 

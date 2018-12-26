@@ -13,10 +13,10 @@ namespace Ramsey.NET.Controllers
     [Route("recipe")]
     public class RecipeController : Controller, IRecipeController<IngredientDto>
     {
-        private readonly RamseyContext _ramseyContext;
+        private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
 
-        public RecipeController(RamseyContext ramseyContext, ICrawlerService crawlerService)
+        public RecipeController(IRamseyContext ramseyContext, ICrawlerService crawlerService)
         {
             _ramseyContext = ramseyContext;
             _crawlerService = crawlerService;
