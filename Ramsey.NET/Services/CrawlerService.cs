@@ -8,14 +8,16 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Ramsey.NET.Crawlers.Implementations.Hemmets;
+using Ramsey.NET.Crawlers.Implementations.Ica;
 
 namespace Ramsey.NET.Services
 {
     public class CrawlerService : ICrawlerService
     {
-        private IRamseyContext _context;
-        private AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
-        private AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
+        private readonly IRamseyContext _context;
+        private readonly AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
+        private readonly AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
 
         public CrawlerService(IRamseyContext context)
         {
@@ -33,7 +35,7 @@ namespace Ramsey.NET.Services
             System.Diagnostics.Debug.WriteLine("All done!");
         }
 
-        public async Task AddRecipesAsync(List<RecipeMetaDtoV2> recipeDtos)
+        public async Task AddRecipesAsync(IList<RecipeMetaDtoV2> recipeDtos)
         {
             foreach (var r in recipeDtos)
             {

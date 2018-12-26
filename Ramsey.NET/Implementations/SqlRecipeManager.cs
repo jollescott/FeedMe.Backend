@@ -11,23 +11,22 @@ namespace Ramsey.NET.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
-        public async Task<Dictionary<string, bool>> UpdateRecipeDatabaseAsync(IRamseyContext context,List<RecipeMetaDtoV2> recipes)
+        public async Task<Dictionary<string, bool>> UpdateRecipeDatabaseAsync(IRamseyContext context, IList<RecipeMetaDtoV2> recipes)
         {
             var results = new Dictionary<string, bool>();
 
             foreach (var recipeMetaDto in recipes)
             {
-                var result = await UpdateRecipeMetaAsync(context, recipeMetaDto);
+                await UpdateRecipeMetaAsync(context, recipeMetaDto);
             }
 
             await context.SaveChangesAsync();
             return results;
         }
 
-        public async Task<bool> UpdateRecipeMetaAsync(IRamseyContext context, RecipeMetaDtoV2 recipeMetaDto)
+        public Task<bool> UpdateRecipeMetaAsync(IRamseyContext context, RecipeMetaDtoV2 recipeMetaDto)
         {
-            var recipe = context.Recipes.Find(recipeMetaDto.RecipeID);
-            if (recipe == null) recipe = new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };
+            var recipe = context.Recipes.Find(recipeMetaDto.RecipeID) ?? new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };
 
             recipe.Image = recipeMetaDto.Image;
             recipe.Name = recipeMetaDto.Name;
@@ -50,23 +49,21 @@ namespace Ramsey.NET.Implementations
 
                 var parts = context.RecipeParts.Where(x => x.IngredientId.Equals(ingredientId) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).ToList();
                 var partDtos = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredientId)).ToList();
-                
-                if (parts.Count <= 0)
-                {
-                    foreach(var partDto in partDtos)
-                    {
-                        var part = new RecipePart();
-                        part.RecipeId = recipe.RecipeId;
-                        part.IngredientId = ingredientId;
-                        part.Unit = partDto.Unit;
-                        part.Quantity = partDto.Quantity;
 
-                        context.RecipeParts.Add(part);
-                    }
+                if (parts.Count > 0) continue;
+                foreach(var partDto in partDtos)
+                {
+                    var part = new RecipePart();
+                    part.RecipeId = recipe.RecipeId;
+                    part.IngredientId = ingredientId;
+                    part.Unit = partDto.Unit;
+                    part.Quantity = partDto.Quantity;
+
+                    context.RecipeParts.Add(part);
                 }
             }
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

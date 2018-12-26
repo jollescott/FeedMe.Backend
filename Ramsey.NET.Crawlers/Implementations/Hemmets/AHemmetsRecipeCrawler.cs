@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ramsey.NET.Crawlers.Implementations
+namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 {
     public abstract class AHemmetsRecipeCrawler : IRecipeCrawler
     {
@@ -19,6 +19,6 @@ namespace Ramsey.NET.Crawlers.Implementations
         public abstract int ScrapeRecipeCount(string html);
         public abstract IEnumerable<string> ScapeRecipeLinks(string html);
 
-        public abstract Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1);
+        public abstract Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1);
     }
 }

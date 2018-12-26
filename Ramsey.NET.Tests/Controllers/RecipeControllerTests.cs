@@ -74,7 +74,7 @@ namespace Ramsey.NET.Tests.Controllers
         }
 
         [Test]
-        public async Task TestExclusionAsync()
+        public void TestExclusions()
         {
             var controller = new RecipeControllerV2(_context, null);
 

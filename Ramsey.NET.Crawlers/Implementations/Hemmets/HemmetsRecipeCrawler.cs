@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ramsey.NET.Crawlers.Implementations
+namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 {
     public class HemmetsRecipeCrawler : AHemmetsRecipeCrawler
     {
@@ -132,7 +132,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return recipeDto;
         }
 
-        public override async Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1)
+        public override async Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = amount > -1 ? amount : recipeCount;

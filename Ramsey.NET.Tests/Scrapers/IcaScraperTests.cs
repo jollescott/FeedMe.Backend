@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Ramsey.NET.Crawlers.Implementations.Ica;
 
 namespace Ramsey.NET.Tests.Scrapers
 {
     [TestFixture]
     public class IcaScraperTests
     {
-        readonly AIcaRecipeCrawler _cralwer = new IcaRecipeCrawler();
+        private readonly AIcaRecipeCrawler _cralwer = new IcaRecipeCrawler();
 
         [SetUp]
         public void Setup()

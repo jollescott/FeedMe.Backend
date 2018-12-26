@@ -9,7 +9,7 @@ using HtmlAgilityPack;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
 
-namespace Ramsey.NET.Crawlers.Implementations
+namespace Ramsey.NET.Crawlers.Implementations.Ica
 {
     public class IcaRecipeCrawler : AIcaRecipeCrawler
     {
@@ -112,7 +112,7 @@ namespace Ramsey.NET.Crawlers.Implementations
             return z.ParseIcaIngredient();
         }
 
-        public override async Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50)
+        public override async Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50)
         {
             var links = await ScrapeLinksAsync(amount);
             var recipes = new List<RecipeMetaDtoV2>();

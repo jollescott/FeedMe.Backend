@@ -8,15 +8,17 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Ramsey.NET.Crawlers.Implementations.Hemmets;
+using Ramsey.NET.Crawlers.Implementations.Ica;
 
 namespace Ramsey.NET.Implementations
 {
     public class CrawlerService : ICrawlerService
     {
-        private RamseyContext _context;
-        private IRecipeManager _recipeManager;
-        private AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
-        private AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
+        private readonly RamseyContext _context;
+        private readonly IRecipeManager _recipeManager;
+        private readonly AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
+        private readonly AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
 
         public CrawlerService(RamseyContext context, IRecipeManager recipeManager)
         {
