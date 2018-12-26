@@ -34,9 +34,10 @@ namespace Ramsey.NET.Controllers.V2
                     IngredientID = y.IngredientId,
                     RecipeID = y.RecipeId,
                     Quantity = y.Quantity,
-                    Unit = y.Unit
+                    Unit = y.Unit,
                 }).ToList(),
-                IngredientId = x.IngredientID
+                IngredientId = x.IngredientID,
+                Role = IngredientRole.Include
             }).ToList();
 
             return Json(ingredientsDtos);

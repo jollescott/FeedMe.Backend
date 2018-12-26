@@ -24,7 +24,7 @@ namespace Ramsey.NET.Tests.Controllers
             _context = new RamseyContext(options);
             _context.Database.EnsureCreated();
 
-            _context.Recipes.Add(new RecipeMeta
+            _context.Recipes.AddRange(new RecipeMeta
             {
                 Name = "Ketchup",
                 Image = "www.google.com",
@@ -32,6 +32,14 @@ namespace Ramsey.NET.Tests.Controllers
                 Owner = RecipeProvider.Hemmets,
                 OwnerLogo = "www.google.com",
                 Source = "https://kokboken.ikv.uu.se/receptsida.php?recid=837",
+            }, new RecipeMeta
+            {
+                Name = "Ketchup 2",
+                Image = "www.google.com",
+                RecipeId = "2",
+                Owner = RecipeProvider.ICA,
+                OwnerLogo = "www.google.com",
+                Source = "https://kokboken.ikv.uu.se/receptsida.php?recid=837"
             });
             
             _context.RecipeParts.AddRange(new RecipePart
@@ -46,6 +54,11 @@ namespace Ramsey.NET.Tests.Controllers
                 Quantity = 10,
                 RecipeId = "1",
                 Unit = "kg"
+            }, new RecipePart{
+                IngredientId = "tomat",
+                Quantity = 3,
+                RecipeId = "2",
+                Unit = "Styck"
             });
             
             _context.Ingredients.AddRange(new Ingredient

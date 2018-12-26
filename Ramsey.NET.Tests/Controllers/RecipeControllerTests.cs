@@ -54,7 +54,7 @@ namespace Ramsey.NET.Tests.Controllers
 
             foreach (var dto in dtos)
             {
-                Assert.Less(dto.Coverage, 1);
+                Assert.LessOrEqual(dto.Coverage, 1);
             }
         }
 
@@ -71,6 +71,61 @@ namespace Ramsey.NET.Tests.Controllers
             Assert.IsNotEmpty(recipe.Ingredients);
             Assert.IsNotEmpty(recipe.RecipeParts);
             Assert.IsNotNull(recipe.Directions);
+        }
+
+        [Test]
+        public async Task TestExclusionAsync()
+        {
+            var controller = new RecipeControllerV2(_context, null);
+
+            var sParts = _context.RecipeParts.Where(x => x.IngredientId == "salt").Select(y => new RecipePartDtoV2
+            {
+                RecipeID = y.RecipeId,
+                IngredientID = y.IngredientId,
+                Quantity = y.Quantity,
+                Unit = y.Unit
+            }).ToList();
+            
+            var tParts = _context.RecipeParts.Where(x => x.IngredientId == "tomat").Select(y => new RecipePartDtoV2
+            {
+                RecipeID = y.RecipeId,
+                IngredientID = y.IngredientId,
+                Quantity = y.Quantity,
+                Unit = y.Unit
+            }).ToList();
+            
+            var recipes = controller.Suggest(new List<IngredientDtoV2>
+            {
+                new IngredientDtoV2
+                {
+                    IngredientId = "salt",
+                    RecipeParts = sParts,
+                    Role = IngredientRole.Exclude
+                },
+                new IngredientDtoV2
+                {
+                    IngredientId = "tomat",
+                    RecipeParts = tParts,
+                    Role = IngredientRole.Include
+                }
+            });
+
+            var jsonResult = (JsonResult) recipes;
+            var dtos = jsonResult.Value as IEnumerable<RecipeMetaDtoV2>;
+
+            Assert.IsNotNull(dtos);
+            Assert.IsNotEmpty(dtos);
+
+            foreach (var dto in dtos)
+            {
+                Assert.LessOrEqual(dto.Coverage, 1);
+                Assert.IsNotEmpty(dto.Ingredients);
+
+                foreach (var ingredient in dto.Ingredients)
+                {
+                    Assert.AreNotEqual(ingredient, "salt");
+                }
+            }
         }
     }
 }

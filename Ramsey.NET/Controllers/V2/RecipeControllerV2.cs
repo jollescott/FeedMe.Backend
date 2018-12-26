@@ -35,8 +35,15 @@ namespace Ramsey.NET.Controllers.V2
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients)
         {
-            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).ToList();
-            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z=> z.RecipeParts).Single(y => y.RecipeId.Equals(x)));
+            var incIngredients = ingredients.Where(x => x.Role == IngredientRole.Include).ToList();
+            var excIngredients = ingredients.Where(x => x.Role == IngredientRole.Exclude).ToList();
+            
+            var recipeIds = incIngredients.SelectMany(x => x.RecipeParts)
+                .Select(x => x.RecipeID).ToList();
+            
+            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z=> z.RecipeParts)
+                .Single(y => y.RecipeId.Equals(x)))
+                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
 
             var dtos = recipes.Select(x => new RecipeMetaDtoV2
             {
@@ -54,14 +61,15 @@ namespace Ramsey.NET.Controllers.V2
                     RecipeID = y.RecipeId,
                     Unit = y.Unit
                 }),
-                Coverage = (double)ingredients.Count / x.RecipeParts.Select(y=> y.IngredientId).Distinct().Count()
+                Coverage = x.RecipeParts.Where(z => incIngredients.Any(j => j.IngredientId == z.IngredientId))
+                               .Select(y=> y.IngredientId).Distinct().Count() / (double)incIngredients.Count
             }).ToList();
             
             return Json(dtos);
         }
 
         [Route("retrieve")]
-        public async System.Threading.Tasks.Task<IActionResult> RetrieveAsync(string id)
+        public async Task<IActionResult> RetrieveAsync(string id)
         {
             var meta = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
             var recipe = await _crawlerService.ScrapeRecipeAsync(meta.Source, meta.Owner);
