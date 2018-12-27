@@ -15,12 +15,12 @@ namespace Ramsey.NET.Implementations
 {
     public class CrawlerService : ICrawlerService
     {
-        private readonly RamseyContext _context;
+        private readonly IRamseyContext _context;
         private readonly IRecipeManager _recipeManager;
         private readonly AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
         private readonly AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
 
-        public CrawlerService(RamseyContext context, IRecipeManager recipeManager)
+        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
         {
             _context = context;
             _recipeManager = recipeManager;

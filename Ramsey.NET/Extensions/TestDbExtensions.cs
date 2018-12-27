@@ -1,5 +1,6 @@
 
 using System;
+using System.Runtime.InteropServices;
 using Hangfire;
 using Hangfire.SQLite;
 using Microsoft.EntityFrameworkCore;
@@ -14,38 +15,47 @@ namespace Ramsey.NET.Extensions
         
         public static DbContextOptionsBuilder<T> ConnectRamseyTestServer<T>(this DbContextOptionsBuilder<T> options, IConfiguration config, bool isUnitTest = false) where T : DbContext
         {
-#if Windows
-            if (!isUnitTest && config == null)
-                throw new NullReferenceException("Config cannot be null if is not Unit Test");
-            
-            var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
-            return options.UseSqlServer(connectString);
-#else
-            return options.UseSqlite<T>(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
-#endif
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (!isUnitTest && config == null)
+                    throw new NullReferenceException("Config cannot be null if is not Unit Test");
+
+                var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
+                return options.UseSqlServer(connectString);
+            }
+            else
+            {
+                return options.UseSqlite<T>(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
+            }
         }
         
         public static DbContextOptionsBuilder ConnectRamseyTestServer(this DbContextOptionsBuilder options, IConfiguration config, bool isUnitTest = false)
         {
-#if Windows
-            if (!isUnitTest && config == null)
-                throw new NullReferenceException("Config cannot be null if is not Unit Test");
-            
-            var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
-            return options.UseSqlServer(connectString);
-#else
-            return options.UseSqlite(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
-#endif
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (!isUnitTest && config == null)
+                    throw new NullReferenceException("Config cannot be null if is not Unit Test");
+
+                var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
+                return options.UseSqlServer(connectString);
+            }
+            else
+            {
+                return options.UseSqlite(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
+            }
         }
 
         public static IGlobalConfiguration ConnectHangfireTest(this IGlobalConfiguration hangfire,
             IConfiguration config)
         {
-#if Windows
-             return hangfire.UseSqlServerStorage(config.GetConnectionString("RamseyDebug"));
-#else
-             return hangfire.UseSQLiteStorage(config.GetConnectionString("SqliteDebug"));
-#endif
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return hangfire.UseSqlServerStorage(config.GetConnectionString("RamseyDebug"));
+            }
+            else
+            {
+                return hangfire.UseSQLiteStorage(config.GetConnectionString("SqliteDebug"));
+            }
         }
     }
 }
