@@ -114,7 +114,7 @@ namespace Ramsey.NET.Tests.Scrapers
             
             Assert.IsNotNull(recipes);
             Assert.IsNotEmpty(recipes);
-            Assert.AreEqual(3216, recipes.Count());
+            Assert.AreEqual(3215, recipes.Count());
         }
 
         private HtmlDocument GetTestDocument()

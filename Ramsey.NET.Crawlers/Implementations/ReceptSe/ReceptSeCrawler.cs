@@ -19,13 +19,15 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             var count = await GetRecipeCountAsync();
             var recipes = new List<RecipeMetaDtoV2>();
 
+            if (amount > 0) count = amount; 
+
             for (var i = 1; i < count; i++)
             {
                 var links = await GetPageLinksAsync(i + 1);
                 var tasks = links.Select(x => ScrapeRecipeAsync(x));
                 var recipeDtoV2s = await Task.WhenAll(tasks);
 
-                recipes.AddRange(recipeDtoV2s.Select(recipeDtoV2 => (RecipeMetaDtoV2) recipeDtoV2));
+                recipes.AddRange(recipeDtoV2s.Where(x => x.RecipeParts != null).Select(recipeDtoV2 => (RecipeMetaDtoV2) recipeDtoV2));
             }
 
             return recipes;
@@ -45,7 +47,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             recipeDto.Owner = RecipeProvider.ReceptSe;
             recipeDto.Source = url;
             recipeDto.RecipeParts = GetRecipeParts(document);
-            recipeDto.Ingredients = recipeDto.RecipeParts.Select(x => x.IngredientID);
+            recipeDto.Ingredients = recipeDto.RecipeParts?.Select(x => x.IngredientID);
             recipeDto.Image = GetRecipeLogo(document);
             recipeDto.OwnerLogo = GetReceptSeLogo(document);
 
@@ -85,7 +87,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             document.LoadHtml(html);
 
             var links = document.DocumentNode.SelectNodes("//div[@class=\"views-field views-field-title\"]/span/a")
-                .Select(x => x.GetAttributeValue("href", string.Empty).ToLower());
+                .Select(x => x.GetAttributeValue("href", string.Empty).ToLower()).ToList();
 
             return links.Take(18);
         }
@@ -115,6 +117,8 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
         {
             var ingredientDivs = document.DocumentNode.SelectNodes("//div[@class=\"ingredient\"]");
             var ingredients = new List<RecipePartDtoV2>();
+
+            if (ingredientDivs == null) return null;
 
             foreach (var ingredientDiv in ingredientDivs)
             {
