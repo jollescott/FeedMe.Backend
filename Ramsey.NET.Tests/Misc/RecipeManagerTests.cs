@@ -12,46 +12,39 @@ using System.Threading.Tasks;
 using Ramsey.NET.Crawlers.Implementations.Hemmets;
 using Ramsey.NET.Crawlers.Implementations.Ica;
 using Ramsey.NET.Extensions;
+using Ramsey.NET.Shared.Interfaces;
 
 namespace Ramsey.NET.Tests.Misc
 {
     [TestFixture]
-    public class RecipeManagerTests 
+    public class RecipeManagerTests
     {
-        IRecipeCrawler hCrawler = new HemmetsRecipeCrawler();
-        IRecipeCrawler iCrawler = new IcaRecipeCrawler();
-        IRecipeManager _recipeManager = new SqlRecipeManager();
+        private ICrawlerService _crawlerService;
+
+        private IRecipeManager _recipeManager;
         private RamseyContext _context;
 
         [SetUp]
         public void SetUp()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkSqlServer()
-                .BuildServiceProvider();
-
+            
             var options = new DbContextOptionsBuilder<RamseyContext>()
                 .ConnectRamseyTestServer(null, true)
                 .Options;
 
             _context = new RamseyContext(options);
             _context.Database.EnsureCreated();
+            
+            _recipeManager = new SqlRecipeManager(_context);
+            
+            _crawlerService = new CrawlerService(_context, _recipeManager);
         }
 
         [Test]
-        public async Task TestHemmetsFullRefresh()
+        public async Task CrawlerServiceUpdateAsync()
         {
-            var recipes = await hCrawler.ScrapeRecipesAsync(10);
-            await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
-        }
-
-        [Test]
-        public async Task TestIcaFullRefresh()
-        {
-            var recipes = await iCrawler.ScrapeRecipesAsync(5);
-            await _recipeManager.UpdateRecipeDatabaseAsync(_context, recipes);
+            await _crawlerService.UpdateIndexAsync();
         }
     }
 }

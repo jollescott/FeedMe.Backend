@@ -61,7 +61,7 @@ namespace Ramsey.NET.Tests.Controllers
         [Test]
         public async Task RetrieveAsync()
         {
-            var controller = new RecipeControllerV2(_context, new CrawlerService(_context, new SqlRecipeManager()));
+            var controller = new RecipeControllerV2(_context, new CrawlerService(_context, new SqlRecipeManager(_context)));
             var result = await controller.RetrieveAsync("1");
             
             var jsonResult = (JsonResult) result;

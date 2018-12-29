@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Ramsey.NET.Shared.Interfaces;
 
 namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 {
@@ -132,15 +133,25 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
             return recipeDto;
         }
 
-        public override async Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1)
+        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = amount > -1 ? amount : recipeCount;
             var pageCount = (int)Math.Ceiling(recipeCount / 20);
+            
+            for (var i = 0; i < pageCount; i++)
+            {
+                await Task.Delay(2000);
+                var recipes = await ScrapePageAsync(20 * i);
 
-            return await ScrapePagesAsync(pageCount, 20);
+                var updateTasks = recipes.Select(recipeManager.UpdateRecipeMetaAsync);
+                await Task.WhenAll(updateTasks);
+
+                await recipeManager.SaveRecipeChangesAsync();
+            }
+            
+            return new Dictionary<string, bool>();
         }
-
 
         public override async Task<List<RecipeMetaDtoV2>> ScrapePagesAsync(int count, int offset)
         {

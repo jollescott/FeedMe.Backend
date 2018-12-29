@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
 
@@ -112,7 +113,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Ica
             return z.ParseIcaIngredient();
         }
 
-        public override async Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50)
+        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = 50)
         {
             var links = await ScrapeLinksAsync(amount);
             var recipes = new List<RecipeMetaDtoV2>();
@@ -129,10 +130,13 @@ namespace Ramsey.NET.Crawlers.Implementations.Ica
                 var sRecipes = await Task.WhenAll(rTasks);
                 var sMetas = sRecipes.Select(x => (RecipeMetaDtoV2)x);
 
-                recipes.AddRange(sMetas);
+                var updateTasks = sMetas.Select(recipeManager.UpdateRecipeMetaAsync);
+                await Task.WhenAll(updateTasks);
+
+                await recipeManager.SaveRecipeChangesAsync();
             }
 
-            return recipes;
+            return new Dictionary<string, bool>();
         }
     }
 }

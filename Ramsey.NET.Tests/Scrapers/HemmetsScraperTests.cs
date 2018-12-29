@@ -43,15 +43,5 @@ namespace Ramsey.NET.Tests.Scrapers
             var result = await _crawler.ScrapePageAsync(0);
             Assert.IsNotEmpty(result);
         }
-
-        [Test]
-        public async Task ScrapeAllPagesAsync()
-        {
-            System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            var result = await _crawler.ScrapeRecipesAsync();
-            Console.WriteLine("All recipes scraped");
-
-            Assert.AreEqual(764, result.Count);
-        }
     }
 }

@@ -14,6 +14,7 @@ using System;
 using System.Text;
 using Hangfire.SQLite;
 using Ramsey.NET.Extensions;
+using Ramsey.NET.Shared.Interfaces;
 
 namespace Ramsey.NET
 {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
 
@@ -14,10 +15,9 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
         private static readonly string ReceptSeBaseUrl = "http://recept.se/recept";
         private readonly HttpClient _httpClient = new HttpClient();
         
-        public override async Task<IList<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = 50)
+        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
         {
             var count = await GetRecipeCountAsync();
-            var recipes = new List<RecipeMetaDtoV2>();
 
             if (amount > 0) count = amount; 
 
@@ -27,10 +27,14 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                 var tasks = links.Select(x => ScrapeRecipeAsync(x));
                 var recipeDtoV2s = await Task.WhenAll(tasks);
 
-                recipes.AddRange(recipeDtoV2s.Where(x => x.RecipeParts != null).Select(recipeDtoV2 => (RecipeMetaDtoV2) recipeDtoV2));
+                var submitRecipes = recipeDtoV2s.Where(x => x.RecipeParts != null).Select(recipeDtoV2 => (RecipeMetaDtoV2) recipeDtoV2);
+                var submitRecipesTasks = submitRecipes.Select(recipeManager.UpdateRecipeMetaAsync);
+                
+                await Task.WhenAll(submitRecipesTasks);
+                await recipeManager.SaveRecipeChangesAsync();
             }
 
-            return recipes;
+            return new Dictionary<string, bool>();
         }
 
         public override async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)

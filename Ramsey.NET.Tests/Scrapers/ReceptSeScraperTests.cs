@@ -107,16 +107,6 @@ namespace Ramsey.NET.Tests.Scrapers
             Assert.IsNotEmpty(recipeDto.RecipeParts);
         }
 
-        [Test]
-        public async Task ScrapeAllRecipes()
-        {
-            var recipes = await _cralwer.ScrapeRecipesAsync();
-            
-            Assert.IsNotNull(recipes);
-            Assert.IsNotEmpty(recipes);
-            Assert.AreEqual(3215, recipes.Count());
-        }
-
         private HtmlDocument GetTestDocument()
         {
             var web = new HtmlWeb();

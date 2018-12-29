@@ -32,12 +32,5 @@ namespace Ramsey.NET.Tests.Scrapers
             var recipe = await _cralwer.ScrapeRecipeAsync("https://www.ica.se/recept/najadlax-med-hovmastarkram-och-gurksallad-724469/");
             Assert.IsNotNull(recipe);
         }
-
-        [Test]
-        public async Task ScrapeAllRecipesAsync()
-        {
-            var recipes = await _cralwer.ScrapeRecipesAsync();
-            Assert.AreEqual(recipes.Count, 1000);
-        }
     }
 }

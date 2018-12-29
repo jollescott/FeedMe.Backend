@@ -25,7 +25,7 @@ namespace Ramsey.NET.Extensions
             }
             else
             {
-                return options.UseSqlite<T>(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
+                return options.UseSqlite<T>(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug")).EnableSensitiveDataLogging();
             }
         }
         

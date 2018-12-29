@@ -10,6 +10,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ramsey.NET.Crawlers.Implementations.Hemmets;
 using Ramsey.NET.Crawlers.Implementations.Ica;
+using Ramsey.NET.Crawlers.Implementations.Mathem;
+using Ramsey.NET.Crawlers.Implementations.ReceptSe;
+using Ramsey.NET.Crawlers.Interfaces;
+using Ramsey.NET.Shared.Interfaces;
 
 namespace Ramsey.NET.Implementations
 {
@@ -17,8 +21,13 @@ namespace Ramsey.NET.Implementations
     {
         private readonly IRamseyContext _context;
         private readonly IRecipeManager _recipeManager;
-        private readonly AHemmetsRecipeCrawler _hCrawler = new HemmetsRecipeCrawler();
-        private readonly AIcaRecipeCrawler _iCrawler = new IcaRecipeCrawler();
+
+        private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
+        {
+            {RecipeProvider.Hemmets, new HemmetsRecipeCrawler()},
+            {RecipeProvider.ReceptSe, new ReceptSeCrawler()},
+            {RecipeProvider.Mathem, new MathemCrawler()}
+        };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
         {
@@ -27,19 +36,20 @@ namespace Ramsey.NET.Implementations
         }
 
         public async Task UpdateIndexAsync()
-        {
-            var hRecipes = await _hCrawler.ScrapeRecipesAsync();
-            await _recipeManager.UpdateRecipeDatabaseAsync(_context,hRecipes);
-            hRecipes.Clear();
-
-            var iRecipes = await _iCrawler.ScrapeRecipesAsync();
-            await _recipeManager.UpdateRecipeDatabaseAsync(_context, iRecipes);
-            System.Diagnostics.Debug.WriteLine("All done!");
+        {   
+            foreach (var crawler in Crawlers.Values)
+            {
+                await crawler.ScrapeRecipesAsync(_recipeManager, 20);
+            }
         }
 
         public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider)
         {
-            return _hCrawler.ScrapeRecipeAsync(url, true);
+            if(!Crawlers.ContainsKey(provider))
+                throw new Exception("Crawler mapped to: " + Enum.GetName(typeof(RecipeProvider), provider) + " was not found.");
+            
+            var crawler = Crawlers[provider];
+            return crawler.ScrapeRecipeAsync(url, true);
         }
     }
 }
