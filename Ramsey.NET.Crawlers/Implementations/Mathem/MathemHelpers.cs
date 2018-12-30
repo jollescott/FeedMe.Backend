@@ -49,7 +49,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
                 RecipeParts = recipeDetails.Ingredients.SelectMany(x => x.Ingredients).Select(x =>
                     new RecipePartDtoV2
                     {
-                        Quantity = x.Amount, RecipeID = recipeDetails.Id, IngredientID = x.Name, Unit = x.Unit
+                        Quantity = x.Amount, RecipeID = recipeDetails.Id, IngredientID = x.Name.ToLower(), Unit = x.Unit
                     }),
             };
 
