@@ -23,7 +23,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
             var response = await _httpClient.GetAsync(MathemAllRecipesApi + amount);
             var json = await response.Content.ReadAsSwedishStringAsync();
 
-            var mRecipes = JsonConvert.DeserializeObject<IEnumerable<MathemRecipeDetails>>(json);
+            var mRecipes = JsonConvert.DeserializeObject<MathemQueryResult>(json).Recipes;
 
             var recipes = mRecipes.Select(x => (RecipeMetaDtoV2)x.ToRecipeDtoV2());
             var updateTasks = recipes.Select(recipeManager.UpdateRecipeMetaAsync);

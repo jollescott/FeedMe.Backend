@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Ramsey.NET.Crawlers.Implementations.Mathem;
+using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto;
 using Ramsey.Shared.Extensions;
 
 namespace Ramsey.NET.Tests.Scrapers
@@ -53,6 +57,20 @@ namespace Ramsey.NET.Tests.Scrapers
             Assert.IsNotEmpty(recipe.Ingredients);
             Assert.IsNotEmpty(recipe.RecipeParts);
             Assert.IsNotNull(recipe.RecipeID);
+        }
+
+        [Test]
+        public async Task QueryTest()
+        {
+            var recipes = new List<RecipeMetaDtoV2>();
+            var sqlManagerMock = new Mock<IRecipeManager>();
+
+            sqlManagerMock.Setup(x => x.UpdateRecipeMetaAsync(It.IsAny<RecipeMetaDtoV2>()))
+                .Returns(Task.FromResult(true)).Callback<RecipeMetaDtoV2>(recipes.Add);
+
+            await _cralwer.ScrapeRecipesAsync(sqlManagerMock.Object, 10);
+            
+            Assert.IsNotEmpty(recipes);
         }
     }
 }

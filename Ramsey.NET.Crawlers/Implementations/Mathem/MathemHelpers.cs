@@ -28,6 +28,12 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
         public string Name { get; set; }
     }
 
+    public class MathemQueryResult
+    {
+        private int TotalFound { get; set; }
+        public IEnumerable<MathemRecipeDetails> Recipes { get; set; }
+    }
+
     public static class MathemExtensions
     {
         public static RecipeDtoV2 ToRecipeDtoV2(this MathemRecipeDetails recipeDetails, bool includeAll = true)
@@ -35,7 +41,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
             var recipe = new RecipeDtoV2
             {
                 Name = recipeDetails.Heading,
-                Image = recipeDetails.ImageUrl,
+                Image = recipeDetails.ImageUrl.Remove(0,2),
                 RecipeID = "MH" + recipeDetails.Id,
                 Owner = RecipeProvider.Mathem,
                 OwnerLogo = "https://static.mathem.se/images/logos/logo.svg",
