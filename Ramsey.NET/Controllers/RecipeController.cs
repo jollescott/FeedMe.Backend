@@ -33,7 +33,7 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDto> ingredients)
         {
-            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).ToList();
+            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).Distinct().ToList();
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
 
             return Json(recipes);
