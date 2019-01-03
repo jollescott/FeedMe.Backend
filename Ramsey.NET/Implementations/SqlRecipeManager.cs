@@ -34,11 +34,11 @@ namespace Ramsey.NET.Implementations
             foreach (var i in recipeMetaDto.Ingredients)
             {
                 var ingredientId = i;
-                var ingredient = _context.Ingredients.SingleOrDefault(x => x.IngredientID == ingredientId);
+                var ingredient = _context.Ingredients.SingleOrDefault(x => x.IngredientId == ingredientId);
 
                 if (ingredient == null)
                 {
-                    _context.Ingredients.Add(new Ingredient { IngredientID = ingredientId });
+                    _context.Ingredients.Add(new Ingredient { IngredientId = ingredientId });
                     _context.SaveChangesAsync();
                 }
 

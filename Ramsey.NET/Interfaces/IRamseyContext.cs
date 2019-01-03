@@ -11,7 +11,10 @@ namespace Ramsey.NET.Interfaces
     {
         DbSet<Ingredient> Ingredients { get; }
         DbSet<RecipeMeta> Recipes { get; }
-        DbSet<RecipePart> RecipeParts { get;  }
+        DbSet<RecipePart> RecipeParts { get; }
+        DbSet<User> Users { get; }
+        DbSet<RecipeFavorite> RecipeFavorites { get; }
+
         DatabaseFacade Database { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));

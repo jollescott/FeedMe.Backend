@@ -24,5 +24,6 @@ namespace Ramsey.NET.Models
         public RecipeProvider Owner { get; set; }
         public string OwnerLogo { get; set; }
         public string Image { get; set; }
+        public double Rating { get; set; }
     }
 }

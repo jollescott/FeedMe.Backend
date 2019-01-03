@@ -10,25 +10,16 @@ namespace Ramsey.NET.Implementations
 {
     public class RamseyContext : DbContext, IRamseyContext
     {
-        public RamseyContext(DbContextOptions<RamseyContext> options): base(options)
+        public RamseyContext(DbContextOptions<RamseyContext> options) : base(options)
         {
-            
-        }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Ingredient>()
-                .HasIndex(x => x.IngredientID);
-
-            modelBuilder.Entity<RecipeMeta>()
-                .HasIndex(x => x.Owner);
-
-            modelBuilder.Entity<RecipePart>()
-                .HasIndex(x => new { x.IngredientId, x.RecipeId });
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeMeta> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
+        public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
+        public DbSet<RecipeRating> RecipeRatings { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace Ramsey.NET.Controllers
         {
             var ingredientsDtos = new List<IngredientDto>();
 
-            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientID.Contains(search)).Include(x => x.RecipeParts).ToList();
+            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientId.Contains(search)).Include(x => x.RecipeParts).ToList();
             ingredientsDtos = ingredients.Select(x => new IngredientDto
             {
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDto
@@ -34,7 +34,7 @@ namespace Ramsey.NET.Controllers
                     IngredientID = y.IngredientId,
                     RecipeID = y.RecipeId
                 }).ToList(),
-                IngredientId = x.IngredientID
+                IngredientId = x.IngredientId
             }).ToList();
 
             return Json(ingredientsDtos);
