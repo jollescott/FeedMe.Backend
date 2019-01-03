@@ -11,7 +11,7 @@ using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("v2/ingredient")]
+    [Route("api/v2/ingredient")]
     public class IngredientControllerV2 : Controller, IIngredientController
     {
         private readonly IRamseyContext _ramseyContext;

@@ -9,7 +9,7 @@ using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("api/users")]
+    [Route("api/v2/users")]
     [ApiController]
     public class UserControllerV2 : ControllerBase
     {

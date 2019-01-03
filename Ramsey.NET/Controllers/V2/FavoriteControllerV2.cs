@@ -10,7 +10,7 @@ using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("v2/favorites")]
+    [Route("api/v2/favorites")]
     public class FavoriteControllerV2 : Controller, IFavoriteController
     {
         private readonly IRamseyContext _ramseyContext;
@@ -54,22 +54,27 @@ namespace Ramsey.NET.Controllers.V2
         [Route("list")]
         public async Task<IActionResult> GetListAsync([FromBody]UserDto userDto)
         {
-            var favorites = _ramseyContext.RecipeFavorites.Where(x => x.UserId == userDto.UserId);
+            var favorites = _ramseyContext.RecipeFavorites
+                .Include(x => x.Recipe)
+                .Where(x => x.UserId == userDto.UserId)
+                .Select(x => x.RecipeId);
+
+            var favoriteRecipes = _ramseyContext.Recipes.Include(x => x.RecipeParts).Where(x => favorites.Any(y => y == x.RecipeId));
 
             List<RecipeMetaDtoV2> recipes = new List<RecipeMetaDtoV2>();
-            await favorites.ForEachAsync(x =>
+            await favoriteRecipes.ForEachAsync(x =>
             {
                 var recipe = new RecipeMetaDtoV2
                 {
                     Coverage = 100,
-                    Image = x.Recipe.Image,
-                    Source = x.Recipe.Source,
-                    Ingredients = x.Recipe.RecipeParts.Select(y => y.IngredientId),
+                    Image = x.Image,
+                    Source = x.Source,
+                    Ingredients = x.RecipeParts.Select(y => y.IngredientId),
                     RecipeID = x.RecipeId,
-                    Name = x.Recipe.Name,
-                    Owner = x.Recipe.Owner,
-                    OwnerLogo = x.Recipe.OwnerLogo,
-                    RecipeParts = x.Recipe.RecipeParts.Select(y => new RecipePartDtoV2
+                    Name = x.Name,
+                    Owner = x.Owner,
+                    OwnerLogo = x.OwnerLogo,
+                    RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
                     {
                         IngredientID = y.IngredientId,
                         Quantity = y.Quantity,

@@ -7,7 +7,7 @@ using Ramsey.NET.Controllers.Interfaces;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("v2/rating")]
+    [Route("api/v2/rating")]
     public class RatingControllerV2 : Controller, IRatingController
     {
         public IActionResult Index()
