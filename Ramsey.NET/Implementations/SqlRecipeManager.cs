@@ -44,13 +44,16 @@ namespace Ramsey.NET.Implementations
                 if (parts.Count > 0) continue;
                 foreach(var partDto in partDtos)
                 {
-                    var part = new RecipePart();
-                    part.RecipeId = recipe.RecipeId;
-                    part.IngredientId = ingredientId;
+                    var part = _context.RecipeParts.AddIfNotExists(new RecipePart { IngredientId = ingredientId, RecipeId = recipe.RecipeId },
+                        x => x.IngredientId == ingredientId && x.RecipeId == recipe.RecipeId);
+
+                    await _context.SaveChangesAsync();
+
                     part.Unit = partDto.Unit;
                     part.Quantity = partDto.Quantity;
 
-                    _context.RecipeParts.Add(part);
+                    _context.RecipeParts.Update(part);
+                    await _context.SaveChangesAsync();
                 }
             }
 

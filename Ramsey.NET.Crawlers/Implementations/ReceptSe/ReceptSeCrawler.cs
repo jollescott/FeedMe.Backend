@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Ramsey.NET.Shared.Interfaces;
@@ -127,8 +128,13 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
 
             foreach (var ingredientDiv in ingredientDivs)
             {
-                var amount = ingredientDiv.Descendants().First()?.InnerText;
-                var name = ingredientDiv.Descendants().Last()?.InnerText;
+                var stringParts = ingredientDiv.Descendants("div")
+                    .Take(2)
+                    .Select(x => x.InnerText)
+                    .ToList();
+
+                var amount = Regex.Replace(stringParts.First(), @"\t|\n|\r", "").TrimSpacesBetweenString();
+                var name = stringParts.Last().Trim();
                 
                 if(amount == null && name == null) continue;
 
@@ -137,12 +143,12 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                 if (!string.IsNullOrEmpty(amount))
                 {
                     var parts = amount.Split(' ');
-                    var quantity_str = parts.Last();
+                    var quantity_str = parts.First().Trim();
                     var unit = parts.Last();
 
                     float.TryParse(quantity_str, out var quantity);
                     
-                    recipePart.Unit = unit;
+                    recipePart.Unit = unit.Trim();
                     recipePart.Quantity = quantity;
                 }          
                 
@@ -158,6 +164,14 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                 .Select(x => x.InnerText);
 
             return directions;
+        }
+    }
+
+    public static class StringExt
+    {
+        public static string TrimSpacesBetweenString(this string s)
+        {
+            return string.Join(" ", s.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList().Select(w => w.Trim()));
         }
     }
 }
