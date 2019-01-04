@@ -14,6 +14,7 @@ namespace Ramsey.NET.Interfaces
         DbSet<RecipePart> RecipeParts { get; }
         DbSet<User> Users { get; }
         DbSet<RecipeFavorite> RecipeFavorites { get; }
+        DbSet<RecipeRating> RecipeRatings { get; }
 
         DatabaseFacade Database { get; }
 
