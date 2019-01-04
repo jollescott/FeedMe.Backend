@@ -22,7 +22,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
 
         public abstract string GetRecipeLogo(HtmlDocument document);
 
-        public abstract IEnumerable<RecipePartDtoV2> GetRecipeParts(HtmlDocument document);
+        public abstract IEnumerable<RecipePartDtoV2> GetRecipeParts(HtmlDocument document, string recipeid);
         public abstract IEnumerable<string> GetRecipeDirections(HtmlDocument document);
     }
 }

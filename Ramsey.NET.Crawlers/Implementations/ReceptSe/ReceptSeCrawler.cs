@@ -42,7 +42,8 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
         public override async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             var recipeDto = new RecipeDtoV2();
-            
+            recipeDto.RecipeID = "RSE" + url.Split('/').Last();
+
             var response = await _httpClient.GetAsync(url);
             var html = await response.Content.ReadAsSwedishStringAsync();
 
@@ -52,15 +53,13 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             recipeDto.Name = GetRecipeTitle(document);
             recipeDto.Owner = RecipeProvider.ReceptSe;
             recipeDto.Source = url;
-            recipeDto.RecipeParts = GetRecipeParts(document);
+            recipeDto.RecipeParts = GetRecipeParts(document, recipeDto.RecipeID);
             recipeDto.Ingredients = recipeDto.RecipeParts?.Select(x => x.IngredientID);
             recipeDto.Image = GetRecipeLogo(document);
             recipeDto.OwnerLogo = GetReceptSeLogo(document);
 
             if (includeAll)
                 recipeDto.Directions = GetRecipeDirections(document);
-
-            recipeDto.RecipeID = "RSE" + url.Split('/').Last();
 
             return recipeDto;
         }
@@ -119,7 +118,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             return photo;
         }
 
-        public override IEnumerable<RecipePartDtoV2> GetRecipeParts(HtmlDocument document)
+        public override IEnumerable<RecipePartDtoV2> GetRecipeParts(HtmlDocument document, string recipeid)
         {
             var ingredientDivs = document.DocumentNode.SelectNodes("//div[@class=\"ingredient\"]");
             var ingredients = new List<RecipePartDtoV2>();
@@ -134,11 +133,11 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                     .ToList();
 
                 var amount = Regex.Replace(stringParts.First(), @"\t|\n|\r", "").TrimSpacesBetweenString();
-                var name = stringParts.Last().Trim();
+                var name = stringParts.Last().Trim().ToLower();
                 
                 if(amount == null && name == null) continue;
 
-                var recipePart = new RecipePartDtoV2 {IngredientID = name};
+                var recipePart = new RecipePartDtoV2 {IngredientID = name, RecipeID = recipeid};
 
                 if (!string.IsNullOrEmpty(amount))
                 {

@@ -62,7 +62,7 @@ namespace Ramsey.NET.Tests.Scrapers
         public void GetRecipeIngredients()
         {
             var document = GetTestDocument();
-            var ingredients = _cralwer.GetRecipeParts(document);
+            var ingredients = _cralwer.GetRecipeParts(document, "test");
             
             Assert.IsNotNull(ingredients);
             Assert.IsNotEmpty(ingredients);
