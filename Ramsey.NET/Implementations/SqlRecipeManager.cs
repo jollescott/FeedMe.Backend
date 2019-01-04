@@ -34,13 +34,9 @@ namespace Ramsey.NET.Implementations
             foreach (var i in recipeMetaDto.Ingredients)
             {
                 var ingredientId = i;
-                var ingredient = _context.Ingredients.SingleOrDefault(x => x.IngredientId == ingredientId);
-
-                if (ingredient == null)
-                {
-                    _context.Ingredients.Add(new Ingredient { IngredientId = ingredientId });
-                    _context.SaveChangesAsync();
-                }
+                var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient { IngredientId = ingredientId },
+                    x => x.IngredientId == ingredientId);
+                await _context.SaveChangesAsync();
 
                 var parts = _context.RecipeParts.Where(x => x.IngredientId.Equals(ingredientId) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).ToList();
                 var partDtos = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredientId)).ToList();

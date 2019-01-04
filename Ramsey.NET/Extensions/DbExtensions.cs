@@ -1,5 +1,7 @@
 
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Hangfire;
 using Hangfire.SQLite;
@@ -8,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Ramsey.NET.Extensions
 {
-    public static class TestDbExtensions
+    public static class DbExtensions
     {
         public static readonly String TestConnectionString =
             "Server=(localdb)\\mssqllocaldb;Database=ramsey_unit;Trusted_Connection=True;MultipleActiveResultSets=true";
@@ -56,6 +58,15 @@ namespace Ramsey.NET.Extensions
             {
                 return hangfire.UseSQLiteStorage(config.GetConnectionString("SqliteDebug"));
             }
+        }
+    }
+
+    public static class DbSetExtensions
+    {
+        public static T AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        {
+            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any();
+            return !exists ? dbSet.Add(entity).Entity : dbSet.Single(predicate);
         }
     }
 }

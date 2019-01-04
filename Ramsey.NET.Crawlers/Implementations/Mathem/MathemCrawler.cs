@@ -26,8 +26,9 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
             var mRecipes = JsonConvert.DeserializeObject<MathemQueryResult>(json).Recipes;
 
             var recipes = mRecipes.Select(x => (RecipeMetaDtoV2)x.ToRecipeDtoV2());
-            var updateTasks = recipes.Select(recipeManager.UpdateRecipeMetaAsync);
-            await Task.WhenAll(updateTasks);
+
+            foreach (var recipe in recipes)
+                await recipeManager.UpdateRecipeMetaAsync(recipe);
 
             await recipeManager.SaveRecipeChangesAsync();
             

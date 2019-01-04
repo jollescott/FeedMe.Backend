@@ -28,9 +28,10 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                 var recipeDtoV2s = await Task.WhenAll(tasks);
 
                 var submitRecipes = recipeDtoV2s.Where(x => x.RecipeParts != null).Select(recipeDtoV2 => (RecipeMetaDtoV2) recipeDtoV2);
-                var submitRecipesTasks = submitRecipes.Select(recipeManager.UpdateRecipeMetaAsync);
-                
-                await Task.WhenAll(submitRecipesTasks);
+
+                foreach (var recipe in submitRecipes)
+                    await recipeManager.UpdateRecipeMetaAsync(recipe);
+
                 await recipeManager.SaveRecipeChangesAsync();
             }
 

@@ -144,8 +144,10 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
                 await Task.Delay(2000);
                 var recipes = await ScrapePageAsync(20 * i);
 
-                var updateTasks = recipes.Select(recipeManager.UpdateRecipeMetaAsync);
-                await Task.WhenAll(updateTasks);
+                foreach (var recipe in recipes)
+                {
+                    await recipeManager.UpdateRecipeMetaAsync(recipe);
+                }
 
                 await recipeManager.SaveRecipeChangesAsync();
             }
