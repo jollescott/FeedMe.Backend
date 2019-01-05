@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj" />
+    <ProjectReference Include="..\Ramsey.NET.Ingredients\Ramsey.NET.Ingredients.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
   </ItemGroup>
 
