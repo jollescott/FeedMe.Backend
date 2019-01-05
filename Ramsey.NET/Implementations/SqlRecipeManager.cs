@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Implementations
 {

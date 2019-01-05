@@ -14,6 +14,7 @@ using Ramsey.NET.Crawlers.Implementations.Mathem;
 using Ramsey.NET.Crawlers.Implementations.ReceptSe;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Implementations
 {

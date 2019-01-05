@@ -1,4 +1,4 @@
-﻿using Ramsey.Shared.Dto;
+﻿using Ramsey.Shared.Dto.V2;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Shared.Interfaces

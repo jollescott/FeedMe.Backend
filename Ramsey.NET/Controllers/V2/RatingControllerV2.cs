@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("api/v2/rating")]
+    [Route("v2/rating")]
     public class RatingControllerV2 : Controller, IRatingController
     {
         private readonly IRamseyContext _ramseyContext;

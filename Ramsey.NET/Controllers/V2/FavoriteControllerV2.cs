@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("api/v2/favorites")]
+    [Route("v2/favorite")]
     public class FavoriteControllerV2 : Controller, IFavoriteController
     {
         private readonly IRamseyContext _ramseyContext;
@@ -52,7 +53,7 @@ namespace Ramsey.NET.Controllers.V2
         }
 
         [Route("list")]
-        public async Task<IActionResult> GetListAsync([FromBody]UserDto userDto)
+        public async Task<IActionResult> GetListAsync([FromBody]UserDtoV2 userDto)
         {
             var favorites = _ramseyContext.RecipeFavorites
                 .Include(x => x.Recipe)

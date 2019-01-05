@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Ramsey.NET.Controllers.V2;
 using Ramsey.NET.Implementations;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Tests.Controllers
 {

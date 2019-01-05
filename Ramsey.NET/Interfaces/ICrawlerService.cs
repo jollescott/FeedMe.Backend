@@ -1,4 +1,5 @@
 ﻿using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 using System;
 using System.Collections.Generic;
 using System.Linq;

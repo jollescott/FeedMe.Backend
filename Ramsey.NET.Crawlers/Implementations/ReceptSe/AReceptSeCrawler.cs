@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
-using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
 {

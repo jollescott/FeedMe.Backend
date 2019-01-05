@@ -8,10 +8,11 @@ using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("api/v2/ingredient")]
+    [Route("v2/ingredient")]
     public class IngredientControllerV2 : Controller, IIngredientController
     {
         private readonly IRamseyContext _ramseyContext;

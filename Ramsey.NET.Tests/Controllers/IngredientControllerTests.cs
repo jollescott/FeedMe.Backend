@@ -9,6 +9,7 @@ using Ramsey.NET.Controllers.V2;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Tests.Controllers
 {

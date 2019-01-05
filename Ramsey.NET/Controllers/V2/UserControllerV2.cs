@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Misc;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("api/v2/users")]
+    [Route("v2/user")]
     [ApiController]
     public class UserControllerV2 : ControllerBase
     {
@@ -21,7 +23,7 @@ namespace Ramsey.NET.Controllers.V2
         }
 
         [Route("sync")]
-        public async Task<ActionResult> SyncUserAsync([FromBody]UserDto userDto)
+        public async Task<ActionResult> SyncUserAsync([FromBody]UserDtoV2 userDto)
         {
             if (_ramseyContext.Users.Any(x => x.UserId == userDto.UserId))
                 return StatusCode(200);

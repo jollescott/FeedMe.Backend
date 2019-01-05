@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Extensions;
 
 namespace Ramsey.NET.Crawlers.Implementations.Mathem
