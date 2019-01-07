@@ -22,42 +22,61 @@ namespace Ramsey.NET.Implementations
         }
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
         {
-            var recipe = _context.Recipes.Find(recipeMetaDto.RecipeID) ?? new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };
+            var recipe = _context.Recipes.AddIfNotExists(new RecipeMeta
+            {
+                RecipeId = recipeMetaDto.RecipeID,
+            }, x => x.RecipeId == recipeMetaDto.RecipeID);
 
+            await SaveRecipeChangesAsync();
+
+            //Basic Properties
             recipe.Image = recipeMetaDto.Image;
             recipe.Name = recipeMetaDto.Name;
             recipe.Owner = recipeMetaDto.Owner;
             recipe.OwnerLogo = recipeMetaDto.OwnerLogo;
+            recipe.Rating = 0;
             recipe.Source = recipeMetaDto.Source;
 
-            if(!_context.Recipes.Any(x => x.RecipeId == recipe.RecipeId))
-                _context.Recipes.Add(recipe);
-
-            foreach (var i in recipeMetaDto.Ingredients)
+            //Ingredients
+            foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                var ingredientId = i.ToLower().Trim();
-                var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient { IngredientId = ingredientId },
-                    x => x.IngredientId == ingredientId);
-                await _context.SaveChangesAsync();
+                string ingredientId = partDto.IngredientID;
+                string recipeId = recipeMetaDto.RecipeID;
 
-                var parts = _context.RecipeParts.Where(x => x.IngredientId.Equals(ingredientId) && x.RecipeId.Equals(recipeMetaDto.RecipeID)).ToList();
-                var partDtos = recipeMetaDto.RecipeParts.Where(x => x.IngredientID.Equals(ingredientId)).ToList();
+                if (ingredientId == null || recipeId == null ||
+                    ingredientId == string.Empty || recipeId == string.Empty)
+                    continue;
 
-                if (parts.Count > 0) continue;
-                foreach(var partDto in partDtos)
+                var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {
-                    var part = _context.RecipeParts.AddIfNotExists(new RecipePart { IngredientId = ingredientId, RecipeId = recipe.RecipeId },
-                        x => x.IngredientId == ingredientId && x.RecipeId == recipe.RecipeId);
+                    IngredientId = ingredientId
+                }, x => x.IngredientId == ingredientId);
 
-                    await _context.SaveChangesAsync();
+                await SaveRecipeChangesAsync();
 
-                    part.Unit = partDto.Unit;
-                    part.Quantity = partDto.Quantity;
+                var part = _context.RecipeParts.AddIfNotExists(new RecipePart
+                {
+                    IngredientId = ingredientId,
+                    RecipeId = recipeId
+                }, x => x.RecipeId == recipeId && x.IngredientId == ingredientId);
 
-                    _context.RecipeParts.Update(part);
-                    await _context.SaveChangesAsync();
-                }
+                await SaveRecipeChangesAsync();
+
+                part.Ingredient = ingredient;
+                part.Recipe = recipe;
+
+                part.Quantity = partDto.Quantity;
+                part.Unit = partDto.Unit;
+
+                _context.RecipeParts.Update(part);
+
+                await SaveRecipeChangesAsync();
+                
+                recipe.RecipeParts.Add(part);
             }
+
+            _context.Recipes.Update(recipe);
+            await SaveRecipeChangesAsync();
 
             return true;
         }
