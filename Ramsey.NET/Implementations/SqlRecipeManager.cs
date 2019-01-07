@@ -35,7 +35,7 @@ namespace Ramsey.NET.Implementations
 
             foreach (var i in recipeMetaDto.Ingredients)
             {
-                var ingredientId = Regex.Escape(i.ToLower().Trim());
+                var ingredientId = i.ToLower().Trim();
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient { IngredientId = ingredientId },
                     x => x.IngredientId == ingredientId);
                 await _context.SaveChangesAsync();
