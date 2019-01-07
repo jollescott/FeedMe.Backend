@@ -1,15 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Ramsey.NET.Crawlers.Implementations;
-using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
+﻿using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using Ramsey.NET.Crawlers.Implementations.Hemmets;
-using Ramsey.NET.Crawlers.Implementations.Ica;
 using Ramsey.NET.Crawlers.Implementations.Mathem;
 using Ramsey.NET.Crawlers.Implementations.ReceptSe;
 using Ramsey.NET.Crawlers.Interfaces;
