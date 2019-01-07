@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
+using System.Text.RegularExpressions;
 
 namespace Ramsey.NET.Implementations
 {
@@ -34,7 +35,7 @@ namespace Ramsey.NET.Implementations
 
             foreach (var i in recipeMetaDto.Ingredients)
             {
-                var ingredientId = i;
+                var ingredientId = Regex.Escape(i.ToLower().Trim());
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient { IngredientId = ingredientId },
                     x => x.IngredientId == ingredientId);
                 await _context.SaveChangesAsync();
