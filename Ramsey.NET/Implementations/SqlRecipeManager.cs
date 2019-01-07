@@ -40,11 +40,12 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                string ingredientId = partDto.IngredientID;
+                string ingredientId = partDto.IngredientID.FormatIngredientName();
                 string recipeId = recipeMetaDto.RecipeID;
 
                 if (ingredientId == null || recipeId == null ||
-                    ingredientId == string.Empty || recipeId == string.Empty)
+                    ingredientId == string.Empty || recipeId == string.Empty || 
+                    ingredientId.Contains("och"))
                     continue;
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient

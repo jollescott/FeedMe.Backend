@@ -1,16 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using Ramsey.NET.Crawlers.Implementations;
-using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
-using System;
 using System.Text;
 using System.Threading.Tasks;
-using Ramsey.NET.Crawlers.Implementations.Hemmets;
-using Ramsey.NET.Crawlers.Implementations.Ica;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
 
