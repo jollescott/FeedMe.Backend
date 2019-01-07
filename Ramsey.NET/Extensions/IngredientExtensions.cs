@@ -16,7 +16,8 @@ namespace Ramsey.NET.Extensions
             new DictionaryFormatPipeline(),
             new CommaFormatPipeline(),
             new EllerFormatPipeline(),
-            new TillFormatPipeline()
+            new TillFormatPipeline(),
+            new TrimFormatPipeline()
         };
 
         public static string FormatIngredientName(this string ingredient)
@@ -35,6 +36,14 @@ namespace Ramsey.NET.Extensions
     public interface IIngredientFormatPipeline
     {
         string Format(string input);
+    }
+
+    public class TrimFormatPipeline : IIngredientFormatPipeline
+    {
+        public string Format(string input)
+        {
+            return input.Trim();
+        }
     }
 
     public class ColonFormatPipeline : WordRemovalFormatPipeline
