@@ -1,11 +1,10 @@
 ﻿using Ramsey.NET.Crawlers.Interfaces;
-using Ramsey.Shared.Dto;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto.V2;
 
-namespace Ramsey.NET.Crawlers.Implementations
+namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 {
     public abstract class AHemmetsRecipeCrawler : IRecipeCrawler
     {
@@ -19,6 +18,6 @@ namespace Ramsey.NET.Crawlers.Implementations
         public abstract int ScrapeRecipeCount(string html);
         public abstract IEnumerable<string> ScapeRecipeLinks(string html);
 
-        public abstract Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1);
+        public abstract Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = -1);
     }
 }

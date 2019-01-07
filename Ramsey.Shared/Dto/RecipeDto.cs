@@ -22,6 +22,8 @@ namespace Ramsey.Shared.Dto
 
     public enum RecipeProvider
     {
-        ICA, Hemmets
+        ICA, Hemmets,
+        ReceptSe,
+        Mathem
     }
 }

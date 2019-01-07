@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
-    public class Ingredient
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string IngredientId { get; set; }
+        public string UserId { get; set; }
 
-        public virtual ICollection<RecipePart> RecipeParts { get; set; }
+        public virtual ICollection<RecipeFavorite> RecipeFavorites { get; set; }
+        public virtual ICollection<RecipeRating> RecipeRatings { get; set; }
     }
 }

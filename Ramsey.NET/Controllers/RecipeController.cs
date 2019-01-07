@@ -3,6 +3,7 @@ using System.Linq;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
@@ -10,12 +11,12 @@ using Ramsey.Shared.Dto;
 namespace Ramsey.NET.Controllers
 {
     [Route("recipe")]
-    public class RecipeController : Controller
+    public class RecipeController : Controller, IRecipeController<IngredientDto>
     {
-        private readonly RamseyContext _ramseyContext;
+        private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
 
-        public RecipeController(RamseyContext ramseyContext, ICrawlerService crawlerService)
+        public RecipeController(IRamseyContext ramseyContext, ICrawlerService crawlerService)
         {
             _ramseyContext = ramseyContext;
             _crawlerService = crawlerService;
@@ -49,8 +50,8 @@ namespace Ramsey.NET.Controllers
                 RecipeID = recipeV2.RecipeID,
                 Desc = recipeV2.Desc,
                 Image = recipeV2.Image,
-                Directions = recipeV2.Directions,
-                Ingredients = recipeV2.Ingredients,
+                Directions = recipeV2.Directions.ToList(),
+                Ingredients = recipeV2.Ingredients.ToList(),
                 Source = recipeV2.Source,
                 Name = recipeV2.Name,
                 Owner = recipeV2.Owner,

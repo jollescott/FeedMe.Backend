@@ -4,17 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Ramsey.NET.Controllers.Interfaces;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Dto.V2;
 
 namespace Ramsey.NET.Controllers.V2
 {
     [Route("v2/ingredient")]
-    public class IngredientControllerV2 : Controller
+    public class IngredientControllerV2 : Controller, IIngredientController
     {
-        private readonly RamseyContext _ramseyContext;
+        private readonly IRamseyContext _ramseyContext;
 
-        public IngredientControllerV2(RamseyContext ramseyContext)
+        public IngredientControllerV2(IRamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
         }
@@ -24,7 +27,7 @@ namespace Ramsey.NET.Controllers.V2
         {
             var ingredientsDtos = new List<IngredientDtoV2>();
 
-            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientID.Contains(search)).Include(x => x.RecipeParts).ToList();
+            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientId.StartsWith(search)).Include(x => x.RecipeParts).ToList();
             ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
             {
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
@@ -32,9 +35,10 @@ namespace Ramsey.NET.Controllers.V2
                     IngredientID = y.IngredientId,
                     RecipeID = y.RecipeId,
                     Quantity = y.Quantity,
-                    Unit = y.Unit
+                    Unit = y.Unit,
                 }).ToList(),
-                IngredientId = x.IngredientID
+                IngredientId = x.IngredientId,
+                Role = IngredientRole.Include
             }).ToList();
 
             return Json(ingredientsDtos);

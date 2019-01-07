@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ramsey.Shared.Dto
+namespace Ramsey.Shared.Dto.V2
 {
     public class RecipeMetaDtoV2
     {
@@ -14,8 +14,10 @@ namespace Ramsey.Shared.Dto
         public string OwnerLogo { get; set; }
         public string Image { get; set; }
 
-        public List<string> Ingredients { get; set; }
-        public List<RecipePartDtoV2> RecipeParts { get; set; }
+        public IEnumerable<string> Ingredients { get; set; }
+        public IEnumerable<RecipePartDtoV2> RecipeParts { get; set; }
+        
+        public double Coverage { get; set; }
 
         public static implicit operator RecipeMetaDtoV2(RecipeDtoV2 recipe)
         {

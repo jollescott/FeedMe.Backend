@@ -9,8 +9,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto.V2;
 
-namespace Ramsey.NET.Crawlers.Implementations
+namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 {
     public class HemmetsRecipeCrawler : AHemmetsRecipeCrawler
     {
@@ -18,7 +20,6 @@ namespace Ramsey.NET.Crawlers.Implementations
 
         private readonly string RECIPE_LIST_URL = "https://kokboken.ikv.uu.se/receptlista.php?cat=0";
         private readonly string HEMMETS_ROOT = "https://kokboken.ikv.uu.se/";
-        private int _currentIndex = 0;
 
         public HemmetsRecipeCrawler()
         {
@@ -127,22 +128,33 @@ namespace Ramsey.NET.Crawlers.Implementations
             recipeDto.Source = url;
             recipeDto.Owner = RecipeProvider.Hemmets;
 
-            _currentIndex++;
             recipeDto.RecipeID = "HEMMETS" + url.Split('=').Last();
             recipeDto.OwnerLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/UU_logo.jpg/628px-UU_logo.jpg";
 
             return recipeDto;
         }
 
-        public override async Task<List<RecipeMetaDtoV2>> ScrapeRecipesAsync(int amount = -1)
+        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = amount > -1 ? amount : recipeCount;
             var pageCount = (int)Math.Ceiling(recipeCount / 20);
+            
+            for (var i = 0; i < pageCount; i++)
+            {
+                await Task.Delay(2000);
+                var recipes = await ScrapePageAsync(20 * i);
 
-            return await ScrapePagesAsync(pageCount, 20);
+                foreach (var recipe in recipes)
+                {
+                    await recipeManager.UpdateRecipeMetaAsync(recipe);
+                }
+
+                await recipeManager.SaveRecipeChangesAsync();
+            }
+            
+            return new Dictionary<string, bool>();
         }
-
 
         public override async Task<List<RecipeMetaDtoV2>> ScrapePagesAsync(int count, int offset)
         {
