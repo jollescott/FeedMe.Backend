@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ramsey.NET.Ingredients.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 
@@ -15,15 +14,13 @@ namespace Ramsey.NET.Implementations
     public class SqlRecipeManager : IRecipeManager
     {
         private  readonly IRamseyContext _context;
-        private IIngredientInspector<RecipePartDtoV2> _inspector;
 
-        public SqlRecipeManager(IRamseyContext context, IIngredientInspector<RecipePartDtoV2> inspector)
+        public SqlRecipeManager(IRamseyContext context)
         {
             _context = context;
-            _inspector = inspector;
         }
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
-        {               
+        {
             var recipe = _context.Recipes.Find(recipeMetaDto.RecipeID) ?? new RecipeMeta { RecipeId = recipeMetaDto.RecipeID };
 
             recipe.Image = recipeMetaDto.Image;

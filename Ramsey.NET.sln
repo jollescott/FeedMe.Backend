@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ramsey.Shared", "Ramsey.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ramsey.NET.Crawlers", "Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj", "{6CC601DC-89A9-406A-8CB2-91EB46F31AE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ramsey.NET.Ingredients", "Ramsey.NET.Ingredients\Ramsey.NET.Ingredients.csproj", "{1659B260-3D7C-403C-85BC-0752A61D181F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{6CC601DC-89A9-406A-8CB2-91EB46F31AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CC601DC-89A9-406A-8CB2-91EB46F31AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CC601DC-89A9-406A-8CB2-91EB46F31AE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1659B260-3D7C-403C-85BC-0752A61D181F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1659B260-3D7C-403C-85BC-0752A61D181F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1659B260-3D7C-403C-85BC-0752A61D181F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1659B260-3D7C-403C-85BC-0752A61D181F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
