@@ -1,5 +1,8 @@
-﻿namespace Ramsey.NET.Models
+﻿using MySql.Data.EntityFrameworkCore.DataAnnotations;
+
+namespace Ramsey.NET.Models
 {
+    [MySqlCharset("utf8")]
     public class RecipePart
     {
         public int RecipePartId { get; set; }

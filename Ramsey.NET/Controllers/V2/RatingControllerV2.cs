@@ -22,7 +22,7 @@ namespace Ramsey.NET.Controllers.V2
         }
 
         [Route("update")]
-        public async Task<IActionResult> AddFavoriteAsync([FromBody]RatingDtoV2 ratingDto)
+        public async Task<IActionResult> AddRatingAsync([FromBody]RatingDtoV2 ratingDto)
         {
             var rating = _ramseyContext.RecipeRatings.AddIfNotExists(new Models.RecipeRating
             {

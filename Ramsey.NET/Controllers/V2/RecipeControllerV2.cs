@@ -62,8 +62,11 @@ namespace Ramsey.NET.Controllers.V2
                     RecipeID = y.RecipeId,
                     Unit = y.Unit
                 }),
-                Coverage = x.RecipeParts.Where(z => incIngredients.Any(j => j.IngredientId == z.IngredientId))
-                               .Select(y=> y.IngredientId).Distinct().Count() / (double)incIngredients.Count
+                Coverage = (double)incIngredients.Count / 
+                                x.RecipeParts
+                                .Select(y=> y.IngredientId)
+                                .Distinct()
+                                .Count()
             }).ToList();
             
             return Json(dtos);
