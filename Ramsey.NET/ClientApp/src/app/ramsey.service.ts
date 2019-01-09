@@ -25,6 +25,11 @@ export interface Recipe {
 
   source: string;
   image: string;
+
+  ingredients: string[];
+  recipeParts: RecipePart[];
+
+  coverage: number;
 }
 
 export interface Ingredient {
