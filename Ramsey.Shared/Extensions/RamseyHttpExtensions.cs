@@ -11,7 +11,7 @@ namespace Ramsey.Shared.Extensions
         public static async Task<string> ReadAsSwedishStringAsync(this HttpContent httpContent)
         {
             var byteArray = await httpContent.ReadAsByteArrayAsync();
-            var result = Encoding.GetEncoding("ISO-8859-1").GetString(byteArray, 0, byteArray.Length);
+            var result = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
             return result;
         }
     }

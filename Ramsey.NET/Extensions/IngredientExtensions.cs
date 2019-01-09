@@ -17,7 +17,9 @@ namespace Ramsey.NET.Extensions
             new CommaFormatPipeline(),
             new EllerFormatPipeline(),
             new TillFormatPipeline(),
-            new TrimFormatPipeline()
+            new TrimFormatPipeline(),
+            new AltFormatPipeline(),
+            new EfterFormatPipeline()
         };
 
         public static string FormatIngredientName(this string ingredient)
@@ -76,6 +78,16 @@ namespace Ramsey.NET.Extensions
         public override string Word => ",";
     }
 
+    public class AltFormatPipeline : WordRemovalFormatPipeline
+    {
+        public override string Word => "alt";
+    }
+
+    public class EfterFormatPipeline : WordRemovalFormatPipeline
+    {
+        public override string Word => "efter";
+    }
+
     public class WordRemovalFormatPipeline : IIngredientFormatPipeline
     {
         public virtual string Word => string.Empty;
@@ -102,7 +114,10 @@ namespace Ramsey.NET.Extensions
     {
         private static readonly string[] _ignored = new string[]
         {
-
+            "så det räcker",
+            "så det täcker frukten",
+            "med äkta vanilj",
+            "i vatten",
         };
 
         public string Format(string input)

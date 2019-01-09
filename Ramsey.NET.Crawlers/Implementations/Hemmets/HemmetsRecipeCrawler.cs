@@ -66,8 +66,13 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 
             var client = new HemmetsHttpClient();
 
+            /*
             var bytes = await client.GetByteArrayAsync(url);
             var html = Encoding.GetEncoding(1252).GetString(bytes);
+            */
+
+            var response = await client.GetAsync(url);
+            var html = await response.Content.ReadAsSwedishStringAsync();
 
             var recipe_document = new HtmlDocument();
             recipe_document.LoadHtml(html);
