@@ -1,4 +1,5 @@
-﻿using Ramsey.NET.Models;
+﻿using MySql.Data.EntityFrameworkCore.DataAnnotations;
+using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
+    [MySqlCharset("utf8")]
     public class RecipeMeta
     {
         [Key]
