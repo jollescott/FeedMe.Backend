@@ -118,6 +118,7 @@ namespace Ramsey.NET.Extensions
             "så det täcker frukten",
             "med äkta vanilj",
             "i vatten",
+            "bit färsk"
         };
 
         public string Format(string input)
