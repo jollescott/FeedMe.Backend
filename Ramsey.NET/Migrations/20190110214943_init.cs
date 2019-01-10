@@ -3,20 +3,37 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ramsey.NET.Migrations
 {
-    public partial class userMigration : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "IngredientID",
-                table: "Ingredients",
-                newName: "IngredientId");
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    IngredientId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.IngredientId);
+                });
 
-            migrationBuilder.AddColumn<double>(
-                name: "Rating",
-                table: "Recipes",
-                nullable: false,
-                defaultValue: 0.0);
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    RecipeId = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Source = table.Column<string>(nullable: true),
+                    Owner = table.Column<int>(nullable: false),
+                    OwnerLogo = table.Column<string>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    Rating = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.RecipeId);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -27,6 +44,34 @@ namespace Ramsey.NET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RecipeParts",
+                columns: table => new
+                {
+                    RecipePartId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IngredientId = table.Column<string>(nullable: true),
+                    RecipeId = table.Column<string>(nullable: true),
+                    Unit = table.Column<string>(nullable: true),
+                    Quantity = table.Column<float>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeParts", x => x.RecipePartId);
+                    table.ForeignKey(
+                        name: "FK_RecipeParts_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "Ingredients",
+                        principalColumn: "IngredientId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RecipeParts_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +138,16 @@ namespace Ramsey.NET.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RecipeParts_IngredientId",
+                table: "RecipeParts",
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeParts_RecipeId",
+                table: "RecipeParts",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RecipeRatings_RecipeId",
                 table: "RecipeRatings",
                 column: "RecipeId");
@@ -109,19 +164,19 @@ namespace Ramsey.NET.Migrations
                 name: "RecipeFavorites");
 
             migrationBuilder.DropTable(
+                name: "RecipeParts");
+
+            migrationBuilder.DropTable(
                 name: "RecipeRatings");
 
             migrationBuilder.DropTable(
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "Recipes");
+
+            migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "Rating",
-                table: "Recipes");
-
-            migrationBuilder.RenameColumn(
-                name: "IngredientId",
-                table: "Ingredients",
-                newName: "IngredientID");
         }
     }
 }
