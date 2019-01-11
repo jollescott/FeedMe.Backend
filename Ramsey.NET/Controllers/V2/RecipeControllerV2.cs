@@ -44,7 +44,7 @@ namespace Ramsey.NET.Controllers.V2
             
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z=> z.RecipeParts)
                 .Single(y => y.RecipeId.Equals(x)))
-                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
+                .Where(i => i.RecipeParts.Any(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
 
             var dtos = recipes.Select(x => new RecipeMetaDtoV2
             {
@@ -54,7 +54,7 @@ namespace Ramsey.NET.Controllers.V2
                 Name = x.Name,
                 OwnerLogo = x.OwnerLogo,
                 Owner = x.Owner,
-                Ingredients = x.RecipeParts.Select(y=> y.IngredientId),
+                Ingredients = x.RecipeParts.Select(y => y.IngredientId),
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
                 {
                     IngredientID = y.IngredientId,
@@ -62,12 +62,14 @@ namespace Ramsey.NET.Controllers.V2
                     RecipeID = y.RecipeId,
                     Unit = y.Unit
                 }),
-                Coverage = (double)incIngredients.Count / 
-                                x.RecipeParts
-                                .Select(y=> y.IngredientId)
-                                .Distinct()
-                                .Count()
-            }).ToList();
+                Coverage = (double)x.RecipeParts
+                    .Select(y => y.IngredientId)
+                    .Intersect(incIngredients.Select(y => y.IngredientId))
+                    .Count() / x.RecipeParts.Count
+
+            })
+            .OrderByDescending(x => x.Coverage)
+            .ToList();
             
             return Json(dtos);
         }
