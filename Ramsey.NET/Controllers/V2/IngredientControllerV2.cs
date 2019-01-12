@@ -27,7 +27,12 @@ namespace Ramsey.NET.Controllers.V2
         {
             var ingredientsDtos = new List<IngredientDtoV2>();
 
-            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientId.Contains(search)).Take(20).Include(x => x.RecipeParts).ToList();
+            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientId.Contains(search))
+                .OrderBy(x => x.IngredientId.Length)
+                .Take(25)
+                .Include(x => x.RecipeParts)
+                .ToList();
+
             ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
             {
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
