@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
@@ -41,10 +42,11 @@ namespace Ramsey.NET.Controllers.V2
             
             var recipeIds = incIngredients.SelectMany(x => x.RecipeParts)
                 .Select(x => x.RecipeID).ToList();
-            
-            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z=> z.RecipeParts)
+
+            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
                 .Single(y => y.RecipeId.Equals(x)))
-                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
+                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)))
+                .DistinctBy(z => z.RecipeId);
 
             var dtos = recipes.Select(x => new RecipeMetaDtoV2
             {
