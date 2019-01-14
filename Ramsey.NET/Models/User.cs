@@ -1,5 +1,4 @@
-﻿using MySql.Data.EntityFrameworkCore.DataAnnotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
-    [MySqlCharset("utf8")]
     public class User
     {
         [Key]

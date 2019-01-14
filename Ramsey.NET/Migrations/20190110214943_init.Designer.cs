@@ -9,8 +9,8 @@ using Ramsey.NET.Implementations;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20190103230111_userMigration")]
-    partial class userMigration
+    [Migration("20190110214943_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

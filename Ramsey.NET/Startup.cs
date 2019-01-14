@@ -9,11 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Interfaces;
+using Ramsey.NET.Models;
 using System;
 using System.Text;
+using Hangfire.SQLite;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace Ramsey.NET
 {
@@ -45,12 +46,7 @@ namespace Ramsey.NET
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
-                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseMySql(Configuration.GetConnectionString("RamseyRelease"),
-                    mySqlOptions =>
-                    {
-                        mySqlOptions.ServerVersion(new Version(5, 7, 17), ServerType.MySql); // replace with your Server Version and Type
-                    }));
-
+                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
                 services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease")));
             }
             else

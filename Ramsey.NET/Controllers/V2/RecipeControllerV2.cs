@@ -56,7 +56,7 @@ namespace Ramsey.NET.Controllers.V2
                 Name = x.Name,
                 OwnerLogo = x.OwnerLogo,
                 Owner = x.Owner,
-                Ingredients = x.RecipeParts.Select(y=> y.IngredientId),
+                Ingredients = x.RecipeParts.Select(y => y.IngredientId),
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
                 {
                     IngredientID = y.IngredientId,
@@ -64,12 +64,14 @@ namespace Ramsey.NET.Controllers.V2
                     RecipeID = y.RecipeId,
                     Unit = y.Unit
                 }),
-                Coverage = (double)incIngredients.Count / 
-                                x.RecipeParts
-                                .Select(y=> y.IngredientId)
-                                .Distinct()
-                                .Count()
-            }).ToList();
+                Coverage = (double)x.RecipeParts
+                    .Select(y => y.IngredientId)
+                    .Intersect(incIngredients.Select(y => y.IngredientId))
+                    .Count() / x.RecipeParts.Count
+
+            })
+            .OrderByDescending(x => x.Coverage)
+            .ToList();
             
             return Json(dtos);
         }
