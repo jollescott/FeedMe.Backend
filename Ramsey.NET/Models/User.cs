@@ -9,8 +9,6 @@ namespace Ramsey.NET.Models
 {
     public class User
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string UserId { get; set; }
 
         public virtual ICollection<RecipeFavorite> RecipeFavorites { get; set; }

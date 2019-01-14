@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ramsey.Shared.Enums;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Ramsey.Shared.Dto
@@ -18,12 +19,5 @@ namespace Ramsey.Shared.Dto
         public RecipeProvider Owner { get; set; }
         public string OwnerLogo { get; set; }
         public string Image { get; set; }
-    }
-
-    public enum RecipeProvider
-    {
-        ICA, Hemmets,
-        ReceptSe,
-        Mathem
     }
 }

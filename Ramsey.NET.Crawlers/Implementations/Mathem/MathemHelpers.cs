@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Crawlers.Implementations.Mathem
 {

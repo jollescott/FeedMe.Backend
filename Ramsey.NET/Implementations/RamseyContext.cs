@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Ramsey.NET.Interfaces;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Implementations
 {
@@ -13,6 +10,39 @@ namespace Ramsey.NET.Implementations
         public RamseyContext(DbContextOptions<RamseyContext> options) : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            //Ingredient
+            modelBuilder.Entity<Ingredient>()
+                .HasKey(x => x.IngredientId);
+
+            modelBuilder.Entity<Ingredient>()
+                .Property(x => x.IngredientId)
+                .ValueGeneratedNever();
+
+            //User 
+            modelBuilder.Entity<User>()
+                .HasKey(x => x.UserId);
+
+            modelBuilder.Entity<User>()
+                .Property(x => x.UserId)
+                .ValueGeneratedNever();
+
+            //Recipe Meta
+            modelBuilder.Entity<RecipeMeta>()
+                .HasKey(x => x.RecipeId);
+
+            modelBuilder.Entity<RecipeMeta>()
+                .Property(x => x.RecipeId)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<RecipeMeta>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }

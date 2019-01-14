@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ramsey.NET.Implementations;
 using Ramsey.Shared.Enums;
@@ -9,9 +10,10 @@ using Ramsey.Shared.Enums;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    partial class RamseyContextModelSnapshot : ModelSnapshot
+    [Migration("20190114201914_Locale")]
+    partial class Locale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
