@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Ramsey.Shared.Interfaces;
+﻿using System.Threading.Tasks;
 
 namespace Ramsey.NET.Ingredients.Interfaces
 {
     public abstract class ABasicIngredientResolver : IIngredientResolver
     {
-        public abstract Task LoadResourcesAsync();
+        public abstract Task<string> ResolveIngredientAsync(string ingredient);
 
-        public abstract Task<IIngredient> ResolveIngredientAsync(IIngredient ingredient);
+        public abstract Task<string> ApplyRegexesAsync(string ingredient);
+        public abstract Task<string> LinkSynonymsAsync(string ingredient);
+        public abstract Task<string> RemoveIllegalsAsync(string ingredient);
     }
 }

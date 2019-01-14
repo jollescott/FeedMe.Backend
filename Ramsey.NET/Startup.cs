@@ -15,6 +15,8 @@ using System.Text;
 using Hangfire.SQLite;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
+using Ramsey.NET.Ingredients.Implementations;
+using Ramsey.NET.Ingredients.Interfaces;
 
 namespace Ramsey.NET
 {
@@ -56,6 +58,7 @@ namespace Ramsey.NET
             }
 
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
+            services.AddScoped<IIngredientResolver, BasicIngredientResolver>();
             services.AddScoped<ICrawlerService, CrawlerService>();
         }
 

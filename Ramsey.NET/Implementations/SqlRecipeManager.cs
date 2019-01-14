@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using System.Text.RegularExpressions;
+using Ramsey.NET.Ingredients.Interfaces;
 
 namespace Ramsey.NET.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
-        private  readonly IRamseyContext _context;
+        private readonly IRamseyContext _context;
+        private readonly IIngredientResolver _ingredientResolver;
 
-        public SqlRecipeManager(IRamseyContext context)
+        public SqlRecipeManager(IRamseyContext context, IIngredientResolver ingredientResolver)
         {
             _context = context;
+            _ingredientResolver = ingredientResolver;
         }
+
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
         {
             var recipe = _context.Recipes.AddIfNotExists(new RecipeMeta
@@ -40,7 +44,7 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                string ingredientId = partDto.IngredientID.FormatIngredientName();
+                string ingredientId = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientID);
                 string recipeId = recipeMetaDto.RecipeID;
 
                 if (ingredientId == null || recipeId == null ||
