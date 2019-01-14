@@ -41,12 +41,11 @@ namespace Ramsey.NET.Controllers.V2
             var excIngredients = ingredients.Where(x => x.Role == IngredientRole.Exclude).ToList();
             
             var recipeIds = incIngredients.SelectMany(x => x.RecipeParts)
-                .Select(x => x.RecipeID).ToList();
+                .Select(x => x.RecipeID).Distinct().ToList();
 
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
                 .Single(y => y.RecipeId.Equals(x)))
-                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)))
-                .DistinctBy(z => z.RecipeId);
+                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
 
             var dtos = recipes.Select(x => new RecipeMetaDtoV2
             {
