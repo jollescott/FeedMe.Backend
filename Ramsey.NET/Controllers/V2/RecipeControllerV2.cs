@@ -62,7 +62,7 @@ namespace Ramsey.NET.Controllers.V2
                 Name = x.Name,
                 OwnerLogo = x.OwnerLogo,
                 Owner = x.Owner,
-                Ingredients = x.RecipeParts.Select(y => y.IngredientId),
+                Ingredients = x.RecipeParts.Select(y => y.Ingredient.IngredientName),
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
                 {
                     IngredientID = y.IngredientId,

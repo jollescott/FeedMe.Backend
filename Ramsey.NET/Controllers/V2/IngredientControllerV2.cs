@@ -42,7 +42,8 @@ namespace Ramsey.NET.Controllers.V2
                     Quantity = y.Quantity,
                     Unit = y.Unit,
                 }).ToList(),
-                IngredientId = x.IngredientName,
+                IngredientId = x.IngredientId,
+                IngredientName = x.IngredientName,
                 Role = IngredientRole.Include
             }).ToList();
 

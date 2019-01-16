@@ -9,6 +9,7 @@ namespace Ramsey.Shared.Dto.V2
         public int IngredientId { get; set; }
         public IngredientRole Role { get; set; }
         public List<RecipePartDtoV2> RecipeParts { get; set; }
+        public string IngredientName { get; set; }
     }
 
     public enum IngredientRole
