@@ -44,26 +44,25 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                string ingredientId = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientID);
+                string ingredientName = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientName);
                 string recipeId = recipeMetaDto.RecipeID;
 
-                if (ingredientId == null || recipeId == null ||
-                    ingredientId == string.Empty || recipeId == string.Empty || 
-                    ingredientId.Contains("och"))
+                if (ingredientName == null || recipeId == null ||
+                    ingredientName == string.Empty || recipeId == string.Empty || 
+                    ingredientName.Contains("och"))
                     continue;
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {
-                    IngredientId = ingredientId
-                }, x => x.IngredientId == ingredientId);
+                    IngredientName = ingredientName
+                }, x => x.IngredientName == ingredientName);
 
                 await SaveRecipeChangesAsync();
 
                 var part = _context.RecipeParts.AddIfNotExists(new RecipePart
                 {
-                    IngredientId = ingredientId,
                     RecipeId = recipeId
-                }, x => x.RecipeId == recipeId && x.IngredientId == ingredientId);
+                }, x => x.RecipeId == recipeId && x.Ingredient.IngredientName == ingredientName);
 
                 await SaveRecipeChangesAsync();
 

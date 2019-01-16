@@ -21,7 +21,7 @@ namespace Ramsey.NET.Implementations
                 .HasKey(x => x.IngredientId);
 
             modelBuilder.Entity<Ingredient>()
-                .Property(x => x.IngredientId)
+                .Property(x => x.IngredientName)
                 .ValueGeneratedNever();
 
             //User 

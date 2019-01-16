@@ -51,11 +51,11 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
                 RecipeParts = recipeDetails.Ingredients.SelectMany(x => x.Ingredients).Select(x =>
                     new RecipePartDtoV2
                     {
-                        Quantity = x.Amount, RecipeID = recipeDetails.Id, IngredientID = x.Name.ToLower(), Unit = x.Unit
+                        Quantity = x.Amount, RecipeID = recipeDetails.Id, Unit = x.Unit
                     }),
             };
 
-            recipe.Ingredients = recipe.RecipeParts.Select(x => x.IngredientID).Distinct();
+            recipe.Ingredients = recipe.RecipeParts.Select(x => x.IngredientName).Distinct();
 
             if (includeAll)
                 recipe.Directions = recipeDetails.Instructions;

@@ -60,6 +60,7 @@ namespace Ramsey.NET
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<IIngredientResolver, BasicIngredientResolver>();
             services.AddScoped<ICrawlerService, CrawlerService>();
+            services.AddScoped<IPatcherService, IngredientPatcherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

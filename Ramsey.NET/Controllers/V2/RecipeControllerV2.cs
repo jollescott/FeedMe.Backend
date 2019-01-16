@@ -33,6 +33,13 @@ namespace Ramsey.NET.Controllers.V2
             return StatusCode(200);
         }
 
+        [Route("patch")]
+        public IActionResult Patch()
+        {
+            BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
+            return StatusCode(200);
+        }
+
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients)

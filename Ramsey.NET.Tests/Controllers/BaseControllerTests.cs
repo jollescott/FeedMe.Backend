@@ -64,11 +64,11 @@ namespace Ramsey.NET.Tests.Controllers
             
             _context.Ingredients.AddRange(new Ingredient
                 {
-                    IngredientId = "salt"
+                    IngredientName = "salt"
                 },
                 new Ingredient
                 {
-                    IngredientId = "tomat"
+                    IngredientName = "tomat"
                 });
 
             _context.SaveChanges();

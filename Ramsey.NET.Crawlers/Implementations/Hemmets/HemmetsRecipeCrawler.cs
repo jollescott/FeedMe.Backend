@@ -107,7 +107,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
             foreach(var ing_group in ingredient_groups)
             {
                 var part = new RecipePartDtoV2();
-                part.IngredientID = ing_group.First().ToLower();
+                part.IngredientName = ing_group.First().ToLower();
 
                 var unitGroup = ing_group.Last().Split(' ');
 
@@ -129,7 +129,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
             }
 
             recipeDto.RecipeParts = recipeParts;
-            recipeDto.Ingredients = recipeParts.Select(x => x.IngredientID).ToList();
+            recipeDto.Ingredients = recipeParts.Select(x => x.IngredientName).ToList();
 
             recipeDto.Source = url;
             recipeDto.Owner = RecipeProvider.Hemmets;

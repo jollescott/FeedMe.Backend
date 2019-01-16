@@ -70,7 +70,7 @@ namespace Ramsey.NET.Controllers.V2
                     Coverage = 100,
                     Image = x.Image,
                     Source = x.Source,
-                    Ingredients = x.RecipeParts.Select(y => y.IngredientId),
+                    Ingredients = x.RecipeParts.Select(y => y.Ingredient.IngredientName),
                     RecipeID = x.RecipeId,
                     Name = x.Name,
                     Owner = x.Owner,

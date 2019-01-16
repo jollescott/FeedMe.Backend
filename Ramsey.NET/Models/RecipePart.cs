@@ -5,7 +5,7 @@ namespace Ramsey.NET.Models
     {
         public int RecipePartId { get; set; }
 
-        public string IngredientId { get; set; }
+        public int IngredientId { get; set; }
         public string RecipeId { get; set; }
 
         public virtual RecipeMeta Recipe { get; set; }
