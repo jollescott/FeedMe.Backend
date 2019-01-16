@@ -48,12 +48,14 @@ namespace Ramsey.NET.Implementations
 
                 await _ramseyContext.SaveChangesAsync();
 
-                var toChange = _ramseyContext.RecipeParts.Where(x => x.IngredientId == modify.OldIngredient.IngredientId);
+                var toChange = _ramseyContext.RecipeParts.Where(x => x.IngredientId == modify.OldIngredient.IngredientId).ToList();
 
                 foreach(var part in toChange)
                 {
-                    part.IngredientId = newIngredient.IngredientId;
+                    part.Ingredient = newIngredient;
                     _ramseyContext.RecipeParts.Update(part);
+
+                    await _ramseyContext.SaveChangesAsync();
                 }
 
                 _ramseyContext.Ingredients.Remove(modify.OldIngredient);

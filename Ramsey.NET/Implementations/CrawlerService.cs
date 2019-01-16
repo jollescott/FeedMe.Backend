@@ -35,7 +35,7 @@ namespace Ramsey.NET.Implementations
         {   
             foreach (var crawler in Crawlers.Values)
             {
-                await crawler.ScrapeRecipesAsync(_recipeManager);
+                await crawler.ScrapeRecipesAsync(_recipeManager, -1);
             }
         }
 

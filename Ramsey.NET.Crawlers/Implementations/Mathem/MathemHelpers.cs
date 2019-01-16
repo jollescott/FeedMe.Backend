@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ramsey.Shared.Dto;
@@ -40,27 +41,37 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
     {
         public static RecipeDtoV2 ToRecipeDtoV2(this MathemRecipeDetails recipeDetails, bool includeAll = true)
         {
-            var recipe = new RecipeDtoV2
+            try
             {
-                Name = recipeDetails.Heading,
-                Image = recipeDetails.ImageUrl.Remove(0,2),
-                RecipeID = "MH" + recipeDetails.Id,
-                Owner = RecipeProvider.Mathem,
-                OwnerLogo = "https://static.mathem.se/images/logos/logo.svg",
-                Source = "https://www.mathem.se/recept/" + recipeDetails.Url,
-                RecipeParts = recipeDetails.Ingredients.SelectMany(x => x.Ingredients).Select(x =>
-                    new RecipePartDtoV2
-                    {
-                        Quantity = x.Amount, RecipeID = recipeDetails.Id, Unit = x.Unit
-                    }),
-            };
+                var recipe = new RecipeDtoV2
+                {
+                    Name = recipeDetails.Heading,
+                    Image = recipeDetails.ImageUrl.Length > 2 ? recipeDetails.ImageUrl.Remove(0, 2) : string.Empty,
+                    RecipeID = "MH" + recipeDetails.Id,
+                    Owner = RecipeProvider.Mathem,
+                    OwnerLogo = "https://static.mathem.se/images/logos/logo.svg",
+                    Source = "https://www.mathem.se/recept/" + recipeDetails.Url,
+                    RecipeParts = recipeDetails.Ingredients.SelectMany(x => x.Ingredients).Select(x =>
+                        new RecipePartDtoV2
+                        {
+                            Quantity = x.Amount,
+                            RecipeID = recipeDetails.Id,
+                            Unit = x.Unit,
+                            IngredientName = x.Name
+                        }),
+                };
 
-            recipe.Ingredients = recipe.RecipeParts.Select(x => x.IngredientName).Distinct();
+                recipe.Ingredients = recipe.RecipeParts.Select(x => x.IngredientName).Distinct();
 
-            if (includeAll)
-                recipe.Directions = recipeDetails.Instructions;
-            
-            return recipe;
+                if (includeAll)
+                    recipe.Directions = recipeDetails.Instructions;
+
+                return recipe;
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                throw new Exception();
+            }
         }
     }
 }

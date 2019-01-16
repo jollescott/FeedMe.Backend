@@ -47,10 +47,12 @@ namespace Ramsey.NET.Implementations
                 string ingredientName = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientName);
                 string recipeId = recipeMetaDto.RecipeID;
 
+                /*
                 if (ingredientName == null || recipeId == null ||
                     ingredientName == string.Empty || recipeId == string.Empty || 
                     ingredientName.Contains("och"))
                     continue;
+                    */
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {

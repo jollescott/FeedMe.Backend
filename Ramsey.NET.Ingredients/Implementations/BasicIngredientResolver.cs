@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -23,9 +24,9 @@ namespace Ramsey.NET.Ingredients.Implementations
             if (!File.Exists(Path.Join(path, "/Resources/regex.json")) || !File.Exists(Path.Join(path,"/Resources/removal.json")) || !File.Exists(Path.Join(path,"/Resources/synonyms.json")))
                 throw new Exception("Missing resource files!");
 
-            var regexJson = File.ReadAllText(Path.Join(path, "/Resources/regex.json"));
-            var removalJson = File.ReadAllText(Path.Join(path, "/Resources/removal.json"));
-            var synonymsJson = File.ReadAllText(Path.Join(path, "/Resources/synonyms.json"));
+            var regexJson = File.ReadAllText(Path.Join(path, "/Resources/regex.json"), System.Text.Encoding.GetEncoding(1252));
+            var removalJson = File.ReadAllText(Path.Join(path, "/Resources/removal.json"), System.Text.Encoding.GetEncoding(1252));
+            var synonymsJson = File.ReadAllText(Path.Join(path, "/Resources/synonyms.json"), System.Text.Encoding.GetEncoding(1252));
 
             try
             {
@@ -50,7 +51,7 @@ namespace Ramsey.NET.Ingredients.Implementations
                 output = regex.Replace(output, string.Empty);
             }
 
-            return Task.FromResult(output);
+            return Task.FromResult(output.ToLower());
         }
 
         public override Task<string> LinkSynonymsAsync(string ingredient)
