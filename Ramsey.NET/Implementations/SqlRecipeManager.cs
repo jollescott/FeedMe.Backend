@@ -61,12 +61,13 @@ namespace Ramsey.NET.Implementations
 
                 var part = _context.RecipeParts.AddIfNotExists(new RecipePart
                 {
-                    RecipeId = recipeId
+                    RecipeId = recipeId,
+                    IngredientId = ingredient.IngredientId
                 }, x => x.RecipeId == recipeId && x.Ingredient.IngredientName == ingredientName);
 
                 await SaveRecipeChangesAsync();
 
-                part.Ingredient = ingredient;
+                part.IngredientId = ingredient.IngredientId;
                 part.Recipe = recipe;
 
                 part.Quantity = partDto.Quantity;

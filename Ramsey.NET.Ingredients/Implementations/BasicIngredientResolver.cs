@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -18,12 +19,13 @@ namespace Ramsey.NET.Ingredients.Implementations
 
         public BasicIngredientResolver()
         {
-            if (!File.Exists("./Resources/regex.json") || !File.Exists("./Resources/removal.json") || !File.Exists("./Resources/synonyms.json"))
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            if (!File.Exists(Path.Join(path, "/Resources/regex.json")) || !File.Exists(Path.Join(path,"/Resources/removal.json")) || !File.Exists(Path.Join(path,"/Resources/synonyms.json")))
                 throw new Exception("Missing resource files!");
 
-            var regexJson = File.ReadAllText("./Resources/regex.json");
-            var removalJson = File.ReadAllText("./Resources/removal.json");
-            var synonymsJson = File.ReadAllText("./Resources/synonyms.json");
+            var regexJson = File.ReadAllText(Path.Join(path, "/Resources/regex.json"));
+            var removalJson = File.ReadAllText(Path.Join(path, "/Resources/removal.json"));
+            var synonymsJson = File.ReadAllText(Path.Join(path, "/Resources/synonyms.json"));
 
             try
             {
