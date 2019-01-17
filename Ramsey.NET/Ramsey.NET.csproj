@@ -11,28 +11,9 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <UserSecretsId>018c6936-fc54-43d4-af42-b354fb9f018b</UserSecretsId>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Areas\**" />
-    <Content Remove="Areas\**" />
-    <EmbeddedResource Remove="Areas\**" />
-    <None Remove="Areas\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Areas\Identity\Data\AdminContext.cs" />
-    <Compile Include="Areas\Identity\Data\RamseyAdmin.cs" />
-    <Compile Include="Areas\Identity\IdentityHostingStartup.cs" />
-    <Compile Include="Areas\Identity\Pages\Account\Login.cshtml.cs" />
-    <Compile Include="Areas\Identity\Pages\Account\Register.cshtml.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
-    <None Include="Areas\Identity\Pages\Account\Login.cshtml" />
-    <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
-    <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
-    <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
-    <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
-    <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
