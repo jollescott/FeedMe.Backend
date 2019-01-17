@@ -1,5 +1,5 @@
 import { Component, Pipe, PipeTransform } from '@angular/core'
-import { RamseyService, Recipe, Ingredient } from '../ramsey.service'
+import { RamseyService, Recipe, Ingredient } from '../services/ramsey.service';
 
 @Component({
   selector: 'test-editor',

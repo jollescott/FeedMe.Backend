@@ -17,6 +17,12 @@ using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.NET.Ingredients.Implementations;
 using Ramsey.NET.Ingredients.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using WebApi.Helpers;
+using AutoMapper;
+using Ramsey.NET.Helpers;
+using System.Threading.Tasks;
 
 namespace Ramsey.NET
 {
@@ -57,6 +63,50 @@ namespace Ramsey.NET
                 services.AddHangfire(config => config.ConnectHangfireTest(Configuration));
             }
 
+            services.AddAutoMapper();
+
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IAdminService>();
+                        var userId = int.Parse(context.Principal.Identity.Name);
+                        var user = userService.GetById(userId);
+                        if (user == null)
+                        {
+                            // return unauthorized if user no longer exists
+                            context.Fail("Unauthorized");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<IIngredientResolver, BasicIngredientResolver>();
             services.AddScoped<ICrawlerService, CrawlerService>();
@@ -80,6 +130,13 @@ namespace Ramsey.NET
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseAuthentication();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -90,7 +147,6 @@ namespace Ramsey.NET
             GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
 
             app.UseSpa(spa =>
             {

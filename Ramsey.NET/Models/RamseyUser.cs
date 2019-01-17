@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
-    public class User
+    public class RamseyUser
     {
         public string UserId { get; set; }
 

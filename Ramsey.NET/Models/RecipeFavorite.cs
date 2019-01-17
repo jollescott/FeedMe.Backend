@@ -13,6 +13,6 @@ namespace Ramsey.NET.Models
         public string RecipeId { get; set; }
 
         public virtual RecipeMeta Recipe { get; set; }
-        public virtual User Ingredient { get; set; }
+        public virtual RamseyUser Ingredient { get; set; }
     }
 }

@@ -25,10 +25,10 @@ namespace Ramsey.NET.Implementations
                 .ValueGeneratedNever();
 
             //User 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<RamseyUser>()
                 .HasKey(x => x.UserId);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<RamseyUser>()
                 .Property(x => x.UserId)
                 .ValueGeneratedNever();
 
@@ -50,6 +50,7 @@ namespace Ramsey.NET.Implementations
         public DbSet<RecipePart> RecipeParts { get; set; }
         public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
         public DbSet<RecipeRating> RecipeRatings { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<RamseyUser> RamseyUsers { get; set; }
+        public DbSet<AdminUser> AdminUsers { get; set; }
     }
 }
