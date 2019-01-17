@@ -7,7 +7,7 @@
       <h1>Search</h1>
       <ul>
         <li *ngFor="let ing of ingredients" (click)="onSearchSelect(ing)">
-          <span>{{ing.ingredientId}}</span>
+          <span>{{ing.ingredientName}}</span>
         </li>
       </ul>
     </div>
@@ -15,7 +15,7 @@
       <h1>Ingredients</h1>
       <ul>
         <li *ngFor="let ing of selected" (click)="onIngredientSelect(ing)">
-          <span>{{ing.ingredientId}}</span>
+          <span>{{ing.ingredientName}}</span>
         </li>
       </ul>
     </div>

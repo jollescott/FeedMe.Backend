@@ -54,6 +54,9 @@ namespace Ramsey.NET.Implementations
                     continue;
                     */
 
+                if (ingredientName == null || ingredientName == string.Empty)
+                    continue;
+
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {
                     IngredientName = ingredientName

@@ -33,7 +33,8 @@ export interface Recipe {
 }
 
 export interface Ingredient {
-  ingredientId: string;
+  ingredientId: number;
+  ingredientName: string;
   role: IngredientRole;
   recipeParts: RecipePart[];
 }
@@ -44,7 +45,9 @@ export enum IngredientRole {
 
 export interface RecipePart {
   ingredientId: string;
-  recipeId: string;
+  recipeId: number;
+
+  ingredientName: string;
 
   unit: string;
   quantity: number;
