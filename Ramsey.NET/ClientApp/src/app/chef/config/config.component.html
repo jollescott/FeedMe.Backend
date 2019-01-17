@@ -1,0 +1,24 @@
+<div class="container">
+  <div class='row'>
+    <div class="col-sm">
+      <h1>Synonyms</h1>
+      <button (click)="saveSyno">Save</button>
+
+      <textarea ([ngModel])="synoJson" rows="50" cols="50">
+      </textarea>
+    </div>
+
+    <div class="col-sm">
+      <h1>Bad Words</h1>
+
+      <button (click)="saveBad">Save</button>
+      <textarea ([ngModel])="badJson" rows="50" cols="50">
+      </textarea>
+    </div>
+
+    <div class="col-sm">
+      <button (click)="reindex">Re-index</button>
+      <button (click)="patch">Patch Ingredients</button>
+    </div>
+  </div>
+</div>

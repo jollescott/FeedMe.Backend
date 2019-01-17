@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -12,11 +13,13 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using WebApi.Helpers;
 
 namespace Ramsey.NET.Controllers
 {
     [Authorize]
+    [Route("admin")]
     public class AdminController : ControllerBase
     {
         private IAdminService _adminService;
@@ -69,7 +72,7 @@ namespace Ramsey.NET.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]AdminDto userDto)
+        public async System.Threading.Tasks.Task<IActionResult> RegisterAsync([FromBody]AdminDto userDto)
         {
             // map dto to entity
             var user = _mapper.Map<AdminUser>(userDto);
@@ -77,7 +80,7 @@ namespace Ramsey.NET.Controllers
             try
             {
                 // save 
-                _adminService.CreateAsync(user, userDto.Password);
+                await _adminService.CreateAsync(user, userDto.Password);
                 return Ok();
             }
             catch (AppException ex)
@@ -85,6 +88,22 @@ namespace Ramsey.NET.Controllers
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost]
+        [Route("reindex")]
+        public IActionResult Reindex()
+        {
+            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
+            return StatusCode(200);
+        }
+
+        [HttpPost]
+        [Route("patch")]
+        public IActionResult Patch()
+        {
+            BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
+            return StatusCode(200);
         }
 
         [HttpGet]

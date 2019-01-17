@@ -29,14 +29,14 @@ namespace Ramsey.NET.Controllers.V2
         [Route("reindex")]
         public IActionResult ReIndex()
         {
-            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
+            //BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
             return StatusCode(200);
         }
 
         [Route("patch")]
         public IActionResult Patch()
         {
-            BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
+            //BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
             return StatusCode(200);
         }
 

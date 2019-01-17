@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import decode from 'jwt-decode';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { retry } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
-  private message: string;
 
-  constructor(private _router: Router) { }
+  constructor(private http: HttpClient) { }
 
   /**
    * this is used to clear anything that needs to be removed
@@ -29,8 +30,30 @@ export class AuthService {
     return false;
   }
 
-  login(email: string, password: string): void {
-    this._router.navigate(['/chef']);
+  public async login(email: string, password: string): Promise<boolean> {
+    const url = window.location.origin + '/admin/authenticate';
+
+    console.log(url);
+
+    const login = {
+      Id: 0,
+      Firstname: "",
+      Lastname: "",
+      Username: email,
+      Password: password
+    } as LoginDto;
+
+    var admin = await this.http.post<Admin>(url, login).toPromise();
+
+    console.log(admin);
+
+    if (admin.token !== undefined) {
+      localStorage.setItem('token', admin.token);
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   /**
@@ -38,10 +61,25 @@ export class AuthService {
    */
   logout(): void {
     this.clear();
-    this._router.navigate(['/login']);
   }
 
   decode() {
     return decode(localStorage.getItem('token'));
   }
+}
+
+export interface LoginDto {
+  Id: number;
+  Firstname: string;
+  Lastname: string;
+  Username: string;
+  Password: string;
+}
+
+export interface Admin {
+  id: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  token: string;
 }

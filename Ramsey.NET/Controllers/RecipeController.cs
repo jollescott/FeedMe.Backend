@@ -25,7 +25,8 @@ namespace Ramsey.NET.Controllers
         [Route("reindex")]
         public IActionResult ReIndex()
         {
-            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
+
+            //BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
             return StatusCode(200);
         }
 

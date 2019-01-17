@@ -5,8 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { TestComponent } from './test/test.component'
 
 import { RamseyService } from './services/ramsey.service';
 import { AuthService } from './services/auth.service';
@@ -24,8 +22,6 @@ export const APP_ROUTES: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    FetchDataComponent,
-    TestComponent,
     LoginComponent,
     PageNotFoundComponent
   ],
