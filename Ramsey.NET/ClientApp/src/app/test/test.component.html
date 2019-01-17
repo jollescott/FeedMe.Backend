@@ -1,0 +1,37 @@
+<div class="container">
+  <div class='row'>
+    <div class="col-sm">
+      <textarea cols="25" [(ngModel)]="search"></textarea>
+      <button (click)="findIngredients()">Search</button>
+      <button (click)="findRecipe()">Gimme the food b0ss.</button>
+      <h1>Search</h1>
+      <ul>
+        <li *ngFor="let ing of ingredients" (click)="onSearchSelect(ing)">
+          <span>{{ing.ingredientId}}</span>
+        </li>
+      </ul>
+    </div>
+    <div class='col-sm'>
+      <h1>Ingredients</h1>
+      <ul>
+        <li *ngFor="let ing of selected" (click)="onIngredientSelect(ing)">
+          <span>{{ing.ingredientId}}</span>
+        </li>
+      </ul>
+    </div>
+    <div class='col-sm'>
+      <h1>Recipes</h1>
+      <ul>
+        <li *ngFor="let recipe of recipes">
+          <div class="card" style="width: 28rem;">
+            <img class="card-img-top" src="{{recipe.image}}" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">{{recipe.name}}</h5>
+              <p> {{recipe.coverage}} </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

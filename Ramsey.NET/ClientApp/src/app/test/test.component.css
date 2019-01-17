@@ -1,0 +1,10 @@
+ul {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 500px;
+  list-style-type: none;
+}
+
+.card{
+  margin: 50px;
+}
