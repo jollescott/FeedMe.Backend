@@ -17,6 +17,11 @@ export class RamseyService {
     const url = window.location.origin + '/v2/ingredient/suggest?search=' + search;
     return await this.http.get<Ingredient[]>(url).toPromise();
   }
+
+  async reindex(): Promise<any> {
+    const url = window.location.origin + '/admin/reindex';
+    return await this.http.post(url, null).toPromise();
+  }
 }
 
 export interface Recipe {

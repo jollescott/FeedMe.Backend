@@ -1,8 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
+import { JwtInterceptor } from './helpers';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+
 
 import { AppComponent } from './app.component';
 
@@ -32,7 +35,11 @@ export const APP_ROUTES: Routes = [
     RouterModule.forRoot(APP_ROUTES),
     ChefModule
   ],
-  providers: [RamseyService, AuthService],
+  providers: [
+    RamseyService,
+    AuthService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

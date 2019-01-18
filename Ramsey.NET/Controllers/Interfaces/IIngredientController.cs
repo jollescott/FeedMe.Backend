@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Controllers.Interfaces
 {
-    public interface IIngredientController
+    public interface IIngredientController<T>
     {
-        [Route("suggest")]
         IActionResult Suggest(string search);
+        IActionResult VerifyCollection([FromBody]List<T> ingredients);
     }
 }

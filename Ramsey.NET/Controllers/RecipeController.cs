@@ -11,7 +11,7 @@ using Ramsey.Shared.Dto;
 namespace Ramsey.NET.Controllers
 {
     [Route("recipe")]
-    public class RecipeController : Controller, IRecipeController<IngredientDto>
+    public class RecipeController : Controller, IRecipeController<IngredientDto, RecipeDto>
     {
         private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
@@ -60,6 +60,11 @@ namespace Ramsey.NET.Controllers
             };
 
             return Json(compRecipe);
+        }
+
+        public IActionResult VerifyCollection([FromBody] List<IngredientDto> recipes)
+        {
+            return StatusCode(401);
         }
     }
 }

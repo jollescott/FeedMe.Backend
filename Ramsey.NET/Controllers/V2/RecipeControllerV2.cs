@@ -15,7 +15,7 @@ using Ramsey.Shared.Dto.V2;
 namespace Ramsey.NET.Controllers.V2
 {
     [Route("v2/recipe")]
-    public class RecipeControllerV2 : Controller, IRecipeController<IngredientDtoV2>
+    public class RecipeControllerV2 : Controller, IRecipeController<IngredientDtoV2, RecipeDtoV2>
     {
         private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
@@ -91,6 +91,11 @@ namespace Ramsey.NET.Controllers.V2
             var recipe = await _crawlerService.ScrapeRecipeAsync(meta.Source, meta.Owner);
 
             return Json(recipe);
+        }
+
+        public IActionResult VerifyCollection([FromBody] List<IngredientDtoV2> recipes)
+        {
+            throw new NotImplementedException();
         }
     }
 }

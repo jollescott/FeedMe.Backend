@@ -13,7 +13,7 @@ using Ramsey.Shared.Dto.V2;
 namespace Ramsey.NET.Controllers.V2
 {
     [Route("v2/ingredient")]
-    public class IngredientControllerV2 : Controller, IIngredientController
+    public class IngredientControllerV2 : Controller, IIngredientController<IngredientDtoV2>
     {
         private readonly IRamseyContext _ramseyContext;
 
@@ -48,6 +48,11 @@ namespace Ramsey.NET.Controllers.V2
             }).ToList();
 
             return Json(ingredientsDtos);
+        }
+
+        public IActionResult VerifyCollection([FromBody] List<IngredientDtoV2> ingredients)
+        {
+            throw new NotImplementedException();
         }
     }
 }
