@@ -43,6 +43,14 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<RecipeMeta>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<BadWord>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<IngredientSynonym>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
@@ -51,6 +59,9 @@ namespace Ramsey.NET.Implementations
         public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
         public DbSet<RecipeRating> RecipeRatings { get; set; }
         public DbSet<RamseyUser> RamseyUsers { get; set; }
+
         public DbSet<AdminUser> AdminUsers { get; set; }
+        public DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
+        public DbSet<BadWord> BadWords { get; set; }
     }
 }

@@ -2,18 +2,16 @@
   <div class='row'>
     <div class="col-sm">
       <h1>Synonyms</h1>
-      <button (click)="saveSyno">Save</button>
+      <button (click)="saveSyno()">Save</button>
 
-      <textarea ([ngModel])="synoJson" rows="50" cols="50">
-      </textarea>
+      <json-editor #synoEditor [options]="editorOptions" [data]="synoData"></json-editor>
     </div>
 
     <div class="col-sm">
       <h1>Bad Words</h1>
 
-      <button (click)="saveBad">Save</button>
-      <textarea ([ngModel])="badJson" rows="50" cols="50">
-      </textarea>
+      <button (click)="saveBad()">Save</button>
+      <json-editor #badEditor [options]="editorOptions" [data]="badData"></json-editor>
     </div>
 
     <div class="col-sm">
@@ -22,3 +20,4 @@
     </div>
   </div>
 </div>
+

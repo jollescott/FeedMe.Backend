@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Ramsey.NET.Ingredients.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -14,35 +11,13 @@ namespace Ramsey.NET.Ingredients.Implementations
 {
     public class BasicIngredientResolver : ABasicIngredientResolver
     {
-        private readonly IList<string> _regex;
-        private readonly IList<string> _removal;
-        private readonly IDictionary<string, IList<string>> _synonyms;
-
-        public BasicIngredientResolver()
-        {
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-            if (!File.Exists(Path.Join(path, "/Resources/regex.json")) || !File.Exists(Path.Join(path,"/Resources/removal.json")) || !File.Exists(Path.Join(path,"/Resources/synonyms.json")))
-                throw new Exception("Missing resource files!");
-
-            var regexJson = File.ReadAllText(Path.Join(path, "/Resources/regex.json"), System.Text.Encoding.GetEncoding(1252));
-            var removalJson = File.ReadAllText(Path.Join(path, "/Resources/removal.json"), System.Text.Encoding.GetEncoding(1252));
-            var synonymsJson = File.ReadAllText(Path.Join(path, "/Resources/synonyms.json"), System.Text.Encoding.GetEncoding(1252));
-
-            try
-            {
-                _regex = JsonConvert.DeserializeObject<IList<string>>(regexJson);
-                _removal = JsonConvert.DeserializeObject<IList<string>>(removalJson);
-                _synonyms = JsonConvert.DeserializeObject<IDictionary<string, IList<string>>>(synonymsJson);
-            }
-            catch(Newtonsoft.Json.JsonSerializationException ex)
-            {
-                throw new Exception("Resources are malformed! " + ex.Message);
-            }
-        }
+        private IList<string> _regex;
+        private IList<string> _removal;
+        private IDictionary<string, IList<string>> _synonyms;
 
         public override Task<string> ApplyRegexesAsync(string ingredient)
         {
-            var output = ingredient;
+            var output = ingredient.ToLower();
 
             foreach(var pattern in _regex)
             {
@@ -51,7 +26,32 @@ namespace Ramsey.NET.Ingredients.Implementations
                 output = regex.Replace(output, string.Empty);
             }
 
-            return Task.FromResult(output.ToLower());
+            return Task.FromResult(output);
+        }
+
+        public override void Init(IList<string> removal, IDictionary<string, IList<string>> synonyms)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            if (!File.Exists(Path.Join(path, "/Resources/regex.json")) || !File.Exists(Path.Join(path, "/Resources/removal.json")) || !File.Exists(Path.Join(path, "/Resources/synonyms.json")))
+                throw new Exception("Missing resource files!");
+
+            var regexJson = File.ReadAllText(Path.Join(path, "/Resources/regex.json"), System.Text.Encoding.GetEncoding(1252));
+            //var removalJson = File.ReadAllText(Path.Join(path, "/Resources/removal.json"), System.Text.Encoding.GetEncoding(1252));
+            //var synonymsJson = File.ReadAllText(Path.Join(path, "/Resources/synonyms.json"), System.Text.Encoding.GetEncoding(1252));
+
+            try
+            {
+                _regex = JsonConvert.DeserializeObject<IList<string>>(regexJson);
+                //_removal = JsonConvert.DeserializeObject<IList<string>>(removalJson);
+                //_synonyms = JsonConvert.DeserializeObject<IDictionary<string, IList<string>>>(synonymsJson);
+
+                _removal = removal;
+                _synonyms = synonyms;
+            }
+            catch (Newtonsoft.Json.JsonSerializationException ex)
+            {
+                throw new Exception("Resources are malformed! " + ex.Message);
+            }
         }
 
         public override Task<string> LinkSynonymsAsync(string ingredient)

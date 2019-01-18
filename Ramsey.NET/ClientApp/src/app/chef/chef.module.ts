@@ -5,6 +5,7 @@ import { TestComponent } from './test/test.component';
 import { ConfigComponent } from './config/config.component';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../guards/auth-guard.service';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 export const dashboardRoutes: Routes = [
   {
@@ -22,7 +23,8 @@ export const dashboardRoutes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(dashboardRoutes)
+    RouterModule.forChild(dashboardRoutes),
+    NgJsonEditorModule
   ],
   declarations: [LayoutComponent, TestComponent, ConfigComponent],
   providers: [AuthGuard]

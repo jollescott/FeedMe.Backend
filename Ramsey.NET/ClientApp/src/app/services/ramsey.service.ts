@@ -22,6 +22,31 @@ export class RamseyService {
     const url = window.location.origin + '/admin/reindex';
     return await this.http.post(url, null).toPromise();
   }
+
+  async patch(): Promise<any> {
+    const url = window.location.origin + '/admin/patch';
+    return await this.http.post(url, null).toPromise();
+  }
+
+  async saveSyno(obj: any): Promise<any> {
+    const url = window.location.origin + '/admin/updateSyno';
+    return await this.http.post(url, obj).toPromise();
+  }
+
+  async getSyno(): Promise<any> {
+    const url = window.location.origin + '/admin/getSyno';
+    return await this.http.post(url, null).toPromise();
+  }
+
+  async saveBad(obj: any): Promise<any> {
+    const url = window.location.origin + '/admin/updateBad';
+    return await this.http.post(url, obj).toPromise();
+  }
+
+  async getBad(): Promise<any> {
+    const url = window.location.origin + '/admin/getBad';
+    return await this.http.post(url, null).toPromise();
+  }
 }
 
 export interface Recipe {

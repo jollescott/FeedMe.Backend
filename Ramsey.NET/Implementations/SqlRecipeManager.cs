@@ -22,6 +22,19 @@ namespace Ramsey.NET.Implementations
         {
             _context = context;
             _ingredientResolver = ingredientResolver;
+
+            var badWords = _context.BadWords.Select(x => x.Word).ToList();
+            var synonyms = new Dictionary<string, IList<string>>();
+
+            foreach(var pair in _context.IngredientSynonyms)
+            {
+                if (!synonyms.ContainsKey(pair.Correct))
+                    synonyms.Add(pair.Correct, new List<string> { pair.Wrong });
+                else
+                    synonyms[pair.Correct].Append(pair.Wrong);
+            }
+
+            _ingredientResolver.Init(badWords, synonyms);
         }
 
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
@@ -44,6 +57,9 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
+                if (partDto.IngredientName == null || partDto.IngredientName == string.Empty)
+                    continue;
+
                 string ingredientName = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientName);
                 string recipeId = recipeMetaDto.RecipeID;
 
@@ -53,9 +69,6 @@ namespace Ramsey.NET.Implementations
                     ingredientName.Contains("och"))
                     continue;
                     */
-
-                if (ingredientName == null || ingredientName == string.Empty)
-                    continue;
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {

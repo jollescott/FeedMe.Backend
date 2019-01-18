@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { JwtInterceptor } from './helpers';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
-
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import { AppComponent } from './app.component';
 
@@ -33,6 +32,7 @@ export const APP_ROUTES: Routes = [
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(APP_ROUTES),
+    NgJsonEditorModule,
     ChefModule
   ],
   providers: [

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RamseyService } from '../../services/ramsey.service';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 
 @Component({
   selector: 'app-config',
@@ -8,29 +9,47 @@ import { RamseyService } from '../../services/ramsey.service';
 })
 export class ConfigComponent implements OnInit {
 
-  synoJson: string;
-  badJson: string;
+  @ViewChild('synoEditor') synoEditor: JsonEditorComponent;
+  @ViewChild('badEditor') badEditor: JsonEditorComponent;
 
-  constructor(private ramsey: RamseyService) { }
+  public editorOptions: JsonEditorOptions;
+
+  constructor(private ramsey: RamseyService) {
+    this.editorOptions = new JsonEditorOptions()
+    this.editorOptions.modes = ['code', 'tree'];
+    this.editorOptions.mode = 'code';
+  }
 
   ngOnInit() {
+    this.ramsey.getSyno().then(obj => {
+      console.log(obj);
+      this.synoEditor.set(obj);
+    });
+
+    this.ramsey.getBad().then(obj => {
+      console.log(obj);
+      this.badEditor.set(obj);
+    });
   }
 
-  saveSyno() {
-
+  async saveSyno() {
+    await this.ramsey.saveSyno(this.synoEditor.get());
+    alert("Update succeeded");
   }
 
-  saveBad() {
-
+  async saveBad() {
+    await this.ramsey.saveBad(this.badEditor.get());
+    alert("Update succeeded");
   }
 
-  reindex() {
-    console.log("index");
-    this.ramsey.reindex();
+  async reindex() {
+    await this.ramsey.reindex();
+    alert("Reindexation has been started");
   }
 
-  patch() {
-
+  async patch() {
+    await this.ramsey.patch();
+    alert("Database is being patched");
   }
 
 }

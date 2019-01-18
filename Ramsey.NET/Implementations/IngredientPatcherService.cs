@@ -18,6 +18,19 @@ namespace Ramsey.NET.Implementations
         {
             _ingredientResolver = ingredientResolver;
             _ramseyContext = ramseyContext;
+
+            var badWords = _ramseyContext.BadWords.Select(x => x.Word).ToList();
+            var synonyms = new Dictionary<string, IList<string>>();
+
+            foreach (var pair in _ramseyContext.IngredientSynonyms)
+            {
+                if (!synonyms.ContainsKey(pair.Correct))
+                    synonyms.Add(pair.Correct, new List<string> { pair.Wrong });
+                else
+                    synonyms[pair.Correct].Append(pair.Wrong);
+            }
+
+            _ingredientResolver.Init(badWords, synonyms);
         }
 
         public async Task PatchIngredientsAsync()

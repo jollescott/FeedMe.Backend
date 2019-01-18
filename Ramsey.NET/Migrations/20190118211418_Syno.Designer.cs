@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ramsey.NET.Implementations;
 using Ramsey.Shared.Enums;
@@ -10,9 +11,10 @@ using Ramsey.Shared.Enums;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    partial class RamseyContextModelSnapshot : ModelSnapshot
+    [Migration("20190118211418_Syno")]
+    partial class Syno
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,23 +43,6 @@ namespace Ramsey.NET.Migrations
                     b.ToTable("AdminUsers");
                 });
 
-            modelBuilder.Entity("Ramsey.NET.Models.BadWord", b =>
-                {
-                    b.Property<int>("BadWordId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Locale")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Word");
-
-                    b.HasKey("BadWordId");
-
-                    b.ToTable("BadWords");
-                });
-
             modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
@@ -78,10 +63,6 @@ namespace Ramsey.NET.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Correct");
-
-                    b.Property<int>("Locale")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
 
                     b.Property<string>("Wrong");
 

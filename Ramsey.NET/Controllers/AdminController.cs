@@ -11,6 +11,7 @@ using Ramsey.NET.Models;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,18 +21,19 @@ namespace Ramsey.NET.Controllers
 {
     [Authorize]
     [Route("admin")]
-    public class AdminController : ControllerBase
+    public class AdminController : Controller
     {
         private IAdminService _adminService;
+        private readonly IRamseyContext _ramseyContext;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
-        public AdminController(
-            IAdminService adminService,
+        public AdminController(IAdminService adminService, IRamseyContext ramseyContext,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
             _adminService = adminService;
+            _ramseyContext = ramseyContext;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
@@ -70,7 +72,6 @@ namespace Ramsey.NET.Controllers
             });
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
         public async System.Threading.Tasks.Task<IActionResult> RegisterAsync([FromBody]AdminDto userDto)
         {
@@ -105,6 +106,72 @@ namespace Ramsey.NET.Controllers
             BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
             return StatusCode(200);
         }
+
+        [HttpPost]
+        [Route("getSyno")]
+        public IActionResult GetSyno()
+        {
+            var keys = _ramseyContext.IngredientSynonyms.Select(x => x.Correct).Distinct();
+            var dict = new Dictionary<string, IEnumerable<string>>();
+
+            foreach(var key in keys)
+            {
+                var synonyms = _ramseyContext.IngredientSynonyms.Where(x => x.Correct == key).Select(x => x.Wrong);
+                dict.Add(key, synonyms);
+            }
+
+            return Json(dict);
+        }
+
+        [HttpPost]
+        [Route("updateSyno")]
+        public async Task<IActionResult> UpdateSynoAsync([FromBody]IDictionary<string, IEnumerable<string>> synonyms)
+        {
+            foreach(var pair in synonyms)
+            {
+                foreach(var synonym in pair.Value)
+                {
+                    if (_ramseyContext.IngredientSynonyms.Where(x => x.Correct == pair.Key).All(y => y.Wrong != synonym))
+                    {
+                        _ramseyContext.IngredientSynonyms.Add(new IngredientSynonym
+                        {
+                            Correct = pair.Key,
+                            Wrong = synonym
+                        });
+
+                        await _ramseyContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return StatusCode(200);
+        }
+
+        [HttpPost]
+        [Route("getBad")]
+        public IActionResult GetBad()
+        {
+            var words = _ramseyContext.BadWords.Select(x => x.Word);
+            return Json(words);
+        }
+
+        [HttpPost]
+        [Route("updateBad")]
+        public async Task<IActionResult> UpdateBadAsync([FromBody]IEnumerable<string> words)
+        {
+            foreach(var word in words)
+            {
+                if(_ramseyContext.BadWords.All(x => x.Word != word))
+                {
+                    _ramseyContext.BadWords.Add(new BadWord { Word = word });
+                    await _ramseyContext.SaveChangesAsync();
+                }
+            }
+
+            return StatusCode(200);
+        }
+
+        /*
 
         [HttpGet]
         public IActionResult GetAll()
@@ -147,7 +214,7 @@ namespace Ramsey.NET.Controllers
         {
             _adminService.DeleteAsync(id);
             return Ok();
-        }
+        }*/
     }
 }
 
