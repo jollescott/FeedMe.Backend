@@ -4,14 +4,14 @@
       <h1>Synonyms</h1>
       <button (click)="saveSyno()">Save</button>
 
-      <json-editor #synoEditor [options]="editorOptions" [data]="synoData"></json-editor>
+      <json-editor #synoEditor [options]="editorOptions"></json-editor>
     </div>
 
     <div class="col-sm">
       <h1>Bad Words</h1>
 
       <button (click)="saveBad()">Save</button>
-      <json-editor #badEditor [options]="editorOptions" [data]="badData"></json-editor>
+      <json-editor #badEditor [options]="editorOptions"></json-editor>
     </div>
 
     <div class="col-sm">
