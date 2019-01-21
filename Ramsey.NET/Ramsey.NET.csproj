@@ -17,17 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.21" />
     <PackageReference Include="Hangfire.SQLite.Core" Version="1.0.2" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.6.21" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.10" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.13" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.0" />
   </ItemGroup>
@@ -44,6 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj" />
+    <ProjectReference Include="..\Ramsey.NET.Ingredients\Ramsey.NET.Ingredients.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
   </ItemGroup>
 

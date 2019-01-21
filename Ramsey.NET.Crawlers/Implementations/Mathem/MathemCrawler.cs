@@ -21,6 +21,9 @@ namespace Ramsey.NET.Crawlers.Implementations.Mathem
         
         public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = 1000)
         {
+            if (amount == -1)
+                amount = 1000;
+
             var response = await _httpClient.GetAsync(MathemAllRecipesApi + amount);
             var json = await response.Content.ReadAsSwedishStringAsync();
 

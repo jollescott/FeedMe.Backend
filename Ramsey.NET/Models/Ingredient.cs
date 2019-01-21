@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using MySql.Data.EntityFrameworkCore.DataAnnotations;
+﻿using System.Collections.Generic;
 
 namespace Ramsey.NET.Models
 {
-    [MySqlCharset("utf8")]
-    public class Ingredient
+    public class Ingredient 
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string IngredientId { get; set; }
-
+        public int IngredientId { get; set; }
+        public string IngredientName { get; set; }
         public virtual ICollection<RecipePart> RecipeParts { get; set; }
     }
 }

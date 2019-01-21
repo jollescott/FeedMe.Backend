@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Controllers.Interfaces
 {
-    public interface IRecipeController<T>
+    public interface IRecipeController<TIngredient, TRecipe>
     {
         [Route("reindex")]
         IActionResult ReIndex();
 
         [Route("suggest")]
         [HttpPost]
-        IActionResult Suggest([FromBody]List<T> ingredients);
+        IActionResult Suggest([FromBody]List<TIngredient> ingredients);
+
+        IActionResult VerifyCollection([FromBody]List<TIngredient> recipes);
 
         [Route("retrieve")]
         Task<IActionResult> RetrieveAsync(string id);

@@ -8,6 +8,7 @@ using HtmlAgilityPack;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 using Ramsey.Shared.Extensions;
 
 namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
@@ -55,7 +56,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
             recipeDto.Owner = RecipeProvider.ReceptSe;
             recipeDto.Source = url;
             recipeDto.RecipeParts = GetRecipeParts(document, recipeDto.RecipeID);
-            recipeDto.Ingredients = recipeDto.RecipeParts?.Select(x => x.IngredientID);
+            recipeDto.Ingredients = recipeDto.RecipeParts?.Select(x => x.IngredientName);
             recipeDto.Image = GetRecipeLogo(document);
             recipeDto.OwnerLogo = GetReceptSeLogo(document);
 
@@ -138,7 +139,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
                 
                 if(amount == null && name == null) continue;
 
-                var recipePart = new RecipePartDtoV2 {IngredientID = name, RecipeID = recipeid};
+                var recipePart = new RecipePartDtoV2 {IngredientName = name, RecipeID = recipeid};
 
                 if (!string.IsNullOrEmpty(amount))
                 {

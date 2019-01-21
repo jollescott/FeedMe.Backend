@@ -1,12 +1,10 @@
-﻿using MySql.Data.EntityFrameworkCore.DataAnnotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {
-    [MySqlCharset("utf8")]
     public class RecipeFavorite
     {
         public int RecipeFavoriteId { get; set; }
@@ -15,6 +13,6 @@ namespace Ramsey.NET.Models
         public string RecipeId { get; set; }
 
         public virtual RecipeMeta Recipe { get; set; }
-        public virtual User Ingredient { get; set; }
+        public virtual RamseyUser Ingredient { get; set; }
     }
 }

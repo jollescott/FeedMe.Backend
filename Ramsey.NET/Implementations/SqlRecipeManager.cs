@@ -9,17 +9,34 @@ using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using System.Text.RegularExpressions;
+using Ramsey.NET.Ingredients.Interfaces;
 
 namespace Ramsey.NET.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
-        private  readonly IRamseyContext _context;
+        private readonly IRamseyContext _context;
+        private readonly IIngredientResolver _ingredientResolver;
 
-        public SqlRecipeManager(IRamseyContext context)
+        public SqlRecipeManager(IRamseyContext context, IIngredientResolver ingredientResolver)
         {
             _context = context;
+            _ingredientResolver = ingredientResolver;
+
+            var badWords = _context.BadWords.Select(x => x.Word).ToList();
+            var synonyms = new Dictionary<string, IList<string>>();
+
+            foreach(var pair in _context.IngredientSynonyms)
+            {
+                if (!synonyms.ContainsKey(pair.Correct))
+                    synonyms.Add(pair.Correct, new List<string> { pair.Wrong });
+                else
+                    synonyms[pair.Correct].Append(pair.Wrong);
+            }
+
+            _ingredientResolver.Init(badWords, synonyms);
         }
+
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
         {
             var recipe = _context.Recipes.AddIfNotExists(new RecipeMeta
@@ -40,30 +57,35 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                string ingredientId = partDto.IngredientID.FormatIngredientName();
+                if (partDto.IngredientName == null || partDto.IngredientName == string.Empty)
+                    continue;
+
+                string ingredientName = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientName);
                 string recipeId = recipeMetaDto.RecipeID;
 
-                if (ingredientId == null || recipeId == null ||
-                    ingredientId == string.Empty || recipeId == string.Empty || 
-                    ingredientId.Contains("och"))
+                /*
+                if (ingredientName == null || recipeId == null ||
+                    ingredientName == string.Empty || recipeId == string.Empty || 
+                    ingredientName.Contains("och"))
                     continue;
+                    */
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {
-                    IngredientId = ingredientId
-                }, x => x.IngredientId == ingredientId);
+                    IngredientName = ingredientName
+                }, x => x.IngredientName == ingredientName);
 
                 await SaveRecipeChangesAsync();
 
                 var part = _context.RecipeParts.AddIfNotExists(new RecipePart
                 {
-                    IngredientId = ingredientId,
-                    RecipeId = recipeId
-                }, x => x.RecipeId == recipeId && x.IngredientId == ingredientId);
+                    RecipeId = recipeId,
+                    IngredientId = ingredient.IngredientId
+                }, x => x.RecipeId == recipeId && x.Ingredient.IngredientName == ingredientName);
 
                 await SaveRecipeChangesAsync();
 
-                part.Ingredient = ingredient;
+                part.IngredientId = ingredient.IngredientId;
                 part.Recipe = recipe;
 
                 part.Quantity = partDto.Quantity;

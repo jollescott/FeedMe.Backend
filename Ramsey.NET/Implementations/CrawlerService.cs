@@ -9,6 +9,7 @@ using Ramsey.NET.Crawlers.Implementations.ReceptSe;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Implementations
 {
@@ -34,7 +35,7 @@ namespace Ramsey.NET.Implementations
         {   
             foreach (var crawler in Crawlers.Values)
             {
-                await crawler.ScrapeRecipesAsync(_recipeManager);
+                await crawler.ScrapeRecipesAsync(_recipeManager, -1);
             }
         }
 

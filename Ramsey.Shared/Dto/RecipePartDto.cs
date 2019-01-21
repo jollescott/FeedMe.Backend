@@ -2,7 +2,7 @@
 {
     public class RecipePartDto
     {
-        public string IngredientID { get; set; }
+        public int IngredientID { get; set; }
         public string RecipeID { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace Ramsey.Shared.Misc
 {
     public class RamseyApi
     {
-        public static string Base => "https://ramsey.azurewebsites.net/";
+        public static string Base => "https://api.feedmeapp.se/";
 
         public class V1
         {

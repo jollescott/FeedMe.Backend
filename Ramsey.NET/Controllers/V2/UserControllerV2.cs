@@ -25,10 +25,10 @@ namespace Ramsey.NET.Controllers.V2
         [Route("sync")]
         public async Task<ActionResult> SyncUserAsync([FromBody]UserDtoV2 userDto)
         {
-            if (_ramseyContext.Users.Any(x => x.UserId == userDto.UserId))
+            if (_ramseyContext.RamseyUsers.Any(x => x.UserId == userDto.UserId))
                 return StatusCode(200);
             else
-                _ramseyContext.Users.Add(new Models.User
+                _ramseyContext.RamseyUsers.Add(new Models.RamseyUser
                 {
                     UserId = userDto.UserId
                 });

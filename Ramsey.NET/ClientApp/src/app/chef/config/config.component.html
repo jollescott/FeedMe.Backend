@@ -1,0 +1,23 @@
+<div class="container">
+  <div class='row'>
+    <div class="col-sm">
+      <h1>Synonyms</h1>
+      <button (click)="saveSyno()">Save</button>
+
+      <json-editor #synoEditor [options]="editorOptions"></json-editor>
+    </div>
+
+    <div class="col-sm">
+      <h1>Bad Words</h1>
+
+      <button (click)="saveBad()">Save</button>
+      <json-editor #badEditor [options]="editorOptions"></json-editor>
+    </div>
+
+    <div class="col-sm">
+      <button (click)="reindex()">Re-index</button>
+      <button (click)="patch()">Patch Ingredients</button>
+    </div>
+  </div>
+</div>
+

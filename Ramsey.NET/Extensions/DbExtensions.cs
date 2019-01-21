@@ -66,7 +66,15 @@ namespace Ramsey.NET.Extensions
         public static T AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
         {
             var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any();
-            return !exists ? dbSet.Add(entity).Entity : dbSet.Single(predicate);
+
+            try
+            {
+                return !exists ? dbSet.Add(entity).Entity : dbSet.Single(predicate);
+            }
+            catch(InvalidOperationException ex)
+            {
+                throw new Exception();
+            }
         }
     }
 }
