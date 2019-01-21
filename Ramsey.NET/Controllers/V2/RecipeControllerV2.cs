@@ -51,6 +51,7 @@ namespace Ramsey.NET.Controllers.V2
                 .Select(x => x.RecipeID).Distinct().ToList();
 
             var foundRecipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
+                .AsNoTracking()
                 .Single(y => y.RecipeId.Equals(x)))
                 .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
 
@@ -61,37 +62,30 @@ namespace Ramsey.NET.Controllers.V2
                 Coverage = (double)x.RecipeParts
                     .Select(y => y.IngredientId)
                     .Intersect(incIngredients.Select(y => y.IngredientId))
-                    .Count() / x.RecipeParts.Count
+                    .Count() / x.RecipeParts.Count,
 
-            })
-            .OrderByDescending(x => x.Coverage)
-            .Skip(start)
-            .Take(start + 25)
-            .ToList();
-
-            //Then only load the selected ones 
-            foreach(var dto in dtos)
-            {
-                var recipe = foundRecipes.Single(x => x.RecipeId == dto.RecipeID);
-
-                dto.Image = recipe.Image;
-                dto.Source = recipe.Source;
-                dto.Name = recipe.Name;
-                dto.OwnerLogo = recipe.OwnerLogo;
-                dto.Owner = recipe.Owner;
-
-                dto.Ingredients = _ramseyContext.RecipeParts.Where(y => y.RecipeId == recipe.RecipeId)
+                Ingredients = _ramseyContext.RecipeParts.Where(y => y.RecipeId == x.RecipeId)
+                    .AsNoTracking()
                     .Include(j => j.Ingredient)
-                    .Select(z => z.Ingredient.IngredientName);
+                    .Select(z => z.Ingredient.IngredientName),
 
-                dto.RecipeParts = recipe.RecipeParts.Select(y => new RecipePartDtoV2
+                RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
                 {
                     IngredientID = y.IngredientId,
                     Quantity = y.Quantity,
                     RecipeID = y.RecipeId,
                     Unit = y.Unit
-                });
-            }
+                }),
+
+                Image = x.Image,
+                Source = x.Source,
+                Name = x.Name,
+                OwnerLogo = x.OwnerLogo,
+                Owner = x.Owner
+            })
+            .OrderByDescending(x => x.Coverage)
+            .Skip(start)
+            .Take(start + 25);
             
             return Json(dtos);
         }
@@ -99,7 +93,7 @@ namespace Ramsey.NET.Controllers.V2
         [Route("retrieve")]
         public async Task<IActionResult> RetrieveAsync(string id)
         {
-            var meta = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
+            var meta = await _ramseyContext.Recipes.AsNoTracking().Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
             var recipe = await _crawlerService.ScrapeRecipeAsync(meta.Source, meta.Owner);
 
             return Json(recipe);
