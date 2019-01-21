@@ -65,7 +65,6 @@ namespace Ramsey.NET.Controllers.V2
 
             })
             .OrderByDescending(x => x.Coverage)
-            .ThenBy(x => x.Name)
             .Skip(start)
             .Take(start + 25)
             .ToList();
