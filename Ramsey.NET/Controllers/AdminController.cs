@@ -126,7 +126,7 @@ namespace Ramsey.NET.Controllers
         [HttpPost]
         [Route("updateSyno")]
         public async Task<IActionResult> UpdateSynoAsync([FromBody]IDictionary<string, IEnumerable<string>> synonyms)
-        {
+        { 
             foreach(var pair in synonyms)
             {
                 foreach(var synonym in pair.Value)
@@ -138,10 +138,25 @@ namespace Ramsey.NET.Controllers
                             Correct = pair.Key,
                             Wrong = synonym
                         });
-
-                        await _ramseyContext.SaveChangesAsync();
                     }
+
+                    var toRemove = _ramseyContext.IngredientSynonyms.Where(x => x.Correct == pair.Key).Where(y => !pair.Value.Contains(y.Wrong)).ToList();
+
+                    if (toRemove.Count() > 0)
+                    {
+                        _ramseyContext.IngredientSynonyms.RemoveRange(toRemove);
+                    }
+
+                    await _ramseyContext.SaveChangesAsync();
                 }
+            }
+
+            var removed = _ramseyContext.IngredientSynonyms.Where(x => !synonyms.Keys.Contains(x.Correct));
+
+            if(removed.Count() > 0)
+            {
+                _ramseyContext.IngredientSynonyms.RemoveRange(removed);
+                await _ramseyContext.SaveChangesAsync();
             }
 
             return StatusCode(200);
@@ -166,6 +181,14 @@ namespace Ramsey.NET.Controllers
                     _ramseyContext.BadWords.Add(new BadWord { Word = word });
                     await _ramseyContext.SaveChangesAsync();
                 }
+            }
+
+            var removed = _ramseyContext.BadWords.Where(x => !words.Contains(x.Word));
+            
+            if(removed.Count() > 0)
+            {
+                _ramseyContext.BadWords.RemoveRange(removed);
+                await _ramseyContext.SaveChangesAsync();
             }
 
             return StatusCode(200);
