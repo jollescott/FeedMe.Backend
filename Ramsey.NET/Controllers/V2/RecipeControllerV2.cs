@@ -42,7 +42,7 @@ namespace Ramsey.NET.Controllers.V2
 
         [Route("suggest")]
         [HttpPost]
-        public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients, int start = 0)
+        public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients)
         {
             var incIngredients = ingredients.Where(x => x.Role == IngredientRole.Include).ToList();
             var excIngredients = ingredients.Where(x => x.Role == IngredientRole.Exclude).ToList();
@@ -50,14 +50,28 @@ namespace Ramsey.NET.Controllers.V2
             var recipeIds = incIngredients.SelectMany(x => x.RecipeParts)
                 .Select(x => x.RecipeID).Distinct().ToList();
 
-            var foundRecipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
+            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
                 .Single(y => y.RecipeId.Equals(x)))
                 .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
 
-            //Calc coverage first
-            var dtos = foundRecipes.Select(x => new RecipeMetaDtoV2
+            var dtos = recipes.Select(x => new RecipeMetaDtoV2
             {
+                Image = x.Image,
                 RecipeID = x.RecipeId,
+                Source = x.Source,
+                Name = x.Name,
+                OwnerLogo = x.OwnerLogo,
+                Owner = x.Owner,
+                Ingredients = _ramseyContext.RecipeParts.Where(y => y.RecipeId == x.RecipeId)
+                    .Include(j => j.Ingredient)
+                    .Select(z => z.Ingredient.IngredientName),
+                RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
+                {
+                    IngredientID = y.IngredientId,
+                    Quantity = y.Quantity,
+                    RecipeID = y.RecipeId,
+                    Unit = y.Unit
+                }),
                 Coverage = (double)x.RecipeParts
                     .Select(y => y.IngredientId)
                     .Intersect(incIngredients.Select(y => y.IngredientId))
@@ -65,34 +79,7 @@ namespace Ramsey.NET.Controllers.V2
 
             })
             .OrderByDescending(x => x.Coverage)
-            .ThenBy(x => x.Name)
-            .Skip(start)
-            .Take(start + 25)
             .ToList();
-
-            //Then only load the selected ones 
-            foreach(var dto in dtos)
-            {
-                var recipe = foundRecipes.Single(x => x.RecipeId == dto.RecipeID);
-
-                dto.Image = recipe.Image;
-                dto.Source = recipe.Source;
-                dto.Name = recipe.Name;
-                dto.OwnerLogo = recipe.OwnerLogo;
-                dto.Owner = recipe.Owner;
-
-                dto.Ingredients = _ramseyContext.RecipeParts.Where(y => y.RecipeId == recipe.RecipeId)
-                    .Include(j => j.Ingredient)
-                    .Select(z => z.Ingredient.IngredientName);
-
-                dto.RecipeParts = recipe.RecipeParts.Select(y => new RecipePartDtoV2
-                {
-                    IngredientID = y.IngredientId,
-                    Quantity = y.Quantity,
-                    RecipeID = y.RecipeId,
-                    Unit = y.Unit
-                });
-            }
             
             return Json(dtos);
         }
