@@ -50,7 +50,8 @@ namespace Ramsey.NET.Controllers.V2
             var recipeIds = _ramseyContext.RecipeParts
                 .Where(x => incIngredients.Any(y => y == x.IngredientId))
                 .Select(x => x.RecipeId)
-                .Distinct();
+                .Distinct()
+                .ToList();
 
             /*
             var foundRecipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
@@ -60,10 +61,11 @@ namespace Ramsey.NET.Controllers.V2
             */
 
             var foundRecipes = _ramseyContext.Recipes
+                .Include(x => x.RecipeParts)
+                .ThenInclude(x => x.Ingredient)
                 .Where(x => recipeIds.Any(y => y == x.RecipeId))
                 .Where(x => x.RecipeParts.All(y => excIngredients.All(z => y.IngredientId != z)))
-                .Include(x => x.RecipeParts)
-                .ThenInclude(x => x.Ingredient);
+                .ToList();
 
             //Calc coverage first
             var dtos = foundRecipes.Select(x => new RecipeMetaDtoV2
@@ -94,7 +96,8 @@ namespace Ramsey.NET.Controllers.V2
             .OrderByDescending(x => x.Coverage)
             .OrderByDescending(x => x.Name)
             .Skip(start)
-            .Take(start + 25);
+            .Take(start + 25)
+            .ToList();
             
             return Json(dtos);
         }
