@@ -38,7 +38,7 @@ namespace Ramsey.NET.Tests.Controllers
                 Unit = y.Unit
             }).ToList();
             
-            var recipes = controller.Suggest(new List<IngredientDtoV2>
+            var recipes = controller.SuggestAsync(new List<IngredientDtoV2>
             {
                 new IngredientDtoV2
                 {
@@ -95,7 +95,7 @@ namespace Ramsey.NET.Tests.Controllers
                 Unit = y.Unit
             }).ToList();
             
-            var recipes = controller.Suggest(new List<IngredientDtoV2>
+            var recipes = controller.SuggestAsync(new List<IngredientDtoV2>
             {
                 new IngredientDtoV2
                 {

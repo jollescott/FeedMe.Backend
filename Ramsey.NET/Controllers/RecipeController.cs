@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,6 @@ namespace Ramsey.NET.Controllers
         {
             var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).Distinct().ToList();
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
-
             return Json(recipes);
         }
 
