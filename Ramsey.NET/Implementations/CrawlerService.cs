@@ -1,11 +1,7 @@
 ﻿using Ramsey.NET.Interfaces;
-using Ramsey.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Ramsey.NET.Crawlers.Implementations.Hemmets;
-using Ramsey.NET.Crawlers.Implementations.Mathem;
-using Ramsey.NET.Crawlers.Implementations.ReceptSe;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
@@ -25,7 +21,9 @@ namespace Ramsey.NET.Implementations
             /* {RecipeProvider.Hemmets, new HemmetsRecipeCrawler()},
              {RecipeProvider.ReceptSe, new ReceptSeCrawler()},
              {RecipeProvider.Mathem, new MathemCrawler()}*/
-            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) }
+            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
+            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
+            {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) }
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)

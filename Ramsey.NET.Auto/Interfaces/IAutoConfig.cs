@@ -15,7 +15,7 @@ namespace Ramsey.NET.Auto
         string ProviderId { get; }
 
         string ProviderLogo { get; }
-        string ProviderName { get; }
+        RecipeProvider ProviderName { get; }
 
         int RecipeCount { get; }
         int PageItemCount { get; }

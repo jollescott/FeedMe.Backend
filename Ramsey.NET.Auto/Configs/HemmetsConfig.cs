@@ -18,7 +18,7 @@ namespace Ramsey.NET.Auto.Configs
 
         public string ProviderLogo => "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/UU_logo.jpg/628px-UU_logo.jpg";
 
-        public string ProviderName => "Hemmets Kokbok";
+        public RecipeProvider ProviderName => RecipeProvider.Hemmets;
 
         public Func<string, string> ParseId => (url) => {
             return "HM" + url.Split('=').Last();

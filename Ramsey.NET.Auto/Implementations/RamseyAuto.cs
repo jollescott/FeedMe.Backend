@@ -35,7 +35,7 @@ namespace Ramsey.NET.Auto
         public async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
             Uri uri;
-            if (Uri.CheckSchemeName(url))
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 uri = new Uri(url);
             else
                 uri = new Uri(Config.RootPage + url);
@@ -78,7 +78,8 @@ namespace Ramsey.NET.Auto
             recipe.Ingredients = document.DocumentNode
                     .SelectNodes(Config.IngredientsXPath)
                     .Select(x => WebUtility.HtmlDecode(x.InnerText))
-                    .Select(x => x.Replace("\t", " "))
+                    .Select(x => x.Replace("\t", ""))
+                    .Select(x => x.Replace("\n", string.Empty))
                     .Select(x => x.Replace('.', ','))
                     .ToList();
 
@@ -120,7 +121,7 @@ namespace Ramsey.NET.Auto
 
             recipe.OwnerLogo = Config.ProviderLogo;
             recipe.Source = uri.ToString();
-            recipe.Owner = Ramsey.Shared.Enums.RecipeProvider.Hemmets;
+            recipe.Owner = Config.ProviderName;
 
             return recipe;
         }
