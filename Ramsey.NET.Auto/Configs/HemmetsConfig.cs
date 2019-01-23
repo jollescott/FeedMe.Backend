@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Ramsey.Shared.Enums;
 
@@ -30,17 +31,16 @@ namespace Ramsey.NET.Auto.Configs
                     .Value;
         };
 
-        Func<int, HtmlDocument, HttpResponseMessage> NextPage => (index, doc) => {
-            var postData = $"offset={offset}";
-
-            return .PostAsync(RECIPE_LIST_URL, new StringContent(postData, Encoding.GetEncoding(1252), "application/x-www-form-urlencoded"));
+        public Func<int, HtmlDocument, HttpClient, Task<HttpResponseMessage>> NextPage => (index, doc, client) => {
+            var postData = $"offset={(index+1) * PageItemCount}";
+            return client.PostAsync("https://kokboken.ikv.uu.se/receptlista.php?cat=0", new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded"));
         };
 
         public Func<string, string> ProcessIngredient => (ing) => Regex.Replace(ing, "([0-9]\\d*(\\,\\d+)? g)", string.Empty);
 
-        public string RootPage => "https://kokboken.ikv.uu.se/receptlista.php?cat=0";
+        public string RootPage => "https://kokboken.ikv.uu.se/";
 
-        public string RecipeItemXPath => "/html/body/div[2]/div[2]/div/form/table[1]/tbody/tr/td/strong/a";
+        public string RecipeItemXPath => "/html/body/div[2]/div[2]/div/form/table[1]//tr/td/strong/a";
 
         public string ImageXPath => "/html/body/div[2]/div[2]/form/div/div[1]/img";
 

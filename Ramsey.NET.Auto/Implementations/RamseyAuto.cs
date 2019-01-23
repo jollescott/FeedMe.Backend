@@ -34,8 +34,14 @@ namespace Ramsey.NET.Auto
 
         public async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
+            Uri uri;
+            if (Uri.CheckSchemeName(url))
+                uri = new Uri(url);
+            else
+                uri = new Uri(Config.RootPage + url);
+
             var recipe = new RecipeDtoV2();
-            var httpResponse = await _client.GetAsync(url);
+            var httpResponse = await _client.GetAsync(uri);
             var html = await httpResponse.Content.ReadAsStringAsync();
 
             var document = new HtmlDocument();
@@ -112,6 +118,10 @@ namespace Ramsey.NET.Auto
 
             recipe.RecipeParts = parts;
 
+            recipe.OwnerLogo = Config.ProviderLogo;
+            recipe.Source = uri.ToString();
+            recipe.Owner = Ramsey.Shared.Enums.RecipeProvider.Hemmets;
+
             return recipe;
         }
 
@@ -122,17 +132,17 @@ namespace Ramsey.NET.Auto
 
             while (page < Config.RecipeCount / Config.PageItemCount)
             {
-                var httpResponseTask = Config.NextPage(page, document);
+                var httpResponseTask = Config.NextPage(page, document, _client);
                 var httpResponse = await httpResponseTask;
 
                 var html = await httpResponse.Content.ReadAsStringAsync();
 
                 document.LoadHtml(html);
 
-                var links = document.DocumentNode.SelectNodes(Config.RecipeItemXPath)
-                    .Select(x => x.Attributes["href"].Value).ToList();
+                var list = document.DocumentNode.SelectNodes(Config.RecipeItemXPath);
+                var links = list.Select(x => x.Attributes["href"].Value).ToList();
 
-                foreach(var link in links)
+                foreach (var link in links)
                 {
                     var recipe = await ScrapeRecipeAsync(link);
                     await recipeManager.UpdateRecipeMetaAsync(recipe);

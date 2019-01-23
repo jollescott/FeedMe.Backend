@@ -35,7 +35,7 @@ namespace Ramsey.NET.Auto
         /// <summary>
         /// CANNOT be null
         /// </summary>
-        Func<int, HtmlDocument, Task<HttpResponseMessage>> NextPage { get; }
+        Func<int, HtmlDocument, HttpClient, Task<HttpResponseMessage>> NextPage { get; }
 
         Func<string, string> ProcessIngredient { get; }
 
