@@ -22,7 +22,7 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.21" />
     <PackageReference Include="Hangfire.SQLite.Core" Version="1.0.2" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.6.21" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.10" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ramsey.NET.Auto\Ramsey.NET.Auto.csproj" />
     <ProjectReference Include="..\Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj" />
     <ProjectReference Include="..\Ramsey.NET.Ingredients\Ramsey.NET.Ingredients.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
@@ -29,7 +30,11 @@ namespace Ramsey.NET.Auto.Configs
                     .Value;
         };
 
-        Func<int, HtmlDocument, string> IAutoConfig.NextPage => null;
+        Func<int, HtmlDocument, HttpResponseMessage> NextPage => (index, doc) => {
+            var postData = $"offset={offset}";
+
+            return .PostAsync(RECIPE_LIST_URL, new StringContent(postData, Encoding.GetEncoding(1252), "application/x-www-form-urlencoded"));
+        };
 
         public Func<string, string> ProcessIngredient => (ing) => Regex.Replace(ing, "([0-9]\\d*(\\,\\d+)? g)", string.Empty);
 

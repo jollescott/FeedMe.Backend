@@ -21,9 +21,10 @@ namespace Ramsey.NET.Auto
 
         public IAutoConfig Config { get; private set; }
 
-        public RamseyAuto()
+        public RamseyAuto(IAutoConfig autoConfig = null)
         {
             _client = new HemmetsHttpClient();
+            Config = autoConfig;
         }
 
         public void Init(IAutoConfig config)
@@ -117,11 +118,16 @@ namespace Ramsey.NET.Auto
         public async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = 50)
         {
             int page = 0;
+            var document = new HtmlDocument();
 
-            while(page < Config.RecipeCount / Config.PageItemCount)
+            while (page < Config.RecipeCount / Config.PageItemCount)
             {
-                var document = new HtmlDocument();
-                document.Load(Config.NextPage(page, document));
+                var httpResponseTask = Config.NextPage(page, document);
+                var httpResponse = await httpResponseTask;
+
+                var html = await httpResponse.Content.ReadAsStringAsync();
+
+                document.LoadHtml(html);
 
                 var links = document.DocumentNode.SelectNodes(Config.RecipeItemXPath)
                     .Select(x => x.Attributes["href"].Value).ToList();
@@ -131,6 +137,8 @@ namespace Ramsey.NET.Auto
                     var recipe = await ScrapeRecipeAsync(link);
                     await recipeManager.UpdateRecipeMetaAsync(recipe);
                 }
+
+                page++;
             }
 
             return null;

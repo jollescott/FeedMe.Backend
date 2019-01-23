@@ -2,7 +2,9 @@
 using Ramsey.Shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Ramsey.NET.Auto
 {
@@ -33,7 +35,7 @@ namespace Ramsey.NET.Auto
         /// <summary>
         /// CANNOT be null
         /// </summary>
-        Func<int, HtmlDocument, string> NextPage { get; }
+        Func<int, HtmlDocument, Task<HttpResponseMessage>> NextPage { get; }
 
         Func<string, string> ProcessIngredient { get; }
 

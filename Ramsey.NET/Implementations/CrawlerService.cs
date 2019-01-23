@@ -10,6 +10,8 @@ using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
+using Ramsey.NET.Auto;
+using Ramsey.NET.Auto.Configs;
 
 namespace Ramsey.NET.Implementations
 {
@@ -20,9 +22,10 @@ namespace Ramsey.NET.Implementations
 
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
         {
-            {RecipeProvider.Hemmets, new HemmetsRecipeCrawler()},
-            {RecipeProvider.ReceptSe, new ReceptSeCrawler()},
-            {RecipeProvider.Mathem, new MathemCrawler()}
+            /* {RecipeProvider.Hemmets, new HemmetsRecipeCrawler()},
+             {RecipeProvider.ReceptSe, new ReceptSeCrawler()},
+             {RecipeProvider.Mathem, new MathemCrawler()}*/
+            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) }
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
