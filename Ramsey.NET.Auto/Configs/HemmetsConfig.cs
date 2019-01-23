@@ -21,7 +21,11 @@ namespace Ramsey.NET.Auto.Configs
         public RecipeProvider ProviderName => RecipeProvider.Hemmets;
 
         public Func<string, string> ParseId => (url) => {
-            return "HM" + url.Split('=').Last();
+            var index = url.IndexOf("recid=") + 5;
+            var end = url.IndexOf('&', index) - 1;
+
+            var id = "HM" + url.Substring(index + 1, end - index);
+            return id;
         };
 
         Func<HtmlDocument, string> IAutoConfig.LoadImage => (doc) => {
@@ -48,7 +52,7 @@ namespace Ramsey.NET.Auto.Configs
 
         public string IngredientsXPath => "//div[@class=\"receptleftcol\"]/table/tr";
 
-        public int RecipeCount => 40;
+        public int RecipeCount => 600;
 
         public int PageItemCount => 20;
 
