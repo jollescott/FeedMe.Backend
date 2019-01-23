@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using Ramsey.Shared.Enums;
 
@@ -30,6 +31,8 @@ namespace Ramsey.NET.Auto.Configs
 
         Func<int, HtmlDocument, string> IAutoConfig.NextPage => null;
 
+        public Func<string, string> ProcessIngredient => (ing) => Regex.Replace(ing, "([0-9]\\d*(\\,\\d+)? g)", string.Empty);
+
         public string RootPage => "https://kokboken.ikv.uu.se/receptlista.php?cat=0";
 
         public string RecipeItemXPath => "/html/body/div[2]/div[2]/div/form/table[1]/tbody/tr/td/strong/a";
@@ -38,7 +41,7 @@ namespace Ramsey.NET.Auto.Configs
 
         public string DirectionsXPath => "//div[@class=\"receptrightcol\"]/table/tr";
 
-        public string IngredientsXPath => "/html/body/div[2]/div[2]/form/div/div[4]/table/tbody/tr/td";
+        public string IngredientsXPath => "//div[@class=\"receptleftcol\"]/table/tr";
 
         public int RecipeCount => 40;
 

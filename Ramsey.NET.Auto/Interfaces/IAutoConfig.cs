@@ -35,6 +35,8 @@ namespace Ramsey.NET.Auto
         /// </summary>
         Func<int, HtmlDocument, string> NextPage { get; }
 
+        Func<string, string> ProcessIngredient { get; }
+
         //Scraper Settings
         string RootPage { get; }
         string RecipeItemXPath { get; }

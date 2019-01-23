@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Auto
@@ -59,13 +60,56 @@ namespace Ramsey.NET.Auto
 
             if(includeAll)
             {
-                var nodes = document.DocumentNode
+                recipe.Directions = document.DocumentNode
                     .SelectNodes(Config.DirectionsXPath)
                     .Where(x => !x.InnerHtml.Contains("<strong>") || !x.InnerHtml.Contains("<th>"))
                     .Select(x => WebUtility.HtmlDecode(x.InnerText))
                     .Select(x => x.RemoveSpecialCharacters())
                     .ToList();
             }
+
+            recipe.Ingredients = document.DocumentNode
+                    .SelectNodes(Config.IngredientsXPath)
+                    .Select(x => WebUtility.HtmlDecode(x.InnerText))
+                    .Select(x => x.Replace("\t", " "))
+                    .Select(x => x.Replace('.', ','))
+                    .ToList();
+
+            var regex = new Regex("([0-9]\\d*(\\,\\d+)? \\w+)");
+            var qRegex = new Regex("([0-9]\\d*(\\,\\d+)?)");
+
+            var parts = new List<RecipePartDtoV2>();
+
+            foreach(var ing in recipe.Ingredients)
+            {
+                var ingredient = ing;
+
+                if (Config.ProcessIngredient != null)
+                    ingredient = Config.ProcessIngredient(ingredient);
+
+                var match = regex.Match(ingredient);
+
+                if(match.Success)
+                {
+                    var amount = match.Value;
+                    var name = ingredient.Replace(amount,string.Empty);
+
+                    var quantityMatch = qRegex.Match(amount);
+
+                    double.TryParse(quantityMatch.Value, out double quantity);
+
+                    var unit = amount.Replace(quantityMatch.Value, string.Empty);
+
+                    parts.Add(new RecipePartDtoV2
+                    {
+                        IngredientName = name.Trim(),
+                        Quantity = (float)quantity,
+                        Unit = unit.Trim(),
+                    });
+                }
+            }
+
+            recipe.RecipeParts = parts;
 
             return recipe;
         }
