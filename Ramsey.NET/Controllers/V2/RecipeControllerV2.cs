@@ -81,7 +81,7 @@ namespace Ramsey.NET.Controllers.V2
             });
 
             dtos = dtos
-                .OrderBy(x => x.Coverage)
+                .OrderByDescending(x => x.Coverage)
                 .ThenBy(x => x.Name)
                 .Skip(start)
                 .Take(25)
