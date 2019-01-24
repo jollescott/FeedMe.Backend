@@ -109,5 +109,16 @@ namespace Ramsey.NET.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task ReportFailedRecipeAsync(string url, string message)
+        {
+            _context.FailedRecipes.Add(new FailedRecipe
+            {
+                Url = url,
+                Message = message
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

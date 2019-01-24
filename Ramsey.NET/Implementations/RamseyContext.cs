@@ -51,6 +51,10 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<IngredientSynonym>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<FailedRecipe>()
+                .Property(x => x.FailedRecipeId)
+                .ValueGeneratedNever();
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
@@ -59,6 +63,8 @@ namespace Ramsey.NET.Implementations
         public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
         public DbSet<RecipeRating> RecipeRatings { get; set; }
         public DbSet<RamseyUser> RamseyUsers { get; set; }
+
+        public DbSet<FailedRecipe> FailedRecipes { get; set; }
 
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<IngredientSynonym> IngredientSynonyms { get; set; }

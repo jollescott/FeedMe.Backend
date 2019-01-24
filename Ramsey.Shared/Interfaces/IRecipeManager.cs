@@ -7,5 +7,7 @@ namespace Ramsey.NET.Shared.Interfaces
     {
         Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipe);
         Task<bool> SaveRecipeChangesAsync();
+
+        Task ReportFailedRecipeAsync(string url, string message);
     }
 }

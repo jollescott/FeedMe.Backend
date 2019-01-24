@@ -140,7 +140,7 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
             return recipeDto;
         }
 
-        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
+        public override async Task ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
         {
             double recipeCount = await GetRecipeCountAsync();
             recipeCount = amount > -1 ? amount : recipeCount;
@@ -158,8 +158,6 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
 
                 await recipeManager.SaveRecipeChangesAsync();
             }
-            
-            return new Dictionary<string, bool>();
         }
 
         public override async Task<List<RecipeMetaDtoV2>> ScrapePagesAsync(int count, int offset)

@@ -38,7 +38,45 @@ namespace Ramsey.NET.Auto.Configs
             return client.GetAsync(url);
         };
 
-        public Func<string, string> ProcessIngredient => null;
+        public Func<string, string> ProcessIngredient => (str) => {
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new Regex("(([1-9]? ?)([1-9]/[1-9]))", options);
+
+            var match = regex.Match(str);
+
+            if (!match.Success)
+                return str;
+            else
+            {
+                var quantity = match.Value;
+                var parts = quantity.Split(" ");
+                float count = 0;
+
+                foreach(var part in parts)
+                {
+                    if(part.Contains('/'))
+                    {
+                        var divParts = part.Split('/');
+
+                        float.TryParse(divParts[0], out float num1);
+                        float.TryParse(divParts[1], out float num2);
+
+                        if(num2 != 0)
+                        {
+                            var result = num1 / num2;
+                            count += result;
+                        }
+                    }
+                    else
+                    {
+                        float.TryParse(part, out float result);
+                        count += result;
+                    }
+                }
+
+                return str.Replace(quantity, count.ToString());
+            }
+        };
 
         public string RootPage => "https://www.ica.se/recept/";
 

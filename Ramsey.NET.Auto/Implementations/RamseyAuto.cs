@@ -129,10 +129,8 @@ namespace Ramsey.NET.Auto
             return recipe;
         }
 
-        public async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = 50)
+        public async Task ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = 50)
         {
-            var dict = new Dictionary<string, bool>();
-
             int page = 0;
             var document = new HtmlDocument();
 
@@ -157,14 +155,12 @@ namespace Ramsey.NET.Auto
                     }
                     catch (Exception ex)
                     {
-                        dict.Add(link, false);
+                        await recipeManager.ReportFailedRecipeAsync(link, ex.Message);
                     }
                 }
 
                 page++;
             }
-
-            return null;
         }
     }
 }

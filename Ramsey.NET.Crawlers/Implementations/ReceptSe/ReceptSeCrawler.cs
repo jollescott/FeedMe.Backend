@@ -18,7 +18,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
         private static readonly string ReceptSeBaseUrl = "http://recept.se/recept";
         private readonly HttpClient _httpClient = new HttpClient();
         
-        public override async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
+        public override async Task ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
         {
             var count = await GetRecipeCountAsync();
 
@@ -37,8 +37,6 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
 
                 await recipeManager.SaveRecipeChangesAsync();
             }
-
-            return new Dictionary<string, bool>();
         }
 
         public override async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
