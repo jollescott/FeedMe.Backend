@@ -6,7 +6,8 @@ namespace Ramsey.Shared.Enums
 {
     public enum RecipeProvider
     {
-        ICA, Hemmets, ReceptSe
+        ICA, Hemmets, ReceptSe,
+        Tasteline
     }
 
     public enum RamseyLocale

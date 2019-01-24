@@ -17,9 +17,9 @@ namespace Ramsey.NET.Tests.Auto
         [Test]
         public async Task LoadTestAsync()
         {
-            RamseyAuto.Init(new IcaConfig());
+            RamseyAuto.Init(new TastelineConfig());
 
-            var recipe = await RamseyAuto.ScrapeRecipeAsync("https://www.ica.se/recept/kottbullar-i-graddsas-med-citrongurka-724755/", true);
+            var recipe = await RamseyAuto.ScrapeRecipeAsync("https://www.tasteline.com/recept/gratinerade-skaldjur-med-vasterbottensost/", true);
         }
     }
 }

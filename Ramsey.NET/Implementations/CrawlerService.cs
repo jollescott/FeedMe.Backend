@@ -22,8 +22,9 @@ namespace Ramsey.NET.Implementations
              {RecipeProvider.ReceptSe, new ReceptSeCrawler()},
              {RecipeProvider.Mathem, new MathemCrawler()}*/
             //{RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
-            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
+            //{RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
             //{RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) }
+            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) }
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)

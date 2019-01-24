@@ -63,7 +63,10 @@ namespace Ramsey.NET.Auto
             if (Config.ParseId != null)
                 recipe.RecipeID = Config.ParseId(url);
             else
-                recipe.RecipeID = Config.ProviderId + url.Split('/').Last();
+            {
+                var id = uri.ToString();
+                recipe.RecipeID = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
+            }
 
             if(includeAll)
             {
@@ -128,6 +131,8 @@ namespace Ramsey.NET.Auto
 
         public async Task<Dictionary<string, bool>> ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = 50)
         {
+            var dict = new Dictionary<string, bool>();
+
             int page = 0;
             var document = new HtmlDocument();
 
@@ -145,8 +150,15 @@ namespace Ramsey.NET.Auto
 
                 foreach (var link in links)
                 {
-                    var recipe = await ScrapeRecipeAsync(link);
-                    await recipeManager.UpdateRecipeMetaAsync(recipe);
+                    try
+                    {
+                        var recipe = await ScrapeRecipeAsync(link);
+                        await recipeManager.UpdateRecipeMetaAsync(recipe);
+                    }
+                    catch (Exception ex)
+                    {
+                        dict.Add(link, false);
+                    }
                 }
 
                 page++;
