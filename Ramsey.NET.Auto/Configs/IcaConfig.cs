@@ -34,14 +34,15 @@ namespace Ramsey.NET.Auto.Configs
 
         public Func<int, HtmlDocument, HttpClient, Task<HttpResponseMessage>> NextPage => (index, doc, client) =>
         {
-            return client.GetAsync("https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=" + (index * 16).ToString() + "&num=16");
+            var url = "https://www.ica.se/templates/ajaxresponse.aspx?id=12&ajaxFunction=RecipeListMdsa&mdsarowentityid=&sortbymetadata=Relevance&start=" + (index * 16).ToString() + "&num=16";
+            return client.GetAsync(url);
         };
 
         public Func<string, string> ProcessIngredient => null;
 
         public string RootPage => "https://www.ica.se/recept/";
 
-        public string RecipeItemXPath => "/html/body/article//div/header/h2/a";
+        public string RecipeItemXPath => "//a[@class = \"js-track-listing-recipe\"]";
 
         public string ImageXPath => "";
 

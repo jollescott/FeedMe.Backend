@@ -39,9 +39,9 @@ namespace Ramsey.NET.Auto.Configs
             return regex.Replace(ing, " ");
         };
 
-        public string RootPage => "http://recept.se/recept";
+        public string RootPage => "http://recept.se";
 
-        public string RecipeItemXPath => "/html/body/div[4]/section/div/div/div/div/div/div/div/div/div[2]/div//div[1]/span/a";
+        public string RecipeItemXPath => "/html/body/div[3]/section/div/div/div/div/div/div/div/div/div[2]/div//div[1]/span/a";
 
         public string ImageXPath => "/html/body/div[3]/section/div/div/div/div/div[1]/div/div/article/img";
 
