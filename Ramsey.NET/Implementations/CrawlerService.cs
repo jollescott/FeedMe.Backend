@@ -19,9 +19,9 @@ namespace Ramsey.NET.Implementations
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
         {
             {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
+            {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
             {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
             {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
-            { RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) }
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
@@ -32,9 +32,9 @@ namespace Ramsey.NET.Implementations
 
         public async Task UpdateIndexAsync()
         {   
-            foreach (var crawler in Crawlers.Values)
+            foreach (var crawler in Crawlers)
             {
-                await crawler.ScrapeRecipesAsync(_recipeManager, -1);
+                await crawler.Value.ScrapeRecipesAsync(_recipeManager, -1);
             }
         }
 
