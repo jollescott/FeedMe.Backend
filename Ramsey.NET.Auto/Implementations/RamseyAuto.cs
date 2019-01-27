@@ -160,8 +160,10 @@ namespace Ramsey.NET.Auto
                         }
                         catch (Exception ex)
                         {
-                            var trace = ex.StackTrace.ToString();
-                            await recipeManager.ReportFailedRecipeAsync(link, trace);
+                            var trace = ex.StackTrace != null ? ex.StackTrace : string.Empty;
+                            var failingLink = link != null ? link : string.Empty;
+
+                            await recipeManager.ReportFailedRecipeAsync(failingLink, trace);
                         }
                     }
                 }

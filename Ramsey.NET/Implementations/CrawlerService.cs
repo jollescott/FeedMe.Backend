@@ -22,7 +22,7 @@ namespace Ramsey.NET.Implementations
             {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
             {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
             {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
-           // {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
+            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
@@ -31,6 +31,7 @@ namespace Ramsey.NET.Implementations
             _recipeManager = recipeManager;
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public async Task ReindexProviderAsync(RecipeProvider provider)
         {
             var crawler = Crawlers[provider];
