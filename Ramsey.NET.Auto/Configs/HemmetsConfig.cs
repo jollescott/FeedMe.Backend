@@ -52,7 +52,7 @@ namespace Ramsey.NET.Auto.Configs
 
         public string IngredientsXPath => "//div[@class=\"receptleftcol\"]/table/tr";
 
-        public int RecipeCount => 600;
+        public int RecipeCount => 764;
 
         public int PageItemCount => 20;
 

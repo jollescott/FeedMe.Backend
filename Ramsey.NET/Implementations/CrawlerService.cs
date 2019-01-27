@@ -8,6 +8,7 @@ using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
 using Ramsey.NET.Auto;
 using Ramsey.NET.Auto.Configs;
+using Hangfire;
 
 namespace Ramsey.NET.Implementations
 {
@@ -18,10 +19,10 @@ namespace Ramsey.NET.Implementations
 
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
         {
-            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
             {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
-            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
-            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
+            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
+            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) }
+           // {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
         };
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
@@ -30,12 +31,10 @@ namespace Ramsey.NET.Implementations
             _recipeManager = recipeManager;
         }
 
-        public async Task UpdateIndexAsync()
-        {   
-            foreach (var crawler in Crawlers)
-            {
-                await crawler.Value.ScrapeRecipesAsync(_recipeManager, -1);
-            }
+        public async Task ReindexProviderAsync(RecipeProvider provider)
+        {
+            var crawler = Crawlers[provider];
+            await crawler.ScrapeRecipesAsync(_recipeManager);
         }
 
         public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider)
@@ -45,6 +44,18 @@ namespace Ramsey.NET.Implementations
             
             var crawler = Crawlers[provider];
             return crawler.ScrapeRecipeAsync(url, true);
+        }
+
+        public void StartIndexUpdate()
+        {
+            string lastJobId = null;
+            foreach(var provider in Crawlers.Keys)
+            {
+                if (lastJobId == null)
+                    lastJobId = BackgroundJob.Enqueue(() => ReindexProviderAsync(provider));
+                else
+                    lastJobId = BackgroundJob.ContinueWith(lastJobId, () => ReindexProviderAsync(provider));
+            }
         }
     }
 }

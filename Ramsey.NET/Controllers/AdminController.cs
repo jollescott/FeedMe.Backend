@@ -27,15 +27,17 @@ namespace Ramsey.NET.Controllers
         private readonly IRamseyContext _ramseyContext;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly ICrawlerService _crawlerService;
 
         public AdminController(IAdminService adminService, IRamseyContext ramseyContext,
-            IMapper mapper,
+            IMapper mapper, ICrawlerService crawlerService,
             IOptions<AppSettings> appSettings)
         {
             _adminService = adminService;
             _ramseyContext = ramseyContext;
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _crawlerService = crawlerService;
         }
 
         [AllowAnonymous]
@@ -95,7 +97,7 @@ namespace Ramsey.NET.Controllers
         [Route("reindex")]
         public IActionResult Reindex()
         {
-            BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
+            _crawlerService.StartIndexUpdate();
             return StatusCode(200);
         }
 

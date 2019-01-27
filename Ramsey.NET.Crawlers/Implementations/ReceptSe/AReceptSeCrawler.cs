@@ -9,7 +9,7 @@ namespace Ramsey.NET.Crawlers.Implementations.ReceptSe
 {
     public abstract class AReceptSeCrawler : IRecipeCrawler
     {
-        public abstract Task ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = -1);
+        public abstract Task ScrapeRecipesAsync(IRecipeManager recipeManager);
 
         public abstract Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false);
 

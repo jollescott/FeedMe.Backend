@@ -140,10 +140,9 @@ namespace Ramsey.NET.Crawlers.Implementations.Hemmets
             return recipeDto;
         }
 
-        public override async Task ScrapeRecipesAsync(IRecipeManager recipeManager,int amount = -1)
+        public override async Task ScrapeRecipesAsync(IRecipeManager recipeManager)
         {
             double recipeCount = await GetRecipeCountAsync();
-            recipeCount = amount > -1 ? amount : recipeCount;
             var pageCount = (int)Math.Ceiling(recipeCount / 20);
             
             for (var i = 0; i < pageCount; i++)

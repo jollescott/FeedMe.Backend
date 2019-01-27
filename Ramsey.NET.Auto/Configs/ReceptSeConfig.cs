@@ -29,7 +29,9 @@ namespace Ramsey.NET.Auto.Configs
 
         public Func<int, HtmlDocument, HttpClient, Task<HttpResponseMessage>> NextPage => (index, doc, client) =>
         {
-            return client.GetAsync("http://recept.se/recept?page=" + index+1);
+            var url = "http://recept.se/recept?page=" + (index + 1).ToString();
+            System.Diagnostics.Debug.WriteLine("URL: " + url);
+            return client.GetAsync(url);
         };
 
         public Func<string, string> ProcessIngredient => (ing) => {

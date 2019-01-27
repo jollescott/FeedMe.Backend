@@ -129,12 +129,14 @@ namespace Ramsey.NET.Auto
             return recipe;
         }
 
-        public async Task ScrapeRecipesAsync(IRecipeManager recipeManager, int amount = 50)
+        public async Task ScrapeRecipesAsync(IRecipeManager recipeManager)
         {
-            int page = 0;
             var document = new HtmlDocument();
 
-            while (page < Config.RecipeCount / Config.PageItemCount)
+            var pages = Config.RecipeCount / Config.PageItemCount;
+            System.Diagnostics.Debug.WriteLine(pages);
+
+            for (var page = 0; page < pages; page++)
             {
                 var httpResponseTask = Config.NextPage(page, document, _client);
                 var httpResponse = await httpResponseTask;
@@ -144,22 +146,29 @@ namespace Ramsey.NET.Auto
                 document.LoadHtml(html);
 
                 var list = document.DocumentNode.SelectNodes(Config.RecipeItemXPath);
-                var links = list.Select(x => x.Attributes["href"].Value).ToList();
-
-                foreach (var link in links)
+                
+                if(list != null)
                 {
-                    try
+                    var links = list.Select(x => x.Attributes["href"].Value).ToList();
+
+                    foreach (var link in links)
                     {
-                        var recipe = await ScrapeRecipeAsync(link);
-                        await recipeManager.UpdateRecipeMetaAsync(recipe);
-                    }
-                    catch (Exception ex)
-                    {
-                        await recipeManager.ReportFailedRecipeAsync(link, ex.Message);
+                        try
+                        {
+                            var recipe = await ScrapeRecipeAsync(link);
+                            await recipeManager.UpdateRecipeMetaAsync(recipe);
+                        }
+                        catch (Exception ex)
+                        {
+                            var trace = ex.StackTrace.ToString();
+                            await recipeManager.ReportFailedRecipeAsync(link, trace);
+                        }
                     }
                 }
+                else
+                {
 
-                page++;
+                }
             }
         }
     }
