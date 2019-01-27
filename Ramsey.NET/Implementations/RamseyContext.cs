@@ -53,8 +53,7 @@ namespace Ramsey.NET.Implementations
                 .HasDefaultValue(RamseyLocale.Swedish);
 
             modelBuilder.Entity<FailedRecipe>()
-                .Property(x => x.FailedRecipeId)
-                .ValueGeneratedNever();
+                .HasKey(x => x.FailedRecipeId);
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }

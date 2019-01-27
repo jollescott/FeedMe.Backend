@@ -19,9 +19,9 @@ namespace Ramsey.NET.Implementations
 
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
         {
+            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
             {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
             {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
-            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) }
            // {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
         };
 
