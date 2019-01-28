@@ -60,7 +60,9 @@ namespace Ramsey.NET.Migrations
 
             modelBuilder.Entity("Ramsey.NET.Models.FailedRecipe", b =>
                 {
-                    b.Property<int>("FailedRecipeId");
+                    b.Property<int>("FailedRecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Message");
 

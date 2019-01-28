@@ -11,8 +11,8 @@ using Ramsey.Shared.Enums;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20190124161709_FailedRecipes")]
-    partial class FailedRecipes
+    [Migration("20190128185823_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,7 +62,9 @@ namespace Ramsey.NET.Migrations
 
             modelBuilder.Entity("Ramsey.NET.Models.FailedRecipe", b =>
                 {
-                    b.Property<int>("FailedRecipeId");
+                    b.Property<int>("FailedRecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Message");
 

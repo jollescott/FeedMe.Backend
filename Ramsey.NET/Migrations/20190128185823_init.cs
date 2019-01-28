@@ -1,12 +1,58 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ramsey.NET.Migrations
 {
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AdminUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdminUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BadWords",
+                columns: table => new
+                {
+                    BadWordId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Word = table.Column<string>(nullable: true),
+                    Locale = table.Column<int>(nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BadWords", x => x.BadWordId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FailedRecipes",
+                columns: table => new
+                {
+                    FailedRecipeId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Url = table.Column<string>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FailedRecipes", x => x.FailedRecipeId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Ingredients",
                 columns: table => new
@@ -18,6 +64,32 @@ namespace Ramsey.NET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingredients", x => x.IngredientId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IngredientSynonyms",
+                columns: table => new
+                {
+                    IngredientSynonymId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Correct = table.Column<string>(nullable: true),
+                    Wrong = table.Column<string>(nullable: true),
+                    Locale = table.Column<int>(nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IngredientSynonyms", x => x.IngredientSynonymId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RamseyUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RamseyUsers", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,14 +111,29 @@ namespace Ramsey.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "RecipeFavorites",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(nullable: false)
+                    RecipeFavoriteId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(nullable: true),
+                    RecipeId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_RecipeFavorites", x => x.RecipeFavoriteId);
+                    table.ForeignKey(
+                        name: "FK_RecipeFavorites_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RecipeFavorites_RamseyUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "RamseyUsers",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,32 +165,6 @@ namespace Ramsey.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RecipeFavorites",
-                columns: table => new
-                {
-                    RecipeFavoriteId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
-                    RecipeId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeFavorites", x => x.RecipeFavoriteId);
-                    table.ForeignKey(
-                        name: "FK_RecipeFavorites_Recipes_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RecipeFavorites_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RecipeRatings",
                 columns: table => new
                 {
@@ -123,9 +184,9 @@ namespace Ramsey.NET.Migrations
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RecipeRatings_Users_UserId",
+                        name: "FK_RecipeRatings_RamseyUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "RamseyUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -164,6 +225,18 @@ namespace Ramsey.NET.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AdminUsers");
+
+            migrationBuilder.DropTable(
+                name: "BadWords");
+
+            migrationBuilder.DropTable(
+                name: "FailedRecipes");
+
+            migrationBuilder.DropTable(
+                name: "IngredientSynonyms");
+
+            migrationBuilder.DropTable(
                 name: "RecipeFavorites");
 
             migrationBuilder.DropTable(
@@ -179,7 +252,7 @@ namespace Ramsey.NET.Migrations
                 name: "Recipes");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "RamseyUsers");
         }
     }
 }
