@@ -16,6 +16,10 @@ namespace Ramsey.NET.Implementations
         {
             base.OnModelCreating(modelBuilder);
 
+            //Error Reporting
+            modelBuilder.Entity<FailedRecipe>()
+                .HasKey(x => x.FailedRecipeId);
+
             //Ingredient
             modelBuilder.Entity<Ingredient>()
                 .HasKey(x => x.IngredientId);
@@ -51,9 +55,6 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<IngredientSynonym>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
-
-            modelBuilder.Entity<FailedRecipe>()
-                .HasKey(x => x.FailedRecipeId);
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
