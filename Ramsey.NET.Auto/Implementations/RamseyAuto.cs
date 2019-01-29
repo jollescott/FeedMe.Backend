@@ -35,14 +35,8 @@ namespace Ramsey.NET.Auto
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Uri uri;
-            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                uri = new Uri(url);
-            else
-                uri = new Uri(Config.RootPage + url);
-
             var recipe = new RecipeDtoV2();
-            var httpResponse = await _client.GetAsync(uri);
+            var httpResponse = await _client.GetAsync(url);
             var html = await httpResponse.Content.ReadAsStringAsync();
 
             var document = new HtmlDocument();
@@ -65,7 +59,7 @@ namespace Ramsey.NET.Auto
                 recipe.RecipeID = Config.ParseId(url);
             else
             {
-                var id = uri.ToString();
+                var id = url.ToString();
                 recipe.RecipeID = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
             }
 
@@ -143,7 +137,7 @@ namespace Ramsey.NET.Auto
             recipe.RecipeParts = parts;
 
             recipe.OwnerLogo = Config.ProviderLogo;
-            recipe.Source = uri.ToString();
+            recipe.Source = url.ToString();
             recipe.Owner = Config.ProviderName;
 
             stopWatch.Stop();
@@ -208,15 +202,22 @@ namespace Ramsey.NET.Auto
 
                     foreach (var link in links)
                     {
+                        Uri uri = null;
+
                         try
                         {
-                            var recipe = await ScrapeRecipeAsync(link);
+                            if (Uri.IsWellFormedUriString(link, UriKind.Absolute))
+                                uri = new Uri(link);
+                            else
+                                uri = new Uri(Config.RootPage + link);
+
+                            var recipe = await ScrapeRecipeAsync(uri.ToString());
                             await recipeManager.UpdateRecipeMetaAsync(recipe);
                         }
                         catch (Exception ex)
                         {
                             var trace = ex.StackTrace != null ? ex.StackTrace : string.Empty;
-                            var failingLink = link != null ? link : string.Empty;
+                            var failingLink = uri != null ? uri.ToString() : string.Empty;
 
                             await recipeManager.ReportFailedRecipeAsync(failingLink, trace);
                         }
