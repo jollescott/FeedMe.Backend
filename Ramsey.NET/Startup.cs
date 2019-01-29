@@ -20,6 +20,8 @@ using Ramsey.NET.Helpers;
 using System.Threading.Tasks;
 using Hangfire.MemoryStorage;
 using System.Globalization;
+using Ramsey.Core;
+using Ramsey.NET.Auto.Implementations;
 
 namespace Ramsey.NET
 {
@@ -104,7 +106,7 @@ namespace Ramsey.NET
                 };
             });
 
-
+            services.AddScoped<IIllegalRemover, IllegalRemover>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<ICrawlerService, CrawlerService>();

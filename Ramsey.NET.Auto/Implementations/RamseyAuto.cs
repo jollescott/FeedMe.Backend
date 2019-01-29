@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Ramsey.Core;
 using Ramsey.NET.Auto.Extensions;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Crawlers.Misc;
@@ -19,13 +20,15 @@ namespace Ramsey.NET.Auto
     {
         private readonly HemmetsHttpClient _client;
         private readonly IRamseyContext _ramseyContext;
+        private readonly IIllegalRemover _illegalRemover;
 
         public IAutoConfig Config { get; private set; }
 
-        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext)
+        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IIllegalRemover illegalRemover)
         {
             _client = new HemmetsHttpClient();
             _ramseyContext = ramseyContext;
+            _illegalRemover = illegalRemover;
             Config = autoConfig;
         }
 
@@ -106,7 +109,7 @@ namespace Ramsey.NET.Auto
                     var name = ingredient.Replace(amount,string.Empty);
 
                     //Remove illegal words
-                    name = RemoveIllegals(name);
+                    name = _illegalRemover.RemoveIllegals(name);
 
                     //Match the name
                     var nameMatch = Regex.Match(name, "([a-zåäöèîé]{3,})");
@@ -145,34 +148,6 @@ namespace Ramsey.NET.Auto
             Debug.WriteLine("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
             return recipe;
-        }
-
-        private string RemoveIllegals(string name)
-        {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            var output = name;
-            var words = output.Split(' ');
-
-            foreach(var word in words)
-            {
-                if(_ramseyContext.BadWords.Any(x => x.Word == word))
-                {
-                    output = output.Replace(word, string.Empty);
-                }
-            }
-
-            var synonym = _ramseyContext.IngredientSynonyms.FirstOrDefault(x => x.Wrong == output);
-
-            if (synonym != null)
-                output = synonym.Correct;
-
-            stopWatch.Stop();
-
-            //Debug.WriteLine("Illegal detection for \"{0}\" took {0} result {0}", name, stopWatch.Elapsed, output);
-
-            return output;
         }
 
         public async Task ScrapeRecipesAsync(IRecipeManager recipeManager)

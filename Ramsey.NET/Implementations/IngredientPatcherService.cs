@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Ramsey.Core;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
@@ -11,21 +12,23 @@ namespace Ramsey.NET.Implementations
     public class IngredientPatcherService : IPatcherService
     {
         private readonly IRamseyContext _ramseyContext;
+        private readonly IIllegalRemover _illegalRemover;
 
-        public IngredientPatcherService(IRamseyContext ramseyContext)
+        public IngredientPatcherService(IRamseyContext ramseyContext, IIllegalRemover illegalRemover)
         {
             _ramseyContext = ramseyContext;
+            _illegalRemover = illegalRemover;
         }
 
         [AutomaticRetry(Attempts = 0)]
         public async Task PatchIngredientsAsync()
         {
             var toModify = new List<ModifyIngredient>();
-            /*
+            
             foreach(var ingredient in _ramseyContext.Ingredients)
             {
                 var oldName = ingredient.IngredientName;
-                var newName = await _ingredientResolver.ResolveIngredientAsync(ingredient.IngredientName);
+                var newName = _illegalRemover.RemoveIllegals(ingredient.IngredientName);
 
                 if(oldName != newName)
                 {
@@ -35,7 +38,7 @@ namespace Ramsey.NET.Implementations
                         NewName = newName
                     });
                 }
-            }*/
+            }
 
             foreach(var modify in toModify)
             {
