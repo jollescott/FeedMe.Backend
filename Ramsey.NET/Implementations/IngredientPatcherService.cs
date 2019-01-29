@@ -1,4 +1,5 @@
-﻿using Ramsey.NET.Extensions;
+﻿using Hangfire;
+using Ramsey.NET.Extensions;
 using Ramsey.NET.Ingredients.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
@@ -33,6 +34,7 @@ namespace Ramsey.NET.Implementations
             _ingredientResolver.Init(badWords, synonyms);
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public async Task PatchIngredientsAsync()
         {
             var toModify = new List<ModifyIngredient>();

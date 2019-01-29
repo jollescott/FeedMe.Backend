@@ -11,8 +11,8 @@ using Ramsey.Shared.Enums;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20190118211418_Syno")]
-    partial class Syno
+    [Migration("20190128185823_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,38 @@ namespace Ramsey.NET.Migrations
                     b.ToTable("AdminUsers");
                 });
 
+            modelBuilder.Entity("Ramsey.NET.Models.BadWord", b =>
+                {
+                    b.Property<int>("BadWordId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Locale")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Word");
+
+                    b.HasKey("BadWordId");
+
+                    b.ToTable("BadWords");
+                });
+
+            modelBuilder.Entity("Ramsey.NET.Models.FailedRecipe", b =>
+                {
+                    b.Property<int>("FailedRecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("FailedRecipeId");
+
+                    b.ToTable("FailedRecipes");
+                });
+
             modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
@@ -63,6 +95,10 @@ namespace Ramsey.NET.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Correct");
+
+                    b.Property<int>("Locale")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Wrong");
 

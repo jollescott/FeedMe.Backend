@@ -25,27 +25,18 @@ namespace Ramsey.NET.Controllers.V2
         [Route("suggest")]
         public IActionResult Suggest(string search)
         {
-            var ingredientsDtos = new List<IngredientDtoV2>();
-
-            var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientName.Contains(search))
+            var ingredients = _ramseyContext.Ingredients
+                .Where(x => EF.Functions.Like(x.IngredientName, $"%{search}%"))
                 .OrderBy(x => x.IngredientName.Length)
-                .Take(25)
-                .Include(x => x.RecipeParts)
+                .Take(10)
                 .ToList();
 
-            ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
+            var ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
             {
-                RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
-                {
-                    IngredientID = y.IngredientId,
-                    RecipeID = y.RecipeId,
-                    Quantity = y.Quantity,
-                    Unit = y.Unit,
-                }).ToList(),
                 IngredientId = x.IngredientId,
                 IngredientName = x.IngredientName,
                 Role = IngredientRole.Include
-            }).ToList();
+            });
 
             return Json(ingredientsDtos);
         }

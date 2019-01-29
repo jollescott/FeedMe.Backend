@@ -42,52 +42,86 @@ namespace Ramsey.NET.Controllers.V2
 
         [Route("suggest")]
         [HttpPost]
-        public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients)
+        public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients, int start = 0)
         {
-            var incIngredients = ingredients.Where(x => x.Role == IngredientRole.Include).ToList();
-            var excIngredients = ingredients.Where(x => x.Role == IngredientRole.Exclude).ToList();
-            
-            var recipeIds = incIngredients.SelectMany(x => x.RecipeParts)
-                .Select(x => x.RecipeID).Distinct().ToList();
+            var ingredientIds = ingredients.Where(x => x.Role == IngredientRole.Include).Select(x => x.IngredientId);
+            var excludeIds = ingredients.Where(x => x.Role == IngredientRole.Exclude).Select(x => x.IngredientId);
 
-            var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Include(z => z.RecipeParts)
-                .Single(y => y.RecipeId.Equals(x)))
-                .Where(i => i.RecipeParts.All(j => excIngredients.All(k => j.IngredientId != k.IngredientId)));
+            var recipeParts = _ramseyContext.Ingredients
+                .Where(x => ingredients.Any(y => y.IngredientId == x.IngredientId))
+                .SelectMany(x => x.RecipeParts).ToList();
 
-            var dtos = recipes.Select(x => new RecipeMetaDtoV2
+            var dtos = new List<RecipeMetaDtoV2>();
+
+            var recipeIds = recipeParts
+                .Where(x => excludeIds.All(y => y != x.IngredientId))
+                .Select(x => x.RecipeId)
+                .Distinct();
+
+            recipeParts = _ramseyContext.RecipeParts
+                .Where(x => recipeIds.Any(y => y == x.RecipeId))
+                .ToList();
+
+            Parallel.ForEach(recipeIds, (id) =>
             {
-                Image = x.Image,
-                RecipeID = x.RecipeId,
-                Source = x.Source,
-                Name = x.Name,
-                OwnerLogo = x.OwnerLogo,
-                Owner = x.Owner,
-                Ingredients = _ramseyContext.RecipeParts.Where(y => y.RecipeId == x.RecipeId)
-                    .Include(j => j.Ingredient)
-                    .Select(z => z.Ingredient.IngredientName),
-                RecipeParts = x.RecipeParts.Select(y => new RecipePartDtoV2
-                {
-                    IngredientID = y.IngredientId,
-                    Quantity = y.Quantity,
-                    RecipeID = y.RecipeId,
-                    Unit = y.Unit
-                }),
-                Coverage = (double)x.RecipeParts
-                    .Select(y => y.IngredientId)
-                    .Intersect(incIngredients.Select(y => y.IngredientId))
-                    .Count() / x.RecipeParts.Count
+                var dto = new RecipeMetaDtoV2 { RecipeID = id };
 
-            })
-            .OrderByDescending(x => x.Coverage)
-            .ToList();
-            
+                var ings = recipeParts
+                    .Where(x => x.RecipeId == id)
+                    .Select(x => x.IngredientId)
+                    .Distinct();
+
+                var matching = ings
+                    .Intersect(ingredientIds)
+                    .ToList();
+
+                dto.Coverage = (double)matching.Count() / ings.Count();
+
+                dtos.Add(dto);
+            });
+
+            dtos = dtos
+                .OrderByDescending(x => x.Coverage)
+                .ThenBy(x => x.Name)
+                .Skip(start)
+                .Take(25)
+                .ToList();
+
+            var keptIds = dtos.Select(x => x.RecipeID);
+
+            var recipes = _ramseyContext.Recipes
+                .Include(x => x.RecipeParts)
+                .ThenInclude(x => x.Ingredient)
+                .Where(x => keptIds.Any(y => x.RecipeId == y))
+                .ToList();
+
+            Parallel.ForEach(dtos, (dto) =>
+            {
+                var recipe = recipes.Single(x => x.RecipeId == dto.RecipeID);
+
+                dto.Name = recipe.Name;
+                dto.Image = recipe.Image;
+                dto.Source = recipe.Source;
+                dto.Ingredients = recipe.RecipeParts.Select(x => x.Ingredient.IngredientName);
+                dto.OwnerLogo = recipe.OwnerLogo;
+                dto.Owner = recipe.Owner;
+                dto.RecipeParts = recipe.RecipeParts.Select(x => new RecipePartDtoV2
+                {
+                    IngredientID = x.IngredientId,
+                    IngredientName = x.Ingredient.IngredientName,
+                    Quantity = x.Quantity,
+                    RecipeID = x.RecipeId,
+                    Unit = x.Unit
+                });
+            });
+
             return Json(dtos);
         }
 
         [Route("retrieve")]
         public async Task<IActionResult> RetrieveAsync(string id)
         {
-            var meta = await _ramseyContext.Recipes.Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
+            var meta = await _ramseyContext.Recipes.AsNoTracking().Include(x => x.RecipeParts).SingleOrDefaultAsync(x => x.RecipeId == id);
             var recipe = await _crawlerService.ScrapeRecipeAsync(meta.Source, meta.Owner);
 
             return Json(recipe);

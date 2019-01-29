@@ -23,6 +23,7 @@ using WebApi.Helpers;
 using AutoMapper;
 using Ramsey.NET.Helpers;
 using System.Threading.Tasks;
+using Hangfire.MemoryStorage;
 
 namespace Ramsey.NET
 {
@@ -55,12 +56,14 @@ namespace Ramsey.NET
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
-                services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease")));
+                services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease"), new Hangfire.SqlServer.SqlServerStorageOptions {
+                    JobExpirationCheckInterval = TimeSpan.FromMinutes(120),
+                }));
             }
             else
             {
                 services.AddDbContext<IRamseyContext, RamseyContext>(options => options.ConnectRamseyTestServer(Configuration));
-                services.AddHangfire(config => config.ConnectHangfireTest(Configuration));
+                services.AddHangfire(config => config.UseMemoryStorage(new MemoryStorageOptions { FetchNextJobTimeout = TimeSpan.FromHours(24), JobExpirationCheckInterval = TimeSpan.FromMinutes(120) }));
             }
 
             services.AddAutoMapper();
@@ -147,6 +150,7 @@ namespace Ramsey.NET
             GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
 
             app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseSpa(spa =>
             {

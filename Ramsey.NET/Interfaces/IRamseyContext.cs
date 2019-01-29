@@ -18,6 +18,7 @@ namespace Ramsey.NET.Interfaces
         DbSet<RecipeRating> RecipeRatings { get; }
         DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
         DbSet<BadWord> BadWords { get; set; }
+        DbSet<FailedRecipe> FailedRecipes { get; set; }
 
         DatabaseFacade Database { get; }
 

@@ -58,6 +58,21 @@ namespace Ramsey.NET.Migrations
                     b.ToTable("BadWords");
                 });
 
+            modelBuilder.Entity("Ramsey.NET.Models.FailedRecipe", b =>
+                {
+                    b.Property<int>("FailedRecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("FailedRecipeId");
+
+                    b.ToTable("FailedRecipes");
+                });
+
             modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
