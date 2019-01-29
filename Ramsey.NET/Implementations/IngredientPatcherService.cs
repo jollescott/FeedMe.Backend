@@ -1,9 +1,7 @@
 ﻿using Hangfire;
 using Ramsey.NET.Extensions;
-using Ramsey.NET.Ingredients.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,33 +10,18 @@ namespace Ramsey.NET.Implementations
 {
     public class IngredientPatcherService : IPatcherService
     {
-        private readonly IIngredientResolver _ingredientResolver;
         private readonly IRamseyContext _ramseyContext;
 
-        public IngredientPatcherService(IIngredientResolver ingredientResolver, IRamseyContext ramseyContext)
+        public IngredientPatcherService(IRamseyContext ramseyContext)
         {
-            _ingredientResolver = ingredientResolver;
             _ramseyContext = ramseyContext;
-
-            var badWords = _ramseyContext.BadWords.Select(x => x.Word).ToList();
-            var synonyms = new Dictionary<string, IList<string>>();
-
-            foreach (var pair in _ramseyContext.IngredientSynonyms)
-            {
-                if (!synonyms.ContainsKey(pair.Correct))
-                    synonyms.Add(pair.Correct, new List<string> { pair.Wrong });
-                else
-                    synonyms[pair.Correct].Append(pair.Wrong);
-            }
-
-            _ingredientResolver.Init(badWords, synonyms);
         }
 
         [AutomaticRetry(Attempts = 0)]
         public async Task PatchIngredientsAsync()
         {
             var toModify = new List<ModifyIngredient>();
-
+            /*
             foreach(var ingredient in _ramseyContext.Ingredients)
             {
                 var oldName = ingredient.IngredientName;
@@ -52,7 +35,7 @@ namespace Ramsey.NET.Implementations
                         NewName = newName
                     });
                 }
-            }
+            }*/
 
             foreach(var modify in toModify)
             {

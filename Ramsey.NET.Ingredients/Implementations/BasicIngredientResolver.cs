@@ -29,7 +29,7 @@ namespace Ramsey.NET.Ingredients.Implementations
             return Task.FromResult(output);
         }
 
-        public override void Init(IList<string> removal, IDictionary<string, IList<string>> synonyms)
+        public override void Init(IRamseyContext,IList<string> removal, IDictionary<string, IList<string>> synonyms)
         {
             var path = AppDomain.CurrentDomain.BaseDirectory;
             if (!File.Exists(Path.Join(path, "/Resources/regex.json")) || !File.Exists(Path.Join(path, "/Resources/removal.json")) || !File.Exists(Path.Join(path, "/Resources/synonyms.json")))
@@ -67,17 +67,13 @@ namespace Ramsey.NET.Ingredients.Implementations
             return Task.FromResult(ingredient);
         }
 
-        public override Task<string> RemoveIllegalsAsync(string ingredient)
+        public override void RemoveIllegals(ref string name)
         {
-            var output = ingredient;
-
-            foreach(var word in _removal)
+            foreach (var word in _removal)
             {
-                if (output.Contains(word) && word != string.Empty)
-                    output = output.Substring(0, output.IndexOf(word)).Trim();
+                if (name.Contains(word) && word != string.Empty)
+                    name = name.Substring(0, name.IndexOf(word)).Trim();
             }
-
-            return Task.FromResult(output);
         }
 
         public override async Task<string> ResolveIngredientAsync(string ingredient)
@@ -85,7 +81,7 @@ namespace Ramsey.NET.Ingredients.Implementations
             var output = ingredient;
 
             output = await ApplyRegexesAsync(output);
-            output = await RemoveIllegalsAsync(output);
+            RemoveIllegals(ref ingredient);
             output = await LinkSynonymsAsync(output);
 
             return output;

@@ -1,39 +1,40 @@
 ﻿using HtmlAgilityPack;
 using Ramsey.NET.Auto.Extensions;
-using Ramsey.NET.Auto.Interfaces;
+using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Crawlers.Misc;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Auto
 {
-    public class RamseyAuto : IRamseyAuto
+    public class RamseyAuto : IRecipeCrawler
     {
         private readonly HemmetsHttpClient _client;
+        private readonly IRamseyContext _ramseyContext;
 
         public IAutoConfig Config { get; private set; }
 
-        public RamseyAuto(IAutoConfig autoConfig = null)
+        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext)
         {
             _client = new HemmetsHttpClient();
+            _ramseyContext = ramseyContext;
             Config = autoConfig;
         }
 
-        public void Init(IAutoConfig config)
-        {
-            Config = config;
-        }
 
         public async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             Uri uri;
             if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 uri = new Uri(url);
@@ -84,10 +85,12 @@ namespace Ramsey.NET.Auto
                     .Select(x => x.Replace("\t", ""))
                     .Select(x => x.Replace("\n", string.Empty))
                     .Select(x => x.Replace('.', ','))
+                    .Select(x => x.ToLower())
+                    .Select(x => x.Trim())
                     .ToList();
 
-            var regex = new Regex("([0-9]\\d*(\\,\\d+)? \\w+)");
-            var qRegex = new Regex("([0-9]\\d*(\\,\\d+)?)");
+            var ingRegex = new Regex("([0-9]\\d*(\\,\\d+)? \\w+)");
+            var quantRegex = new Regex("([0-9]\\d*(\\,\\d+)?)");
 
             var parts = new List<RecipePartDtoV2>();
 
@@ -95,17 +98,34 @@ namespace Ramsey.NET.Auto
             {
                 var ingredient = ing;
 
+                //Optional processing by provider
                 if (Config.ProcessIngredient != null)
                     ingredient = Config.ProcessIngredient(ingredient);
 
-                var match = regex.Match(ingredient);
+                var match = ingRegex.Match(ingredient);
 
                 if(match.Success)
                 {
                     var amount = match.Value;
+
+                    //Find ingredient name
                     var name = ingredient.Replace(amount,string.Empty);
 
-                    var quantityMatch = qRegex.Match(amount);
+                    //Remove illegal words
+                    name = RemoveIllegals(name);
+
+                    //Match the name
+                    var nameMatch = Regex.Match(name, "([a-zåäöèîé]{3,})");
+
+                    if (nameMatch.Success)
+                    {
+                        name = nameMatch.Value;
+                    }
+                    else
+                        //If pattern is not detected then skip it.
+                        continue;
+
+                    var quantityMatch = quantRegex.Match(amount);
 
                     double.TryParse(quantityMatch.Value, out double quantity);
 
@@ -126,11 +146,46 @@ namespace Ramsey.NET.Auto
             recipe.Source = uri.ToString();
             recipe.Owner = Config.ProviderName;
 
+            stopWatch.Stop();
+
+            Debug.WriteLine("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
+
             return recipe;
+        }
+
+        private string RemoveIllegals(string name)
+        {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            var output = name;
+            var words = output.Split(' ');
+
+            foreach(var word in words)
+            {
+                if(_ramseyContext.BadWords.Any(x => x.Word == word))
+                {
+                    output = output.Replace(word, string.Empty);
+                }
+            }
+
+            var synonym = _ramseyContext.IngredientSynonyms.FirstOrDefault(x => x.Wrong == output);
+
+            if (synonym != null)
+                output = synonym.Correct;
+
+            stopWatch.Stop();
+
+            //Debug.WriteLine("Illegal detection for \"{0}\" took {0} result {0}", name, stopWatch.Elapsed, output);
+
+            return output;
         }
 
         public async Task ScrapeRecipesAsync(IRecipeManager recipeManager)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             var document = new HtmlDocument();
 
             var pages = Config.RecipeCount / Config.PageItemCount;
@@ -172,6 +227,9 @@ namespace Ramsey.NET.Auto
 
                 }
             }
+
+            stopWatch.Stop();
+            Debug.WriteLine("{0} took {1} min to rescrape.", Config.ProviderName, stopWatch.Elapsed.Minutes);
         }
     }
 }

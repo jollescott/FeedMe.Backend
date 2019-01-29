@@ -17,18 +17,20 @@ namespace Ramsey.NET.Implementations
         private readonly IRamseyContext _context;
         private readonly IRecipeManager _recipeManager;
 
-        private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
-        {
-            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
-            {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
-            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
-            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
-        };
+        private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers;
 
         public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
         {
             _context = context;
             _recipeManager = recipeManager;
+
+            Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
+            {
+                {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig(), context) },
+                {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig(), context) },
+                {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig(), context) },
+                {RecipeProvider.ICA, new RamseyAuto(new IcaConfig(), context) },
+            };
         }
 
         [AutomaticRetry(Attempts = 0)]

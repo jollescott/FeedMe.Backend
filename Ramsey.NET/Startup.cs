@@ -9,21 +9,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
 using System;
 using System.Text;
-using Hangfire.SQLite;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
-using Ramsey.NET.Ingredients.Implementations;
-using Ramsey.NET.Ingredients.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using WebApi.Helpers;
 using AutoMapper;
 using Ramsey.NET.Helpers;
 using System.Threading.Tasks;
 using Hangfire.MemoryStorage;
+using System.Globalization;
 
 namespace Ramsey.NET
 {
@@ -111,7 +107,6 @@ namespace Ramsey.NET
 
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
-            services.AddScoped<IIngredientResolver, BasicIngredientResolver>();
             services.AddScoped<ICrawlerService, CrawlerService>();
             services.AddScoped<IPatcherService, IngredientPatcherService>();
         }
@@ -128,6 +123,11 @@ namespace Ramsey.NET
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            var cultureInfo = new CultureInfo("sv-SE");
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

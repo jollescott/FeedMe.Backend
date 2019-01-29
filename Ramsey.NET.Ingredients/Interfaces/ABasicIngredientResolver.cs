@@ -11,6 +11,6 @@ namespace Ramsey.NET.Ingredients.Interfaces
 
         public abstract Task<string> ApplyRegexesAsync(string ingredient);
         public abstract Task<string> LinkSynonymsAsync(string ingredient);
-        public abstract Task<string> RemoveIllegalsAsync(string ingredient);
+        public abstract void RemoveIllegals(ref string name);
     }
 }

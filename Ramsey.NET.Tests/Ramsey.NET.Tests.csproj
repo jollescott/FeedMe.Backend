@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ramsey.NET.Auto\Ramsey.NET.Auto.csproj" />
-    <ProjectReference Include="..\Ramsey.NET.Crawlers\Ramsey.NET.Crawlers.csproj" />
     <ProjectReference Include="..\Ramsey.NET\Ramsey.NET.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
   </ItemGroup>
