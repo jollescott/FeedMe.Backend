@@ -20,7 +20,7 @@ namespace Ramsey.NET.Implementations
 
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers;
 
-        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager, IIllegalRemover illegalRemover)
+        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager, IWordRemover illegalRemover)
         {
             _context = context;
             _recipeManager = recipeManager;

@@ -9,11 +9,11 @@ using System.Text;
 
 namespace Ramsey.NET.Auto.Implementations
 {
-    public class IllegalRemover : IIllegalRemover
+    public class BasicWordRemover : IWordRemover
     {
         private readonly IRamseyContext _ramseyContext;
 
-        public IllegalRemover(IRamseyContext ramseyContext)
+        public BasicWordRemover(IRamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
         }

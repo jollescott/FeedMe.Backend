@@ -12,9 +12,9 @@ namespace Ramsey.NET.Implementations
     public class IngredientPatcherService : IPatcherService
     {
         private readonly IRamseyContext _ramseyContext;
-        private readonly IIllegalRemover _illegalRemover;
+        private readonly IWordRemover _illegalRemover;
 
-        public IngredientPatcherService(IRamseyContext ramseyContext, IIllegalRemover illegalRemover)
+        public IngredientPatcherService(IRamseyContext ramseyContext, IWordRemover illegalRemover)
         {
             _ramseyContext = ramseyContext;
             _illegalRemover = illegalRemover;

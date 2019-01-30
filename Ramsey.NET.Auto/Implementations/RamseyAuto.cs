@@ -20,11 +20,11 @@ namespace Ramsey.NET.Auto
     {
         private readonly HemmetsHttpClient _client;
         private readonly IRamseyContext _ramseyContext;
-        private readonly IIllegalRemover _illegalRemover;
+        private readonly IWordRemover _illegalRemover;
 
         public IAutoConfig Config { get; private set; }
 
-        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IIllegalRemover illegalRemover)
+        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IWordRemover illegalRemover)
         {
             _client = new HemmetsHttpClient();
             _ramseyContext = ramseyContext;

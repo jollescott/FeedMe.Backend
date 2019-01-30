@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ramsey.Core
 {
-    public interface IIllegalRemover
+    public interface IWordRemover
     {
         string RemoveIllegals(string name);
     }

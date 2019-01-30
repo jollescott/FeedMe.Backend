@@ -106,7 +106,7 @@ namespace Ramsey.NET
                 };
             });
 
-            services.AddScoped<IIllegalRemover, IllegalRemover>();
+            services.AddScoped<IWordRemover, BasicWordRemover>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<ICrawlerService, CrawlerService>();
