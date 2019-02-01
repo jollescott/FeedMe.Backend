@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -99,42 +100,51 @@ namespace Ramsey.NET.Auto
                 if (Config.ProcessIngredient != null)
                     ingredient = Config.ProcessIngredient(ingredient);
 
-                var match = ingRegex.Match(ingredient);
+                //Find quantity and unit
+                var ingMatch = ingRegex.Match(ingredient);
+                var amount = ingMatch.Value;
 
-                if(match.Success)
+                if(ingredient.Split(' ').Count() > 2)
+                    ingredient = ingredient.Replace(amount, string.Empty);
+
+                var quantityMatch = quantRegex.Match(amount);
+
+                double.TryParse(quantityMatch.Value, out double quantity);
+
+                string unit;
+                if (quantityMatch.Success)
+                    unit = amount.Replace(quantityMatch.Value, string.Empty);
+                else
+                    unit = string.Empty;
+
+                //Remove illegal words
+                //Find ingredient name
+                string foundName = _illegalRemover.RemoveIllegals(ingredient);
+
+                //Match the name
+                var nameMatch = Regex.Matches(foundName, "([a-zåäöèîé]{3,})");
+
+                if (nameMatch.Count > 0)
                 {
-                    var amount = match.Value;
-
                     //Find ingredient name
-                    var name = ingredient.Replace(amount,string.Empty);
+                    var sb = new StringBuilder();
+                    var matches = nameMatch.Where(x => x.Success).Select(x => x.Value);
 
-                    //Remove illegal words
-                    name = _illegalRemover.RemoveIllegals(name);
+                    foreach (var match in matches)
+                        sb = sb.Append(" ").Append(match);
 
-                    //Match the name
-                    var nameMatch = Regex.Match(name, "([a-zåäöèîé]{3,})");
-
-                    if (nameMatch.Success)
-                    {
-                        name = nameMatch.Value;
-                    }
-                    else
-                        //If pattern is not detected then skip it.
-                        continue;
-
-                    var quantityMatch = quantRegex.Match(amount);
-
-                    double.TryParse(quantityMatch.Value, out double quantity);
-
-                    var unit = amount.Replace(quantityMatch.Value, string.Empty);
+                    var actualName = sb.ToString().Trim();
 
                     parts.Add(new RecipePartDtoV2
                     {
-                        IngredientName = name.Trim(),
+                        IngredientName = actualName,
                         Quantity = (float)quantity,
                         Unit = unit.Trim(),
                     });
                 }
+                else
+                    //If pattern is not detected then skip it.
+                    continue;
             }
 
             recipe.RecipeParts = parts;

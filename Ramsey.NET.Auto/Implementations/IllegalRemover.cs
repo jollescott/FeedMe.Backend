@@ -13,6 +13,14 @@ namespace Ramsey.NET.Auto.Implementations
     {
         private readonly IRamseyContext _ramseyContext;
 
+        private readonly string[] BREAK_WORDS = {
+            "och",
+            "eller",
+            "som",
+            "till",
+            "gärna"
+        };
+ 
         public BasicWordRemover(IRamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
@@ -24,6 +32,7 @@ namespace Ramsey.NET.Auto.Implementations
             stopWatch.Start();
 
             var output = name;
+
             var words = output.Split(' ');
 
             foreach (var word in words)
@@ -31,6 +40,13 @@ namespace Ramsey.NET.Auto.Implementations
                 if (_ramseyContext.BadWords.Any(x => x.Word == word))
                 {
                     output = output.Replace(word, string.Empty);
+                }
+
+                if (BREAK_WORDS.Any(x => x == word))
+                {
+                    //Check if it STILL contains
+                    if(output.Contains(word))
+                        output = output.Substring(0, output.IndexOf(word));
                 }
             }
 
@@ -40,9 +56,6 @@ namespace Ramsey.NET.Auto.Implementations
                 output = synonym.Correct;
 
             stopWatch.Stop();
-
-            //Debug.WriteLine("Illegal detection for \"{0}\" took {0} result {0}", name, stopWatch.Elapsed, output);
-
             return output;
         }
     }
