@@ -47,21 +47,25 @@ namespace Ramsey.NET.Controllers.V2
             var ingredientIds = ingredients.Where(x => x.Role == IngredientRole.Include).Select(x => x.IngredientId);
             var excludeIds = ingredients.Where(x => x.Role == IngredientRole.Exclude).Select(x => x.IngredientId);
 
-            var recipeParts = _ramseyContext.Ingredients
-                .Where(x => ingredients.Any(y => y.IngredientId == x.IngredientId))
-                .SelectMany(x => x.RecipeParts).ToList();
-
-            var dtos = new List<RecipeMetaDtoV2>();
-
-            var recipeIds = recipeParts
-                .Where(x => excludeIds.All(y => y != x.IngredientId))
+            var includeRecipes = _ramseyContext.Ingredients
+                .Where(x => ingredientIds.Any(y => y == x.IngredientId))
+                .SelectMany(x => x.RecipeParts).ToList()
                 .Select(x => x.RecipeId)
                 .Distinct();
 
-            recipeParts = _ramseyContext.RecipeParts
+            var excludeRecipes = _ramseyContext.Ingredients
+                .Where(x => excludeIds.Any(y => y == x.IngredientId))
+                .SelectMany(x => x.RecipeParts).ToList()
+                .Select(x => x.RecipeId)
+                .Distinct();
+
+            var recipeIds = includeRecipes.Where(x => excludeRecipes.All(y => x != y));
+
+            var recipeParts = _ramseyContext.RecipeParts
                 .Where(x => recipeIds.Any(y => y == x.RecipeId))
                 .ToList();
 
+            var dtos = new List<RecipeMetaDtoV2>();
             Parallel.ForEach(recipeIds, (id) =>
             {
                 var dto = new RecipeMetaDtoV2 { RecipeID = id };
