@@ -40,6 +40,41 @@ namespace Ramsey.NET.Controllers.V2
             return StatusCode(200);
         }
 
+        [Route("test")]
+        public IActionResult Test([FromBody]List<IngredientDtoV2> ingredients, string id)
+        {
+            var ingredientIds = ingredients.Where(x => x.Role == IngredientRole.Include).Select(x => x.IngredientId);
+            var excludeIds = ingredients.Where(x => x.Role == IngredientRole.Exclude).Select(x => x.IngredientId);
+
+            var includeRecipes = _ramseyContext.Ingredients
+                .Where(x => ingredientIds.Any(y => y == x.IngredientId))
+                .SelectMany(x => x.RecipeParts).ToList()
+                .Select(x => x.RecipeId)
+                .Distinct();
+
+            var excludeRecipes = _ramseyContext.Ingredients
+                .Where(x => excludeIds.Any(y => y == x.IngredientId))
+                .SelectMany(x => x.RecipeParts).ToList()
+                .Select(x => x.RecipeId)
+                .Distinct();
+
+            var recipeIds = includeRecipes.Where(x => excludeRecipes.All(y => x != y));
+            var dto = new RecipeMetaDtoV2 { RecipeID = id };
+
+            var ings = _ramseyContext.RecipeParts
+                .AsNoTracking()
+                .Where(x => x.RecipeId == id)
+                .Select(x => x.IngredientId)
+                .Distinct();
+
+            var matching = ings
+                .Intersect(ingredientIds)
+                .ToList();
+
+            dto.Coverage = (double)matching.Count() / ings.Count();
+            return Json(dto);
+        }
+
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients, int start = 0)
@@ -61,16 +96,13 @@ namespace Ramsey.NET.Controllers.V2
 
             var recipeIds = includeRecipes.Where(x => excludeRecipes.All(y => x != y));
 
-            var recipeParts = _ramseyContext.RecipeParts
-                .Where(x => recipeIds.Any(y => y == x.RecipeId))
-                .ToList();
-
             var dtos = new List<RecipeMetaDtoV2>();
             Parallel.ForEach(recipeIds, (id) =>
             {
                 var dto = new RecipeMetaDtoV2 { RecipeID = id };
 
-                var ings = recipeParts
+                var ings = _ramseyContext.RecipeParts
+                    .AsNoTracking()
                     .Where(x => x.RecipeId == id)
                     .Select(x => x.IngredientId)
                     .Distinct();
