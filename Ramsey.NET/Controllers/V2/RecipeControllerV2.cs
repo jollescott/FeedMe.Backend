@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
 using Ramsey.NET.Controllers.Interfaces;
+using Ramsey.NET.Extensions;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
@@ -54,70 +55,38 @@ namespace Ramsey.NET.Controllers.V2
                 .Distinct();
 
             var excludeRecipes = _ramseyContext.Ingredients
-                .Where(x => excludeIds.Any(y => y == x.IngredientId))
-                .SelectMany(x => x.RecipeParts).ToList()
-                .Select(x => x.RecipeId)
-                .Distinct();
+                 .Where(x => excludeIds.Any(y => y == x.IngredientId))
+                 .SelectMany(x => x.RecipeParts).ToList()
+                 .Select(x => x.RecipeId)
+                 .Distinct();           
 
             var recipeIds = includeRecipes.Where(x => excludeRecipes.All(y => x != y));
 
-            var recipeParts = _ramseyContext.RecipeParts
-                .Where(x => recipeIds.Any(y => y == x.RecipeId))
-                .ToList();
-
-            var dtos = new List<RecipeMetaDtoV2>();
-            Parallel.ForEach(recipeIds, (id) =>
-            {
-                var dto = new RecipeMetaDtoV2 { RecipeID = id };
-
-                var ings = recipeParts
-                    .Where(x => x.RecipeId == id)
-                    .Select(x => x.IngredientId)
-                    .Distinct();
-
-                var matching = ings
-                    .Intersect(ingredientIds)
-                    .ToList();
-
-                dto.Coverage = (double)matching.Count() / ings.Count();
-
-                dtos.Add(dto);
-            });
-
-            dtos = dtos
+            var dtos = _ramseyContext.RecipeParts
+                .AsNoTracking()
+                .Include(x => x.Ingredient)
+                .Where(x => recipeIds.Contains(x.RecipeId))
+                .GroupBy(x => x.RecipeId)
+                .Select(x => new RecipeMetaDtoV2
+                {
+                    RecipeID = x.Key,
+                    Coverage = x.Where(y => ingredientIds.Contains(y.IngredientId)).DoubleCount() / x.Count()
+                })
                 .OrderByDescending(x => x.Coverage)
                 .ThenBy(x => x.Name)
                 .Skip(start)
                 .Take(25)
                 .ToList();
 
-            var keptIds = dtos.Select(x => x.RecipeID);
-
-            var recipes = _ramseyContext.Recipes
-                .Include(x => x.RecipeParts)
-                .ThenInclude(x => x.Ingredient)
-                .Where(x => keptIds.Any(y => x.RecipeId == y))
-                .ToList();
-
-            Parallel.ForEach(dtos, (dto) =>
+            foreach(var dto in dtos)
             {
-                var recipe = recipes.Single(x => x.RecipeId == dto.RecipeID);
-
-                dto.Name = recipe.Name;
+                var recipe = _ramseyContext.Recipes.Find(dto.RecipeID);
                 dto.Image = recipe.Image;
+                dto.Name = recipe.Name;
                 dto.Source = recipe.Source;
-                dto.Ingredients = recipe.RecipeParts.Select(x => x.Ingredient.IngredientName);
                 dto.OwnerLogo = recipe.OwnerLogo;
                 dto.Owner = recipe.Owner;
-                dto.RecipeParts = recipe.RecipeParts.Select(x => new RecipePartDtoV2
-                {
-                    IngredientID = x.IngredientId,
-                    IngredientName = x.Ingredient.IngredientName,
-                    Quantity = x.Quantity,
-                    RecipeID = x.RecipeId,
-                    Unit = x.Unit
-                });
-            });
+            }
 
             return Json(dtos);
         }
