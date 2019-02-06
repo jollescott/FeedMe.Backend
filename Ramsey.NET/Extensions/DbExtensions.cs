@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
@@ -75,6 +76,12 @@ namespace Ramsey.NET.Extensions
             {
                 throw new Exception();
             }
+        }
+
+        public static double DoubleCount<T>(this IEnumerable<T> ts)
+        {
+            var count = ts.Count();
+            return (double)count;
         }
     }
 }

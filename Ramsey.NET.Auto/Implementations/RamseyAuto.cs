@@ -1,47 +1,46 @@
 ﻿using HtmlAgilityPack;
+using Ramsey.Core;
 using Ramsey.NET.Auto.Extensions;
-using Ramsey.NET.Auto.Interfaces;
+using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Crawlers.Misc;
+using Ramsey.NET.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ramsey.NET.Auto
 {
-    public class RamseyAuto : IRamseyAuto
+    public class RamseyAuto : IRecipeCrawler
     {
         private readonly HemmetsHttpClient _client;
+        private readonly IRamseyContext _ramseyContext;
+        private readonly IWordRemover _illegalRemover;
 
         public IAutoConfig Config { get; private set; }
 
-        public RamseyAuto(IAutoConfig autoConfig = null)
+        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IWordRemover illegalRemover)
         {
             _client = new HemmetsHttpClient();
+            _ramseyContext = ramseyContext;
+            _illegalRemover = illegalRemover;
             Config = autoConfig;
         }
 
-        public void Init(IAutoConfig config)
-        {
-            Config = config;
-        }
 
         public async Task<RecipeDtoV2> ScrapeRecipeAsync(string url, bool includeAll = false)
         {
-            Uri uri;
-            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                uri = new Uri(url);
-            else
-                uri = new Uri(Config.RootPage + url);
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
             var recipe = new RecipeDtoV2();
-            var httpResponse = await _client.GetAsync(uri);
+            var httpResponse = await _client.GetAsync(url);
             var html = await httpResponse.Content.ReadAsStringAsync();
 
             var document = new HtmlDocument();
@@ -64,7 +63,7 @@ namespace Ramsey.NET.Auto
                 recipe.RecipeID = Config.ParseId(url);
             else
             {
-                var id = uri.ToString();
+                var id = url.ToString();
                 recipe.RecipeID = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
             }
 
@@ -84,10 +83,12 @@ namespace Ramsey.NET.Auto
                     .Select(x => x.Replace("\t", ""))
                     .Select(x => x.Replace("\n", string.Empty))
                     .Select(x => x.Replace('.', ','))
+                    .Select(x => x.ToLower())
+                    .Select(x => x.Trim())
                     .ToList();
 
-            var regex = new Regex("([0-9]\\d*(\\,\\d+)? \\w+)");
-            var qRegex = new Regex("([0-9]\\d*(\\,\\d+)?)");
+            var ingRegex = new Regex("([0-9]\\d*(\\,\\d+)? \\w+)");
+            var quantRegex = new Regex("([0-9]\\d*(\\,\\d+)?)");
 
             var parts = new List<RecipePartDtoV2>();
 
@@ -95,42 +96,75 @@ namespace Ramsey.NET.Auto
             {
                 var ingredient = ing;
 
+                //Optional processing by provider
                 if (Config.ProcessIngredient != null)
                     ingredient = Config.ProcessIngredient(ingredient);
 
-                var match = regex.Match(ingredient);
+                //Find quantity and unit
+                var ingMatch = ingRegex.Match(ingredient);
+                var amount = ingMatch.Value;
 
-                if(match.Success)
+                if(ingredient.Split(' ').Count() > 2)
+                    ingredient = ingredient.Replace(amount, string.Empty);
+
+                var quantityMatch = quantRegex.Match(amount);
+
+                double.TryParse(quantityMatch.Value, out double quantity);
+
+                string unit;
+                if (quantityMatch.Success)
+                    unit = amount.Replace(quantityMatch.Value, string.Empty);
+                else
+                    unit = string.Empty;
+
+                //Remove illegal words
+                //Find ingredient name
+                string foundName = _illegalRemover.RemoveIllegals(ingredient);
+
+                //Match the name
+                var nameMatch = Regex.Matches(foundName, "([a-zåäöèîé]{3,})");
+
+                if (nameMatch.Count > 0)
                 {
-                    var amount = match.Value;
-                    var name = ingredient.Replace(amount,string.Empty);
+                    //Find ingredient name
+                    var sb = new StringBuilder();
+                    var matches = nameMatch.Where(x => x.Success).Select(x => x.Value);
 
-                    var quantityMatch = qRegex.Match(amount);
+                    foreach (var match in matches)
+                        sb = sb.Append(" ").Append(match);
 
-                    double.TryParse(quantityMatch.Value, out double quantity);
-
-                    var unit = amount.Replace(quantityMatch.Value, string.Empty);
+                    var actualName = sb.ToString().Trim();
 
                     parts.Add(new RecipePartDtoV2
                     {
-                        IngredientName = name.Trim(),
+                        IngredientName = actualName,
                         Quantity = (float)quantity,
                         Unit = unit.Trim(),
                     });
                 }
+                else
+                    //If pattern is not detected then skip it.
+                    continue;
             }
 
             recipe.RecipeParts = parts;
 
             recipe.OwnerLogo = Config.ProviderLogo;
-            recipe.Source = uri.ToString();
+            recipe.Source = url.ToString();
             recipe.Owner = Config.ProviderName;
+
+            stopWatch.Stop();
+
+            Debug.WriteLine("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
             return recipe;
         }
 
         public async Task ScrapeRecipesAsync(IRecipeManager recipeManager)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             var document = new HtmlDocument();
 
             var pages = Config.RecipeCount / Config.PageItemCount;
@@ -153,15 +187,22 @@ namespace Ramsey.NET.Auto
 
                     foreach (var link in links)
                     {
+                        Uri uri = null;
+
                         try
                         {
-                            var recipe = await ScrapeRecipeAsync(link);
+                            if (Uri.IsWellFormedUriString(link, UriKind.Absolute))
+                                uri = new Uri(link);
+                            else
+                                uri = new Uri(Config.RootPage + link);
+
+                            var recipe = await ScrapeRecipeAsync(uri.ToString());
                             await recipeManager.UpdateRecipeMetaAsync(recipe);
                         }
                         catch (Exception ex)
                         {
                             var trace = ex.StackTrace != null ? ex.StackTrace : string.Empty;
-                            var failingLink = link != null ? link : string.Empty;
+                            var failingLink = uri != null ? uri.ToString() : string.Empty;
 
                             await recipeManager.ReportFailedRecipeAsync(failingLink, trace);
                         }
@@ -172,6 +213,9 @@ namespace Ramsey.NET.Auto
 
                 }
             }
+
+            stopWatch.Stop();
+            Debug.WriteLine("{0} took {1} min to rescrape.", Config.ProviderName, stopWatch.Elapsed.Minutes);
         }
     }
 }

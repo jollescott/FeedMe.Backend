@@ -9,6 +9,7 @@ using Ramsey.Shared.Enums;
 using Ramsey.NET.Auto;
 using Ramsey.NET.Auto.Configs;
 using Hangfire;
+using Ramsey.Core;
 
 namespace Ramsey.NET.Implementations
 {
@@ -17,18 +18,20 @@ namespace Ramsey.NET.Implementations
         private readonly IRamseyContext _context;
         private readonly IRecipeManager _recipeManager;
 
-        private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
-        {
-            {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig()) },
-            {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig()) },
-            {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig()) },
-            {RecipeProvider.ICA, new RamseyAuto(new IcaConfig()) },
-        };
+        private readonly Dictionary<RecipeProvider, IRecipeCrawler> Crawlers;
 
-        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager)
+        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager, IWordRemover illegalRemover)
         {
             _context = context;
             _recipeManager = recipeManager;
+
+            Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
+            {
+                {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig(), context, illegalRemover) },
+                {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig(), context, illegalRemover) },
+                {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig(), context, illegalRemover) },
+                {RecipeProvider.ICA, new RamseyAuto(new IcaConfig(), context, illegalRemover) },
+            };
         }
 
         [AutomaticRetry(Attempts = 0)]

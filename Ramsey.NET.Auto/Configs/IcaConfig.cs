@@ -27,7 +27,12 @@ namespace Ramsey.NET.Auto.Configs
             var image = doc.DocumentNode
                 .SelectSingleNode("//div[contains(@class, 'recipe-image-square__image')]");
                 
-            return Regex.Match(image.GetAttributeValue("style", ""), @"(?<=url\()(.*)(?=\))").Groups[1].Value;
+            return Regex.Match(image.GetAttributeValue("style", ""), @"(?<=url\()(.*)(?=\))")
+                            .Groups[1]
+                            .Value
+                            .Replace("&#39;", string.Empty)
+                            .Replace("//", string.Empty)
+                            .Insert(0, "https://");
         };
 
         public Func<string, string> ParseId => null;
@@ -84,9 +89,9 @@ namespace Ramsey.NET.Auto.Configs
 
         public string ImageXPath => "";
 
-        public string DirectionsXPath => "/html/body/form/div[4]/div/div[2]/main/section[3]/div[1]/div[2]/howto-steps/ol//li";
+        public string DirectionsXPath => "//howto-steps/ol/li";
 
-        public string IngredientsXPath => "/html/body/form/div[4]/div/div[2]/main/section[3]/div[3]/div[1]/ul//li/span";
+        public string IngredientsXPath => "//ul[@class='ingredients__list']/li/span";
 
         public string NameXPath => "/html/body/form/div[4]/div/div[2]/main/header/div/div[1]/div[2]/div/h1";
     }

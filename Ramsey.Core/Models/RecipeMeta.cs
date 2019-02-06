@@ -1,13 +1,5 @@
-﻿using Ramsey.NET.Models;
-using Ramsey.Shared.Dto;
-using Ramsey.Shared.Enums;
-using System;
+﻿using Ramsey.Shared.Enums;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Ramsey.NET.Models
 {

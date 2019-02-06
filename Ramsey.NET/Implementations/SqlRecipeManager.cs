@@ -1,44 +1,27 @@
 ﻿using Ramsey.NET.Extensions;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
-using Ramsey.Shared.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
-using System.Text.RegularExpressions;
-using Ramsey.NET.Ingredients.Interfaces;
+using System.Diagnostics;
 
 namespace Ramsey.NET.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
         private readonly IRamseyContext _context;
-        private readonly IIngredientResolver _ingredientResolver;
 
-        public SqlRecipeManager(IRamseyContext context, IIngredientResolver ingredientResolver)
+        public SqlRecipeManager(IRamseyContext context)
         {
             _context = context;
-            _ingredientResolver = ingredientResolver;
-
-            var badWords = _context.BadWords.Select(x => x.Word).ToList();
-            var synonyms = new Dictionary<string, IList<string>>();
-
-            foreach(var pair in _context.IngredientSynonyms)
-            {
-                if (!synonyms.ContainsKey(pair.Correct))
-                    synonyms.Add(pair.Correct, new List<string> { pair.Wrong });
-                else
-                    synonyms[pair.Correct].Append(pair.Wrong);
-            }
-
-            _ingredientResolver.Init(badWords, synonyms);
         }
 
         public async Task<bool> UpdateRecipeMetaAsync(RecipeMetaDtoV2 recipeMetaDto)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             var recipe = _context.Recipes.AddIfNotExists(new RecipeMeta
             {
                 RecipeId = recipeMetaDto.RecipeID,
@@ -60,15 +43,8 @@ namespace Ramsey.NET.Implementations
                 if (partDto.IngredientName == null || partDto.IngredientName == string.Empty)
                     continue;
 
-                string ingredientName = await _ingredientResolver.ResolveIngredientAsync(partDto.IngredientName);
+                string ingredientName = partDto.IngredientName;
                 string recipeId = recipeMetaDto.RecipeID;
-
-                /*
-                if (ingredientName == null || recipeId == null ||
-                    ingredientName == string.Empty || recipeId == string.Empty || 
-                    ingredientName.Contains("och"))
-                    continue;
-                    */
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {
@@ -100,6 +76,10 @@ namespace Ramsey.NET.Implementations
 
             _context.Recipes.Update(recipe);
             await SaveRecipeChangesAsync();
+
+            stopWatch.Stop();
+
+            Debug.WriteLine("Recipe {0} took {1} ms to reload.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
             return true;
         }
