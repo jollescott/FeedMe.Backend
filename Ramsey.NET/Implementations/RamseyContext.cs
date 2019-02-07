@@ -2,6 +2,7 @@
 using Ramsey.NET.Models;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Enums;
+using Ramsey.Core.Models;
 
 namespace Ramsey.NET.Implementations
 {
@@ -28,13 +29,12 @@ namespace Ramsey.NET.Implementations
                 .Property(x => x.IngredientName)
                 .ValueGeneratedNever();
 
-            //User 
-            modelBuilder.Entity<RamseyUser>()
-                .HasKey(x => x.UserId);
+            //Tags
+            modelBuilder.Entity<Tag>()
+                .HasKey(x => x.TagId);
 
-            modelBuilder.Entity<RamseyUser>()
-                .Property(x => x.UserId)
-                .ValueGeneratedNever();
+            modelBuilder.Entity<RecipeTag>()
+                .HasKey(x => x.RecipeTagId);
 
             //Recipe Meta
             modelBuilder.Entity<RecipeMeta>()
@@ -60,14 +60,12 @@ namespace Ramsey.NET.Implementations
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeMeta> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
-        public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
-        public DbSet<RecipeRating> RecipeRatings { get; set; }
-        public DbSet<RamseyUser> RamseyUsers { get; set; }
-
         public DbSet<FailedRecipe> FailedRecipes { get; set; }
 
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
         public DbSet<BadWord> BadWords { get; set; }
+
+        public DbSet<RecipeTag> RecipeTags { get; set; }
     }
 }
