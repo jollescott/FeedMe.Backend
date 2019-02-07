@@ -28,8 +28,7 @@ namespace Ramsey.NET.Controllers.V2
             var ingredients = _ramseyContext.Ingredients
                 .Where(x => EF.Functions.Like(x.IngredientName, $"%{search}%"))
                 .OrderBy(x => x.IngredientName.Length)
-                .Take(10)
-                .ToList();
+                .Take(10);
 
             var ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
             {

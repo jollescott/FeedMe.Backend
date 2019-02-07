@@ -33,23 +33,7 @@ namespace Ramsey.Shared.Misc
             {
                 public static string Suggest => Base + "v2/recipe/suggest";
                 public static string Retreive => Base + "v2/recipe/retrieve";
-            }
-
-            public class Favorite
-            {
-                public static string Add => Base + "v2/favorite/add";
-                public static string Delete => Base + "v2/favorite/delete";
-                public static string List => Base + "v2/favorite/list";
-            }
-
-            public class Rating
-            {
-                public static string Update => Base + "v2/rating/update";
-            }
-
-            public class User
-            {
-                public static string Sync => Base + "v2/user/sync";
+                public static string Text => Base + "v2/recipe/text";
             }
         }
     }

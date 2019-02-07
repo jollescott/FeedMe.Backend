@@ -16,8 +16,6 @@ namespace Ramsey.NET.Controllers.Interfaces
         [HttpPost]
         IActionResult Suggest([FromBody]List<TIngredient> ingredients, int start = 0);
 
-        IActionResult VerifyCollection([FromBody]List<TIngredient> recipes);
-
         [Route("retrieve")]
         Task<IActionResult> RetrieveAsync(string id);
     }
