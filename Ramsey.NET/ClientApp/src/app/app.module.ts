@@ -14,18 +14,20 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 import { ChefModule } from './chef/chef.module';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 export const APP_ROUTES: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: 'chef', pathMatch: 'full' },
-  { path: '**', component: PageNotFoundComponent }
+  { path: 'privacy', component: PrivacyComponent},
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PrivacyComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

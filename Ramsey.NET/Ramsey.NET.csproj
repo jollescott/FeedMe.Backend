@@ -49,6 +49,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="output.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ramsey.NET.Auto\Ramsey.NET.Auto.csproj" />
     <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
   </ItemGroup>
