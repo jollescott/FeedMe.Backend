@@ -47,5 +47,7 @@ namespace Ramsey.NET.Auto.Configs
         public string IngredientsXPath => "/html/body/div[1]/div[1]/div/div[4]/div[1]/div[2]/div[1]/div/ul//li";
 
         public string NameXPath => "/html/body/div[1]/div[1]/div/div[2]/div[1]/div/div[2]/h1";
+
+        public string[] TagXPaths => null;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using MoreLinq;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Extensions;
 using Ramsey.NET.Crawlers.Interfaces;
@@ -153,11 +154,40 @@ namespace Ramsey.NET.Auto
             recipe.Source = url.ToString();
             recipe.Owner = Config.ProviderName;
 
+            recipe.Tags = GetRecipeTags(document);
+
             stopWatch.Stop();
 
             Debug.WriteLine("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
             return recipe;
+        }
+
+        private IEnumerable<TagDto> GetRecipeTags(HtmlDocument document)
+        {
+            if (Config.TagXPaths == null)
+                return null;
+
+            var tags = new List<TagDto>();
+
+            foreach(var path in Config.TagXPaths)
+            {
+                var elements = document.DocumentNode.SelectNodes(path);
+
+                if(elements != null)
+                {
+                    var names = elements.Where(x => x.InnerText != null)
+                                    .Select(x => x.InnerText.ToLower())
+                                    .Select(x => x.RemoveSpecialCharacters());
+
+                    names.ForEach(x => tags.Add(new TagDto
+                    {
+                        Name = x,
+                    }));
+                }               
+            }
+
+            return tags;
         }
 
         public async Task ScrapeRecipesAsync(IRecipeManager recipeManager)
@@ -168,7 +198,7 @@ namespace Ramsey.NET.Auto
             var document = new HtmlDocument();
 
             var pages = Config.RecipeCount / Config.PageItemCount;
-            System.Diagnostics.Debug.WriteLine(pages);
+            Debug.WriteLine(pages);
 
             for (var page = 0; page < pages; page++)
             {

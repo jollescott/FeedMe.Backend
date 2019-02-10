@@ -57,5 +57,9 @@ namespace Ramsey.NET.Auto.Configs
         public int PageItemCount => 20;
 
         public string NameXPath => "/html/body/div[2]/div[2]/form/div/div[2]/h1";
+
+        public string[] TagXPaths => new string[] {
+            "//div[@class='info']/table/tbody/tr[2]/td[2]"
+        };
     }
 }

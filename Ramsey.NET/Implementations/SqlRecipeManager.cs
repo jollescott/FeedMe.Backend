@@ -74,6 +74,25 @@ namespace Ramsey.NET.Implementations
                 recipe.RecipeParts.Add(part);
             }
 
+            //Tags
+            foreach(var tagDto in recipeMetaDto.Tags)
+            {
+                var tag = _context.Tags.AddIfNotExists(new Core.Models.Tag
+                {
+                    Name = tagDto.Name,
+                }, x => x.Name == tagDto.Name);
+
+                await _context.SaveChangesAsync();
+
+                _context.RecipeTags.AddIfNotExists(new Core.Models.RecipeTag
+                {
+                    RecipeId = recipe.RecipeId,
+                    TagId = tag.TagId
+                }, x => x.TagId == tag.TagId && x.Recipe.RecipeId == recipe.RecipeId);
+
+                await _context.SaveChangesAsync();
+            }
+
             _context.Recipes.Update(recipe);
             await SaveRecipeChangesAsync();
 

@@ -17,6 +17,7 @@ namespace Ramsey.Shared.Dto.V2
 
         public IEnumerable<string> Ingredients { get; set; }
         public IEnumerable<RecipePartDtoV2> RecipeParts { get; set; }
+        public IEnumerable<TagDto> Tags { get; set; }
         
         public double Coverage { get; set; }
 
@@ -31,6 +32,7 @@ namespace Ramsey.Shared.Dto.V2
             recipeMetaDto.Source = recipe.Source;
             recipeMetaDto.Ingredients = recipe.Ingredients;
             recipeMetaDto.RecipeParts = recipe.RecipeParts;
+            recipeMetaDto.Tags = recipe.Tags;
 
             return recipeMetaDto;
         }

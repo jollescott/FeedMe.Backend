@@ -28,9 +28,9 @@ namespace Ramsey.NET.Implementations
             Crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
             {
                 {RecipeProvider.ReceptSe, new RamseyAuto(new ReceptSeConfig(), context, illegalRemover) },
-                {RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig(), context, illegalRemover) },
-                {RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig(), context, illegalRemover) },
-                {RecipeProvider.ICA, new RamseyAuto(new IcaConfig(), context, illegalRemover) },
+                //{RecipeProvider.Tasteline, new RamseyAuto(new TastelineConfig(), context, illegalRemover) },
+                //{RecipeProvider.Hemmets, new RamseyAuto(new HemmetsConfig(), context, illegalRemover) }
+                //{RecipeProvider.ICA, new RamseyAuto(new IcaConfig(), context, illegalRemover) },
             };
         }
 
