@@ -44,6 +44,7 @@ namespace Ramsey.NET.Implementations
                 .Property(x => x.RecipeId)
                 .ValueGeneratedNever();
 
+            //Locale setup
             modelBuilder.Entity<RecipeMeta>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
@@ -53,6 +54,14 @@ namespace Ramsey.NET.Implementations
                 .HasDefaultValue(RamseyLocale.Swedish);
 
             modelBuilder.Entity<IngredientSynonym>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<Tag>()
+                .Property(x => x.RamseyLocale)
+                .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<Ingredient>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
         }

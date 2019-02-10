@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Ramsey.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Ramsey.NET.Controllers.Interfaces.V2
     {
         [Route("text")]
         [HttpPost]
-        IActionResult Text(string search, int start = 0);
+        IActionResult Text(string search, int start = 0, RamseyLocale locale = RamseyLocale.Swedish);
     }
 }

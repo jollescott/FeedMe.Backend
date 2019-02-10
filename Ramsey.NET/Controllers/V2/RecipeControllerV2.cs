@@ -9,6 +9,7 @@ using Ramsey.NET.Extensions;
 using Ramsey.NET.Controllers.Interfaces.V2;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Controllers.V2
 {
@@ -99,10 +100,11 @@ namespace Ramsey.NET.Controllers.V2
 
         [Route("text")]
         [HttpPost]
-        public IActionResult Text(string search, int start = 0)
+        public IActionResult Text(string search, int start = 0, RamseyLocale locale = RamseyLocale.Swedish)
         {
             var recipes = _ramseyContext.Recipes
                 .Where(x => EF.Functions.Like(x.Name, $"%{search}%"))
+                .Where(x => x.Locale == locale)
                 .OrderBy(x => x.Name)
                 .Skip(start)
                 .Take(25);
