@@ -59,15 +59,8 @@ namespace Ramsey.NET.Auto.Configs
 
         public string NameXPath => "/html/body/div[2]/div[2]/form/div/div[2]/h1";
 
-        public string[] TagXPaths => new string[] {
-            "//div[@class='info']/table/tbody/tr[2]/td[2]"
-        };
+        public string[] TagXPaths => null;
 
-        public Func<HtmlDocument, string[]> ProcessTag => (document) => {
-            var tag = document.DocumentNode.SelectSingleNode(TagXPaths[0]).InnerText.RemoveSpecialCharacters();
-            var tags = tag.Split(',');
-
-            return tags;
-        };
+        public Func<HtmlDocument, string[]> ProcessTag => null;
     }
 }
