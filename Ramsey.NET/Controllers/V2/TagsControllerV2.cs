@@ -25,12 +25,16 @@ namespace Ramsey.NET.Controllers.V2
         [HttpPost]
         public IActionResult Suggest(RamseyLocale locale = RamseyLocale.Swedish)
         {
+            Random rand = new Random();
+            var skip = (int)(rand.NextDouble() * _ramseyContext.Tags.Count());
+
             var tags = _ramseyContext.Tags
                 .AsNoTracking()
+                .OrderBy(x => x.TagId)
+                .Skip(skip)
                 .Where(x => x.Locale == locale)
                 .Include(x => x.RecipeTags)
                 .ThenInclude(x => x.Recipe)
-                .OrderBy(x => Guid.NewGuid())
                 .Take(10);
 
             List<TagDto> dtos = new List<TagDto>();
@@ -53,7 +57,9 @@ namespace Ramsey.NET.Controllers.V2
             return Json(dtos);
         }
 
-        public IActionResult Suggest(int tagid, int start = 0)
+        [Route("list")]
+        [HttpPost]
+        public IActionResult List(int tagid, int start = 0)
         {
             var recipes = _ramseyContext.RecipeTags
                 .Where(x => x.TagId == tagid)
@@ -73,6 +79,7 @@ namespace Ramsey.NET.Controllers.V2
                 dto.Source = recipe.Source;
                 dto.OwnerLogo = recipe.OwnerLogo;
                 dto.Owner = recipe.Owner;
+                dto.RecipeID = recipe.RecipeId;
 
                 dtos.Add(dto);
             }

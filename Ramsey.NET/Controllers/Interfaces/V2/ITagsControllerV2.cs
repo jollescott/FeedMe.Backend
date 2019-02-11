@@ -15,6 +15,6 @@ namespace Ramsey.NET.Controllers.Interfaces.V2
 
         [Route("list")]
         [HttpPost]
-        IActionResult Suggest(int tagid, int start = 0);
+        IActionResult List(int tagid, int start = 0);
     }
 }
