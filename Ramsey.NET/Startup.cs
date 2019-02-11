@@ -154,6 +154,11 @@ namespace Ramsey.NET
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
+            if(!env.IsDevelopment())
+            {
+                RecurringJob.AddOrUpdate(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate(), Cron.Weekly);
+            }
+
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
