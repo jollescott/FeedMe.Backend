@@ -105,7 +105,7 @@ namespace Ramsey.NET.Auto
                 var ingMatch = ingRegex.Match(ingredient);
                 var amount = ingMatch.Value;
 
-                if(ingredient.Split(' ').Count() > 2)
+                if(ingredient.Split(' ').Count() > 2 && amount != string.Empty)
                     ingredient = ingredient.Replace(amount, string.Empty);
 
                 var quantityMatch = quantRegex.Match(amount);
