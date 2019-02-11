@@ -56,5 +56,7 @@ namespace Ramsey.NET.Auto.Configs
         public string[] TagXPaths => new string[]{
             "//span[@class='category']/a"
         };
+
+        public Func<HtmlDocument, string[]> ProcessTag => null;
     }
 }

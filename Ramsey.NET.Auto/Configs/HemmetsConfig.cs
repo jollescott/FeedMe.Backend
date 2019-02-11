@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Auto.Extensions;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
@@ -60,6 +61,13 @@ namespace Ramsey.NET.Auto.Configs
 
         public string[] TagXPaths => new string[] {
             "//div[@class='info']/table/tbody/tr[2]/td[2]"
+        };
+
+        public Func<HtmlDocument, string[]> ProcessTag => (document) => {
+            var tag = document.DocumentNode.SelectSingleNode(TagXPaths[0]).InnerText.RemoveSpecialCharacters();
+            var tags = tag.Split(',');
+
+            return tags;
         };
     }
 }

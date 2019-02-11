@@ -51,5 +51,6 @@ namespace Ramsey.NET.Auto
 
         //Tags
         string[] TagXPaths { get; }
+        Func<HtmlDocument, string[]> ProcessTag { get; }
     }
 }

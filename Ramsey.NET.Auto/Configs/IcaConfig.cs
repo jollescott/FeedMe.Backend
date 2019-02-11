@@ -95,6 +95,10 @@ namespace Ramsey.NET.Auto.Configs
 
         public string NameXPath => "/html/body/form/div[4]/div/div[2]/main/header/div/div[1]/div[2]/div/h1";
 
-        public string[] TagXPaths => null;
+        public string[] TagXPaths => new string[] {
+            "//div[@class='related-recipe-tags__container']/a"
+        };
+
+        public Func<HtmlDocument, string[]> ProcessTag => null;
     }
 }

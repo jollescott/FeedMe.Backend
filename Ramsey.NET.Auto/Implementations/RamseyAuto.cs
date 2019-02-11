@@ -172,19 +172,38 @@ namespace Ramsey.NET.Auto
 
             foreach(var path in Config.TagXPaths)
             {
-                var elements = document.DocumentNode.SelectNodes(path);
-
-                if(elements != null)
+                if(Config.ProcessTag != null)
                 {
-                    var names = elements.Where(x => x.InnerText != null)
-                                    .Select(x => x.InnerText.ToLower())
-                                    .Select(x => x.RemoveSpecialCharacters());
-
-                    names.ForEach(x => tags.Add(new TagDto
+                    var names = Config.ProcessTag(document);
+                    
+                    if(names != null)
                     {
-                        Name = x,
-                    }));
-                }               
+                        names = names.Where(x => x != string.Empty)
+                            .Select(x => x.RemoveSpecialCharacters())
+                            .ToArray();
+
+                        names.ForEach(x => tags.Add(new TagDto
+                        {
+                            Name = x,
+                        }));
+                    }
+                }
+                else
+                {
+                    var elements = document.DocumentNode.SelectNodes(path);
+
+                    if (elements != null)
+                    {
+                        var names = elements.Where(x => x.InnerText != null)
+                                        .Select(x => x.InnerText.ToLower())
+                                        .Select(x => x.RemoveSpecialCharacters());
+
+                        names.ForEach(x => tags.Add(new TagDto
+                        {
+                            Name = x,
+                        }));
+                    }
+                }
             }
 
             return tags;
