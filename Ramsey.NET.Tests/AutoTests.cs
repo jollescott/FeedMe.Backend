@@ -42,8 +42,8 @@ namespace Ramsey.NET.Tests
         [Test]
         public async System.Threading.Tasks.Task LoadIcaRecipeAsync()
         {
-            var scraper = new RamseyAuto(new IcaConfig(), _ramseyContext, _wordRemover);
-            var recipe = await scraper.ScrapeRecipeAsync("https://www.ica.se/recept/tomat-och-linssoppa-725222/", true);
+            var scraper = new RamseyAuto(new HemmetsConfig(), _ramseyContext, _wordRemover);
+            var recipe = await scraper.ScrapeRecipeAsync("https://kokboken.ikv.uu.se/receptsida.php?recid=702&", true);
 
             Assert.IsTrue(Uri.IsWellFormedUriString(recipe.OwnerLogo, UriKind.Absolute));
             Assert.IsTrue(Uri.IsWellFormedUriString(recipe.Image, UriKind.Absolute));
