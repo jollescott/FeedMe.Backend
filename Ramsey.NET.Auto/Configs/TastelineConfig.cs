@@ -49,7 +49,7 @@ namespace Ramsey.NET.Auto.Configs
         public string NameXPath => "/html/body/div[1]/div[1]/div/div[2]/div[1]/div/div[2]/h1";
 
         public string[] TagXPaths => new string[] {
-            "//a[@class='category-value']"
+            "//*[@class='category-value']"
         };
 
         public Func<HtmlDocument, string[]> ProcessTag => null;
