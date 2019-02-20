@@ -262,7 +262,9 @@ __pycache__/
 *.pyc
 /Ramsey.NET/ramsey.yml
 /Ramsey.NET/output/
+/Ramsey.NET.Runner/output
 =======
 *.pyc
 >>>>>>> parent of b6b97fb... changed to mysql
 /Ramsey.NET/output.zip
+/Ramsey.NET.Runner/output.zip

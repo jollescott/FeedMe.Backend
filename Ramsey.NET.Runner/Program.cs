@@ -40,6 +40,7 @@ namespace Ramsey.NET.Runner
 
             Enum.TryParse(args.FirstOrDefault(), out RecipeProvider recipeProvider);
 
+            Console.WriteLine("Scraping recipes from " + Enum.GetName(typeof(RecipeProvider), recipeProvider));
             await _crawlerService.ReindexProviderAsync(recipeProvider);
         }
     }
