@@ -2,6 +2,7 @@
 using Ramsey.NET.Models;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Enums;
+using Ramsey.Core.Models;
 
 namespace Ramsey.NET.Implementations
 {
@@ -28,13 +29,22 @@ namespace Ramsey.NET.Implementations
                 .Property(x => x.IngredientName)
                 .ValueGeneratedNever();
 
-            //User 
-            modelBuilder.Entity<RamseyUser>()
-                .HasKey(x => x.UserId);
+            //Tags
+            modelBuilder.Entity<Tag>()
+                .HasKey(x => x.TagId);
 
-            modelBuilder.Entity<RamseyUser>()
-                .Property(x => x.UserId)
-                .ValueGeneratedNever();
+            modelBuilder.Entity<RecipeTag>()
+                .HasKey(x => x.RecipeTagId);
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(x => x.Recipe)
+                .WithMany(x => x.RecipeTags)
+                .HasForeignKey(x => x.RecipeId);
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(x => x.Tag)
+                .WithMany(x => x.RecipeTags)
+                .HasForeignKey(x => x.TagId);
 
             //Recipe Meta
             modelBuilder.Entity<RecipeMeta>()
@@ -44,6 +54,7 @@ namespace Ramsey.NET.Implementations
                 .Property(x => x.RecipeId)
                 .ValueGeneratedNever();
 
+            //Locale setup
             modelBuilder.Entity<RecipeMeta>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
@@ -55,19 +66,26 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<IngredientSynonym>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<Tag>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<Ingredient>()
+                .Property(x => x.Locale)
+                .HasDefaultValue(RamseyLocale.Swedish);
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeMeta> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
-        public DbSet<RecipeFavorite> RecipeFavorites { get; set; }
-        public DbSet<RecipeRating> RecipeRatings { get; set; }
-        public DbSet<RamseyUser> RamseyUsers { get; set; }
-
         public DbSet<FailedRecipe> FailedRecipes { get; set; }
 
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
         public DbSet<BadWord> BadWords { get; set; }
+
+        public DbSet<RecipeTag> RecipeTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }

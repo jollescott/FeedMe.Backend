@@ -1,4 +1,5 @@
-﻿using Ramsey.Shared.Enums;
+﻿using Ramsey.Core.Models;
+using Ramsey.Shared.Enums;
 using System.Collections.Generic;
 
 namespace Ramsey.NET.Models
@@ -10,6 +11,7 @@ namespace Ramsey.NET.Models
         public string Name { get; set; }
 
         public virtual ICollection<RecipePart> RecipeParts { get; set; }
+        public virtual ICollection<RecipeTag> RecipeTags { get; set; }
 
         public string Source { get; set; }
         public RecipeProvider Owner { get; set; }

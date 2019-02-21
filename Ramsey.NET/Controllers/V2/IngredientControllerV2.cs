@@ -9,6 +9,7 @@ using Ramsey.NET.Interfaces;
 using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Controllers.V2
 {
@@ -23,13 +24,12 @@ namespace Ramsey.NET.Controllers.V2
         }
 
         [Route("suggest")]
-        public IActionResult Suggest(string search)
+        public IActionResult Suggest(string search, RamseyLocale locale = RamseyLocale.Swedish)
         {
             var ingredients = _ramseyContext.Ingredients
                 .Where(x => EF.Functions.Like(x.IngredientName, $"%{search}%"))
                 .OrderBy(x => x.IngredientName.Length)
-                .Take(10)
-                .ToList();
+                .Take(10);
 
             var ingredientsDtos = ingredients.Select(x => new IngredientDtoV2
             {
@@ -39,11 +39,6 @@ namespace Ramsey.NET.Controllers.V2
             });
 
             return Json(ingredientsDtos);
-        }
-
-        public IActionResult VerifyCollection([FromBody] List<IngredientDtoV2> ingredients)
-        {
-            throw new NotImplementedException();
         }
     }
 }

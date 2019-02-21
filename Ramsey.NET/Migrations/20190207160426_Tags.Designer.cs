@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ramsey.NET.Implementations;
 using Ramsey.Shared.Enums;
@@ -10,9 +11,10 @@ using Ramsey.Shared.Enums;
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    partial class RamseyContextModelSnapshot : ModelSnapshot
+    [Migration("20190207160426_Tags")]
+    partial class Tags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,13 +28,15 @@ namespace Ramsey.NET.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("RecipeId");
+                    b.Property<int>("RecipeId");
+
+                    b.Property<string>("RecipeId1");
 
                     b.Property<int>("TagId");
 
                     b.HasKey("RecipeTagId");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("RecipeId1");
 
                     b.HasIndex("TagId");
 
@@ -45,15 +49,11 @@ namespace Ramsey.NET.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Locale")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
-
                     b.Property<string>("Name");
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("Ramsey.NET.Models.AdminUser", b =>
@@ -116,10 +116,6 @@ namespace Ramsey.NET.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("IngredientName");
-
-                    b.Property<int>("Locale")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
 
                     b.HasKey("IngredientId");
 
@@ -197,10 +193,10 @@ namespace Ramsey.NET.Migrations
                 {
                     b.HasOne("Ramsey.NET.Models.RecipeMeta", "Recipe")
                         .WithMany("RecipeTags")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeId1");
 
                     b.HasOne("Ramsey.Core.Models.Tag", "Tag")
-                        .WithMany("RecipeTags")
+                        .WithMany("Tags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -52,5 +52,11 @@ namespace Ramsey.NET.Auto.Configs
         public string IngredientsXPath => "/html/body/div[3]/section/div/div/div/div/div[1]/div/div/article/section[1]//div[@class=\"ingredient\"]";
 
         public string NameXPath => "/html/body/div[3]/section/div/div/div/div/div[1]/div/div/article/header/h1";
+
+        public string[] TagXPaths => new string[]{
+            "//span[@class='category']/a"
+        };
+
+        public Func<HtmlDocument, string[]> ProcessTag => null;
     }
 }

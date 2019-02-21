@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Controllers
 {
@@ -19,7 +20,7 @@ namespace Ramsey.NET.Controllers
         }
 
         [Route("suggest")]
-        public IActionResult Suggest(string search)
+        public IActionResult Suggest(string search, RamseyLocale locale = RamseyLocale.Swedish)
         {
             var ingredientsDtos = new List<IngredientDto>();
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Ramsey.Shared.Dto;
+using Ramsey.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,6 @@ namespace Ramsey.NET.Controllers.Interfaces
         [Route("suggest")]
         [HttpPost]
         IActionResult Suggest([FromBody]List<TIngredient> ingredients, int start = 0);
-
-        IActionResult VerifyCollection([FromBody]List<TIngredient> recipes);
 
         [Route("retrieve")]
         Task<IActionResult> RetrieveAsync(string id);

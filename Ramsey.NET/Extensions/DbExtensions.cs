@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Hangfire;
-using Hangfire.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -45,19 +44,6 @@ namespace Ramsey.NET.Extensions
             else
             {
                 return options.UseSqlite(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
-            }
-        }
-
-        public static IGlobalConfiguration ConnectHangfireTest(this IGlobalConfiguration hangfire,
-            IConfiguration config)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return hangfire.UseSqlServerStorage(config.GetConnectionString("RamseyDebug"));
-            }
-            else
-            {
-                return hangfire.UseSQLiteStorage(config.GetConnectionString("SqliteDebug"));
             }
         }
     }

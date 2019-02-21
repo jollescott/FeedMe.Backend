@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
-using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Extensions;
+using Ramsey.NET.Controllers.Interfaces.V2;
 using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
-using Ramsey.Shared.Dto;
 using Ramsey.Shared.Dto.V2;
+using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Controllers.V2
 {
     [Route("v2/recipe")]
-    public class RecipeControllerV2 : Controller, IRecipeController<IngredientDtoV2, RecipeDtoV2>
+    public class RecipeControllerV2 : Controller, IRecipeControllerV2<IngredientDtoV2, RecipeDtoV2>
     {
         private readonly IRamseyContext _ramseyContext;
         private readonly ICrawlerService _crawlerService;
@@ -100,9 +98,18 @@ namespace Ramsey.NET.Controllers.V2
             return Json(recipe);
         }
 
-        public IActionResult VerifyCollection([FromBody] List<IngredientDtoV2> recipes)
+        [Route("text")]
+        [HttpPost]
+        public IActionResult Text(string search, int start = 0, RamseyLocale locale = RamseyLocale.Swedish)
         {
-            throw new NotImplementedException();
+            var recipes = _ramseyContext.Recipes
+                .Where(x => EF.Functions.Like(x.Name, $"%{search}%"))
+                .Where(x => x.Locale == locale)
+                .OrderBy(x => x.Name)
+                .Skip(start)
+                .Take(25);
+
+            return Json(recipes);
         }
     }
 }

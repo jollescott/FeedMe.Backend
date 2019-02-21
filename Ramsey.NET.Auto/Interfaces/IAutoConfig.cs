@@ -48,5 +48,9 @@ namespace Ramsey.NET.Auto
         string DirectionsXPath { get; }
         string IngredientsXPath { get; }
         string NameXPath { get; }
+
+        //Tags
+        string[] TagXPaths { get; }
+        Func<HtmlDocument, string[]> ProcessTag { get; }
     }
 }
