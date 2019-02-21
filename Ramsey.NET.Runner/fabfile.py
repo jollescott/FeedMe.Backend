@@ -4,7 +4,7 @@ from invoke import task
 
 @task
 def pack(c):
-    local('dotnet publish -c release --output ./output')
+    local('dotnet publish -c release -r linux-arm --output ./output')
     local(".\\tools\\7za a -tzip output.zip ./output/*")  
 
 @task
@@ -18,7 +18,10 @@ def run(c):
         return
 
     conn = Connection(host=host, user=user,connect_kwargs={"password": password})
-    conn.put('output.zip', '/var/ramsey-runner/ramsey.zip')
-    conn.run("sudo unzip /var/ramsey-runner/ramsey.zip -d /var/ramsey-runner")
-    conn.run("dotnet /var/ramsey-runner/Ramsey.NET.Runner.dll")
+    conn.run("sudo rm -rf /home/pi/ramsey-runner/*")
+    conn.put('output.zip', '/home/pi/ramsey-runner/ramsey.zip')
+    conn.run("sudo unzip /home/pi/ramsey-runner/ramsey.zip -d /home/pi/ramsey-runner")
+    conn.run("sudo chmod +x /home/pi/ramsey-runner/Ramsey.NET.Runner")
+    conn.run("/home/pi/ramsey-runner/Ramsey.NET.Runner")
+
 

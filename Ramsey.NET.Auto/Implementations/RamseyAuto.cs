@@ -7,6 +7,9 @@ using Ramsey.NET.Crawlers.Misc;
 using Ramsey.NET.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +28,7 @@ namespace Ramsey.NET.Auto
         private readonly IWordRemover _illegalRemover;
 
         public IAutoConfig Config { get; private set; }
+        public Logger Logger { get; }
 
         public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IWordRemover illegalRemover)
         {
@@ -32,6 +36,11 @@ namespace Ramsey.NET.Auto
             _ramseyContext = ramseyContext;
             _illegalRemover = illegalRemover;
             Config = autoConfig;
+            Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Trace()
+                .WriteTo.Console(standardErrorFromLevel: LogEventLevel.Error)
+                .CreateLogger();
         }
 
 
@@ -158,7 +167,7 @@ namespace Ramsey.NET.Auto
 
             stopWatch.Stop();
 
-            Debug.WriteLine("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
+            Logger.Information("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
             return recipe;
         }
@@ -264,7 +273,7 @@ namespace Ramsey.NET.Auto
             }
 
             stopWatch.Stop();
-            Debug.WriteLine("{0} took {1} min to rescrape.", Config.ProviderName, stopWatch.Elapsed.Minutes);
+            Logger.Information("{0} took {1} min to rescrape.", Config.ProviderName, stopWatch.Elapsed.Minutes);
         }
     }
 }
