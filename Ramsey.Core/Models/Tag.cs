@@ -9,8 +9,8 @@ namespace Ramsey.Core.Models
     {
         public int TagId { get; set; }
         public string Name { get; set; }
-        public RamseyLocale RamseyLocale { get; set; }
+        public RamseyLocale Locale { get; set; }
 
-        public virtual ICollection<RecipeTag> Tags { get; set; }
+        public virtual ICollection<RecipeTag> RecipeTags { get; set; }
     }
 }

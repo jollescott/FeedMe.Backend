@@ -9,7 +9,7 @@ namespace Ramsey.Core.Models
     {
         public int RecipeTagId { get; set; }
 
-        public int RecipeId { get; set; }
+        public string RecipeId { get; set; }
         public int TagId { get; set; }
 
         public virtual RecipeMeta Recipe { get; set; }

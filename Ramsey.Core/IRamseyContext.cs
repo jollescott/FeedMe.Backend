@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Ramsey.Core.Models;
 using Ramsey.NET.Models;
 
 namespace Ramsey.NET.Interfaces
@@ -16,6 +17,9 @@ namespace Ramsey.NET.Interfaces
         DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
         DbSet<BadWord> BadWords { get; set; }
         DbSet<FailedRecipe> FailedRecipes { get; set; }
+
+        DbSet<RecipeTag> RecipeTags { get; set; }
+        DbSet<Tag> Tags { get; set; }
 
         DatabaseFacade Database { get; }
 

@@ -13,8 +13,8 @@ namespace Ramsey.Shared.Dto.V2
 
         public IEnumerable<string> Ingredients { get; set; }
         public IEnumerable<RecipePartDtoV2> RecipeParts { get; set; }
-
         public IEnumerable<string> Directions { get; set; }
+        public IEnumerable<TagDto> Tags { get; set; }
 
         [DefaultValue("")]
         public string Desc { get; set; }

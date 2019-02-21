@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Auto.Extensions;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
@@ -57,5 +58,9 @@ namespace Ramsey.NET.Auto.Configs
         public int PageItemCount => 20;
 
         public string NameXPath => "/html/body/div[2]/div[2]/form/div/div[2]/h1";
+
+        public string[] TagXPaths => null;
+
+        public Func<HtmlDocument, string[]> ProcessTag => null;
     }
 }

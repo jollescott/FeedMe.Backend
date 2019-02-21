@@ -36,6 +36,16 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<RecipeTag>()
                 .HasKey(x => x.RecipeTagId);
 
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(x => x.Recipe)
+                .WithMany(x => x.RecipeTags)
+                .HasForeignKey(x => x.RecipeId);
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(x => x.Tag)
+                .WithMany(x => x.RecipeTags)
+                .HasForeignKey(x => x.TagId);
+
             //Recipe Meta
             modelBuilder.Entity<RecipeMeta>()
                 .HasKey(x => x.RecipeId);
@@ -58,7 +68,7 @@ namespace Ramsey.NET.Implementations
                 .HasDefaultValue(RamseyLocale.Swedish);
 
             modelBuilder.Entity<Tag>()
-                .Property(x => x.RamseyLocale)
+                .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
 
             modelBuilder.Entity<Ingredient>()
@@ -76,5 +86,6 @@ namespace Ramsey.NET.Implementations
         public DbSet<BadWord> BadWords { get; set; }
 
         public DbSet<RecipeTag> RecipeTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }

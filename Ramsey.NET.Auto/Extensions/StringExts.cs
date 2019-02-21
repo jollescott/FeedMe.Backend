@@ -11,7 +11,7 @@ namespace Ramsey.NET.Auto.Extensions
 
         public static string RemoveSpecialCharacters(this string str)
         {
-            return regex.Replace(str, string.Empty);
+            return regex.Replace(str, string.Empty).Trim();
         }
     }
 }
