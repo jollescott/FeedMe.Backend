@@ -22,6 +22,7 @@ using Hangfire.MemoryStorage;
 using System.Globalization;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Implementations;
+using Ramsey.Shared.Misc;
 
 namespace Ramsey.NET
 {
@@ -49,7 +50,6 @@ namespace Ramsey.NET
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
