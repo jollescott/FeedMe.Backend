@@ -23,6 +23,7 @@ using System.Globalization;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Implementations;
 using Ramsey.Shared.Misc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace Ramsey.NET
 {
@@ -168,7 +169,7 @@ namespace Ramsey.NET
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
         }
