@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ClientApp\dist\**\*.*" />
+    <Content Include="ClientApp\build\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,7 +81,7 @@
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)build\**; $(SpaRoot)dist-server\**" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>

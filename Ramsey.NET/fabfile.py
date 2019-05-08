@@ -22,4 +22,6 @@ def deploy(c):
     conn.run("export ASPNETCORE_ENVIRONMENT")
     conn.run("chmod +x /var/www/ramsey/Ramsey.NET")
     conn.run("sudo systemctl restart ramsey")
+    conn.run("sudo systemctl restart nginx")
+
 
