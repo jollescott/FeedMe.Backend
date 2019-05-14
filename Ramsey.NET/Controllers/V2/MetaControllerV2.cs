@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Ramsey.NET.Controllers.V2
 {
-    [Route("meta")]
+    [Route("v2/meta")]
     public class MetaControllerV2 : Controller, IMetaController
     {
         private readonly IRamseyContext _ramseyContext;
@@ -20,6 +20,7 @@ namespace Ramsey.NET.Controllers.V2
         }
 
         [Route("recipeCount")]
+        [HttpPost]
         public IActionResult GetRecipeCount(RamseyLocale locale = RamseyLocale.Swedish)
         {
             var count = _ramseyContext.Recipes.Where(x => x.Locale == locale)
