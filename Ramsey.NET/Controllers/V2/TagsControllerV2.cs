@@ -79,7 +79,7 @@ namespace Ramsey.NET.Controllers.V2
                 dto.Source = recipe.Source;
                 dto.OwnerLogo = recipe.OwnerLogo;
                 dto.Owner = recipe.Owner;
-                dto.RecipeID = recipe.RecipeId;
+                dto.RecipeId = recipe.RecipeId;
 
                 dtos.Add(dto);
             }

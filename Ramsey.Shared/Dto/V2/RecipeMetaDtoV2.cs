@@ -7,7 +7,7 @@ namespace Ramsey.Shared.Dto.V2
 {
     public class RecipeMetaDtoV2
     {
-        public string RecipeID { get; set; }
+        public string RecipeId { get; set; }
         public string Name { get; set; }
 
         public string Source { get; set; }
@@ -28,7 +28,7 @@ namespace Ramsey.Shared.Dto.V2
             recipeMetaDto.Image = recipe.Image;
             recipeMetaDto.Owner = recipe.Owner;
             recipeMetaDto.OwnerLogo = recipe.OwnerLogo;
-            recipeMetaDto.RecipeID = recipe.RecipeID;
+            recipeMetaDto.RecipeId = recipe.RecipeId;
             recipeMetaDto.Source = recipe.Source;
             recipeMetaDto.Ingredients = recipe.Ingredients;
             recipeMetaDto.RecipeParts = recipe.RecipeParts;

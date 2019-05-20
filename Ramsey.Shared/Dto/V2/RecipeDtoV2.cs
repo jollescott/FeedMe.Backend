@@ -8,7 +8,7 @@ namespace Ramsey.Shared.Dto.V2
 {
     public class RecipeDtoV2
     {
-        public string RecipeID { get; set; }
+        public string RecipeId { get; set; }
         public string Name { get; set; }
 
         public IEnumerable<string> Ingredients { get; set; }

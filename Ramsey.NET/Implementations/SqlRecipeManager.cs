@@ -24,8 +24,8 @@ namespace Ramsey.NET.Implementations
 
             var recipe = _context.Recipes.AddIfNotExists(new RecipeMeta
             {
-                RecipeId = recipeMetaDto.RecipeID,
-            }, x => x.RecipeId == recipeMetaDto.RecipeID);
+                RecipeId = recipeMetaDto.RecipeId,
+            }, x => x.RecipeId == recipeMetaDto.RecipeId);
 
             await SaveRecipeChangesAsync();
 
@@ -44,7 +44,7 @@ namespace Ramsey.NET.Implementations
                     continue;
 
                 string ingredientName = partDto.IngredientName;
-                string recipeId = recipeMetaDto.RecipeID;
+                string recipeId = recipeMetaDto.RecipeId;
 
                 var ingredient = _context.Ingredients.AddIfNotExists(new Ingredient
                 {

@@ -70,11 +70,11 @@ namespace Ramsey.NET.Auto
                     .Value;
 
             if (Config.ParseId != null)
-                recipe.RecipeID = Config.ParseId(url);
+                recipe.RecipeId = Config.ParseId(url);
             else
             {
                 var id = url.ToString();
-                recipe.RecipeID = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
+                recipe.RecipeId = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
             }
 
             if(includeAll)

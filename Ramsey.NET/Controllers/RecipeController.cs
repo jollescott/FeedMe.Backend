@@ -48,7 +48,7 @@ namespace Ramsey.NET.Controllers
 
             var compRecipe = new RecipeDto
             {
-                RecipeID = recipeV2.RecipeID,
+                RecipeID = recipeV2.RecipeId,
                 Desc = recipeV2.Desc,
                 Image = recipeV2.Image,
                 Directions = recipeV2.Directions.ToList(),
