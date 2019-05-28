@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Controllers.Interfaces.V2;
 using Ramsey.NET.Interfaces;

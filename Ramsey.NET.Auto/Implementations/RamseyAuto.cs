@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using MoreLinq;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Extensions;
 using Ramsey.NET.Crawlers.Interfaces;
@@ -18,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MoreLinq.Extensions;
 
 namespace Ramsey.NET.Auto
 {

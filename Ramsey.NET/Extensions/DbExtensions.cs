@@ -14,23 +14,7 @@ namespace Ramsey.NET.Extensions
     {
         public static readonly String TestConnectionString =
             "Server=(localdb)\\mssqllocaldb;Database=ramsey_unit;Trusted_Connection=True;MultipleActiveResultSets=true";
-        
-        public static DbContextOptionsBuilder<T> ConnectRamseyTestServer<T>(this DbContextOptionsBuilder<T> options, IConfiguration config, bool isUnitTest = false) where T : DbContext
-        {
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                if (!isUnitTest && config == null)
-                    throw new NullReferenceException("Config cannot be null if is not Unit Test");
 
-                var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
-                return options.UseSqlServer(connectString);
-            }
-            else
-            {
-                return options.UseSqlite<T>(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug")).EnableSensitiveDataLogging();
-            }
-        }
-        
         public static DbContextOptionsBuilder ConnectRamseyTestServer(this DbContextOptionsBuilder options, IConfiguration config, bool isUnitTest = false)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -56,9 +40,9 @@ namespace Ramsey.NET.Extensions
 
             try
             {
-                return !exists ? dbSet.Add(entity).Entity : dbSet.Single(predicate);
+                return !exists ? dbSet.Add(entity).Entity : dbSet.Single(predicate ?? throw new ArgumentNullException(nameof(predicate)));
             }
-            catch(InvalidOperationException ex)
+            catch(InvalidOperationException)
             {
                 throw new Exception();
             }
@@ -67,7 +51,7 @@ namespace Ramsey.NET.Extensions
         public static double DoubleCount<T>(this IEnumerable<T> ts)
         {
             var count = ts.Count();
-            return (double)count;
+            return count;
         }
     }
 }
