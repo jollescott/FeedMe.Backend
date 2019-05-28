@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Ramsey.NET.Auto.Extensions;
+using Ramsey.NET.Auto.Interfaces;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
@@ -22,19 +23,17 @@ namespace Ramsey.NET.Auto.Configs
         public RecipeProvider ProviderName => RecipeProvider.Hemmets;
 
         public Func<string, string> ParseId => (url) => {
-            var index = url.IndexOf("recid=") + 5;
+            var index = url.IndexOf("recid=", StringComparison.Ordinal) + 5;
             var end = url.IndexOf('&', index) - 1;
 
             var id = "HM" + url.Substring(index + 1, end - index);
             return id;
         };
 
-        Func<HtmlDocument, string> IAutoConfig.LoadImage => (doc) => {
-            return "https://kokboken.ikv.uu.se/" + doc.DocumentNode
-                    .SelectSingleNode(ImageXPath)
-                    .Attributes["src"]
-                    .Value;
-        };
+        Func<HtmlDocument, string> IAutoConfig.LoadImage => (doc) => "https://kokboken.ikv.uu.se/" + doc.DocumentNode
+                                                                         .SelectSingleNode(ImageXPath)
+                                                                         .Attributes["src"]
+                                                                         .Value;
 
         public Func<int, HtmlDocument, HttpClient, Task<HttpResponseMessage>> NextPage => (index, doc, client) => {
             var postData = $"offset={(index+1) * PageItemCount}";

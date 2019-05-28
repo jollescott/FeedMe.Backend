@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Controllers.Interfaces;
@@ -22,25 +21,18 @@ namespace Ramsey.NET.Controllers
         [Route("suggest")]
         public IActionResult Suggest(string search, RamseyLocale locale = RamseyLocale.Swedish)
         {
-            var ingredientsDtos = new List<IngredientDto>();
-
             var ingredients = _ramseyContext.Ingredients.Where(x => x.IngredientName.Contains(search)).Include(x => x.RecipeParts).ToList();
-            ingredientsDtos = ingredients.Select(x => new IngredientDto
+            var ingredientsDtos = ingredients.Select(x => new IngredientDto
             {
                 RecipeParts = x.RecipeParts.Select(y => new RecipePartDto
                 {
-                    IngredientID = y.IngredientId,
-                    RecipeID = y.RecipeId
+                    IngredientId = y.IngredientId,
+                    RecipeId = y.RecipeId
                 }).ToList(),
                 IngredientId = x.IngredientName
             }).ToList();
 
             return Json(ingredientsDtos);
-        }
-
-        public IActionResult VerifyCollection([FromBody] List<IngredientDto> ingredients)
-        {
-            return StatusCode(401);
         }
     }
 }

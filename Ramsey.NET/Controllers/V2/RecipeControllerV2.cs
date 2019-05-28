@@ -24,20 +24,6 @@ namespace Ramsey.NET.Controllers.V2
             _crawlerService = crawlerService;
         }
 
-        [Route("reindex")]
-        public IActionResult ReIndex()
-        {
-            //BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
-            return StatusCode(200);
-        }
-
-        [Route("patch")]
-        public IActionResult Patch()
-        {
-            //BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
-            return StatusCode(200);
-        }
-
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDtoV2> ingredients, int start = 0)

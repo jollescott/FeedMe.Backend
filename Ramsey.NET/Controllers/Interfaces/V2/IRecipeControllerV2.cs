@@ -9,8 +9,6 @@ namespace Ramsey.NET.Controllers.Interfaces.V2
 {
     public interface IRecipeControllerV2<TIngredient, TRecipe> : IRecipeController<TIngredient, TRecipe>
     {
-        [Route("text")]
-        [HttpPost]
         IActionResult Text(string search, int start = 0, RamseyLocale locale = RamseyLocale.Swedish);
     }
 }

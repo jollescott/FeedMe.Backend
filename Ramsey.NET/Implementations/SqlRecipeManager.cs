@@ -40,7 +40,7 @@ namespace Ramsey.NET.Implementations
             //Ingredients
             foreach(var partDto in recipeMetaDto.RecipeParts)
             {
-                if (partDto.IngredientName == null || partDto.IngredientName == string.Empty)
+                if (string.IsNullOrEmpty(partDto.IngredientName))
                     continue;
 
                 string ingredientName = partDto.IngredientName;

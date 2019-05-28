@@ -12,23 +12,21 @@ namespace Ramsey.NET.Extensions
 {
     public static class DbExtensions
     {
-        public static readonly String TestConnectionString =
+        public static readonly string TestConnectionString =
             "Server=(localdb)\\mssqllocaldb;Database=ramsey_unit;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public static DbContextOptionsBuilder ConnectRamseyTestServer(this DbContextOptionsBuilder options, IConfiguration config, bool isUnitTest = false)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                if (!isUnitTest && config == null)
-                    throw new NullReferenceException("Config cannot be null if is not Unit Test");
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return options.UseSqlite(isUnitTest
+                    ? "Data Source=ramsey-test.db"
+                    : config.GetConnectionString("SqliteDebug"));
+            if (!isUnitTest && config == null)
+                throw new NullReferenceException("Config cannot be null if is not Unit Test");
 
-                var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
-                return options.UseSqlServer(connectString);
-            }
-            else
-            {
-                return options.UseSqlite(isUnitTest ? "Data Source=ramsey-test.db" : config.GetConnectionString("SqliteDebug"));
-            }
+            var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
+            return options.UseSqlServer(connectString);
+
         }
     }
 

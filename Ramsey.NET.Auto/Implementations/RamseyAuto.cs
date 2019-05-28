@@ -1,15 +1,4 @@
-﻿using HtmlAgilityPack;
-using Ramsey.Core;
-using Ramsey.NET.Auto.Extensions;
-using Ramsey.NET.Crawlers.Interfaces;
-using Ramsey.NET.Crawlers.Misc;
-using Ramsey.NET.Interfaces;
-using Ramsey.NET.Shared.Interfaces;
-using Ramsey.Shared.Dto.V2;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,23 +6,32 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using MoreLinq.Extensions;
+using Ramsey.Core;
+using Ramsey.NET.Auto.Extensions;
+using Ramsey.NET.Auto.Interfaces;
+using Ramsey.NET.Crawlers.Interfaces;
+using Ramsey.NET.Crawlers.Misc;
+using Ramsey.NET.Shared.Interfaces;
+using Ramsey.Shared.Dto.V2;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 
-namespace Ramsey.NET.Auto
+namespace Ramsey.NET.Auto.Implementations
 {
     public class RamseyAuto : IRecipeCrawler
     {
         private readonly HemmetsHttpClient _client;
-        private readonly IRamseyContext _ramseyContext;
         private readonly IWordRemover _illegalRemover;
 
         public IAutoConfig Config { get; private set; }
         public Logger Logger { get; }
 
-        public RamseyAuto(IAutoConfig autoConfig, IRamseyContext ramseyContext, IWordRemover illegalRemover)
+        public RamseyAuto(IAutoConfig autoConfig, IWordRemover illegalRemover)
         {
             _client = new HemmetsHttpClient();
-            _ramseyContext = ramseyContext;
             _illegalRemover = illegalRemover;
             Config = autoConfig;
             Logger = new LoggerConfiguration()

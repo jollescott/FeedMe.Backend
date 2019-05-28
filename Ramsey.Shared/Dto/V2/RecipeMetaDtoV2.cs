@@ -1,7 +1,5 @@
 ﻿using Ramsey.Shared.Enums;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Ramsey.Shared.Dto.V2
 {
@@ -23,16 +21,18 @@ namespace Ramsey.Shared.Dto.V2
 
         public static implicit operator RecipeMetaDtoV2(RecipeDtoV2 recipe)
         {
-            RecipeMetaDtoV2 recipeMetaDto = new RecipeMetaDtoV2();
-            recipeMetaDto.Name = recipe.Name;
-            recipeMetaDto.Image = recipe.Image;
-            recipeMetaDto.Owner = recipe.Owner;
-            recipeMetaDto.OwnerLogo = recipe.OwnerLogo;
-            recipeMetaDto.RecipeId = recipe.RecipeId;
-            recipeMetaDto.Source = recipe.Source;
-            recipeMetaDto.Ingredients = recipe.Ingredients;
-            recipeMetaDto.RecipeParts = recipe.RecipeParts;
-            recipeMetaDto.Tags = recipe.Tags;
+            RecipeMetaDtoV2 recipeMetaDto = new RecipeMetaDtoV2
+            {
+                Name = recipe.Name,
+                Image = recipe.Image,
+                Owner = recipe.Owner,
+                OwnerLogo = recipe.OwnerLogo,
+                RecipeId = recipe.RecipeId,
+                Source = recipe.Source,
+                Ingredients = recipe.Ingredients,
+                RecipeParts = recipe.RecipeParts,
+                Tags = recipe.Tags
+            };
 
             return recipeMetaDto;
         }
