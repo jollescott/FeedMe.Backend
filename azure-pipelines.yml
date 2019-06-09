@@ -17,14 +17,16 @@ variables:
 steps:
 - script: dotnet restore
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: Build
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: build
+    projects: '**/*.csproj'
+    arguments: '--configuration Release'
 
-- task: VSTest@2
+- script: dotnet test <test-project> --logger trx
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
