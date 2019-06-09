@@ -24,7 +24,7 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration Release'
 
-- script: dotnet test <test-project> --logger trx
+- script: dotnet test Ramsey.NET.Tests --logger trx
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
