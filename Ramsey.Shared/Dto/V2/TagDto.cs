@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Ramsey.Shared.Dto.V2
+﻿namespace Ramsey.Shared.Dto.V2
 {
     public class TagDto
     {

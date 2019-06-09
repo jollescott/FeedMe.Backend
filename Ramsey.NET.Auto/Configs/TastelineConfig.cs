@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Auto.Interfaces;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
@@ -48,7 +49,7 @@ namespace Ramsey.NET.Auto.Configs
 
         public string NameXPath => "/html/body/div[1]/div[1]/div/div[2]/div[1]/div/div[2]/h1";
 
-        public string[] TagXPaths => new string[] {
+        public string[] TagXPaths => new[] {
             "//*[@class='category-value']"
         };
 

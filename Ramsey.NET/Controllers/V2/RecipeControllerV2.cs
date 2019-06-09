@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 using Ramsey.NET.Extensions;
 using Ramsey.NET.Controllers.Interfaces.V2;
 using Ramsey.NET.Interfaces;
@@ -23,20 +22,6 @@ namespace Ramsey.NET.Controllers.V2
         {
             _ramseyContext = ramseyContext;
             _crawlerService = crawlerService;
-        }
-
-        [Route("reindex")]
-        public IActionResult ReIndex()
-        {
-            //BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
-            return StatusCode(200);
-        }
-
-        [Route("patch")]
-        public IActionResult Patch()
-        {
-            //BackgroundJob.Enqueue<IPatcherService>(x => x.PatchIngredientsAsync());
-            return StatusCode(200);
         }
 
         [Route("suggest")]
@@ -67,7 +52,7 @@ namespace Ramsey.NET.Controllers.V2
                 .GroupBy(x => x.RecipeId)
                 .Select(x => new RecipeMetaDtoV2
                 {
-                    RecipeID = x.Key,
+                    RecipeId = x.Key,
                     Coverage = x.Where(y => ingredientIds.Contains(y.IngredientId)).DoubleCount() / x.Count()
                 })
                 .OrderByDescending(x => x.Coverage)
@@ -78,7 +63,7 @@ namespace Ramsey.NET.Controllers.V2
 
             foreach(var dto in dtos)
             {
-                var recipe = _ramseyContext.Recipes.Find(dto.RecipeID);
+                var recipe = _ramseyContext.Recipes.Find(dto.RecipeId);
                 dto.Image = recipe.Image;
                 dto.Name = recipe.Name;
                 dto.Source = recipe.Source;

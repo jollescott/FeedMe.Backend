@@ -1,12 +1,10 @@
-﻿using HtmlAgilityPack;
-using Ramsey.Shared.Enums;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+using Ramsey.Shared.Enums;
 
-namespace Ramsey.NET.Auto
+namespace Ramsey.NET.Auto.Interfaces
 {
     public interface IAutoConfig
     {

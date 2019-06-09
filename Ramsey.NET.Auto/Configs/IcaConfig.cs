@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Ramsey.NET.Auto.Interfaces;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
@@ -66,11 +68,9 @@ namespace Ramsey.NET.Auto.Configs
                         float.TryParse(divParts[0], out float num1);
                         float.TryParse(divParts[1], out float num2);
 
-                        if(num2 != 0)
-                        {
-                            var result = num1 / num2;
-                            count += result;
-                        }
+                        if (Math.Abs(num2) < 0.00001) continue;
+                        var result = num1 / num2;
+                        count += result;
                     }
                     else
                     {
@@ -79,7 +79,7 @@ namespace Ramsey.NET.Auto.Configs
                     }
                 }
 
-                return str.Replace(quantity, count.ToString());
+                return str.Replace(quantity, count.ToString(CultureInfo.InvariantCulture));
             }
         };
 

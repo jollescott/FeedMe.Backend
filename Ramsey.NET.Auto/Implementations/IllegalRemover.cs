@@ -13,7 +13,7 @@ namespace Ramsey.NET.Auto.Implementations
     {
         private readonly IRamseyContext _ramseyContext;
 
-        private readonly string[] BREAK_WORDS = {
+        private readonly string[] _breakWords = {
             "och",
             "eller",
             "som",
@@ -42,11 +42,11 @@ namespace Ramsey.NET.Auto.Implementations
                     output = output.Replace(word, string.Empty);
                 }
 
-                if (BREAK_WORDS.Any(x => x == word))
+                if (_breakWords.Any(x => x == word))
                 {
                     //Check if it STILL contains
                     if(output.Contains(word))
-                        output = output.Substring(0, output.IndexOf(word));
+                        output = output.Substring(0, output.IndexOf(word, StringComparison.Ordinal));
                 }
             }
 

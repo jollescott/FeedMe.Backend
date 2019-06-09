@@ -6,7 +6,7 @@ namespace Ramsey.Shared.Dto
 {
     public class RecipeDto
     {
-        public string RecipeID { get; set; }
+        public string RecipeId { get; set; }
         public string Name { get; set; }
 
         public List<string> Ingredients { get; set; }

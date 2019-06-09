@@ -23,19 +23,11 @@ namespace Ramsey.NET.Controllers
             _crawlerService = crawlerService;
         }
 
-        [Route("reindex")]
-        public IActionResult ReIndex()
-        {
-
-            //BackgroundJob.Enqueue<ICrawlerService>(x => x.UpdateIndexAsync());
-            return StatusCode(200);
-        }
-
         [Route("suggest")]
         [HttpPost]
         public IActionResult Suggest([FromBody]List<IngredientDto> ingredients, int start = 0)
         {
-            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeID).Distinct().ToList();
+            var recipeIds = ingredients.SelectMany(x => x.RecipeParts).Select(x => x.RecipeId).Distinct().ToList();
             var recipes = recipeIds.Select(x => _ramseyContext.Recipes.Find(x)).ToList();
             return Json(recipes);
         }
@@ -48,7 +40,7 @@ namespace Ramsey.NET.Controllers
 
             var compRecipe = new RecipeDto
             {
-                RecipeID = recipeV2.RecipeID,
+                RecipeId = recipeV2.RecipeId,
                 Desc = recipeV2.Desc,
                 Image = recipeV2.Image,
                 Directions = recipeV2.Directions.ToList(),
@@ -60,11 +52,6 @@ namespace Ramsey.NET.Controllers
             };
 
             return Json(compRecipe);
-        }
-
-        public IActionResult VerifyCollection([FromBody] List<IngredientDto> recipes)
-        {
-            return StatusCode(401);
         }
     }
 }
