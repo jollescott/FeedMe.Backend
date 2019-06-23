@@ -1,5 +1,0 @@
-<Playlist Version="1.0">
-<Add Test="Ramsey.NET.Tests.HemmetsScraperTests.GetCountAsync" /
-><Add Test="Ramsey.NET.Tests.HemmetsScraperTests.ScrapePageAsync" />
-<Add Test="Ramsey.NET.Tests.HemmetsScraperTests.ScrapeRecipePageAsync" />
-<Add Test="Ramsey.NET.Tests.HemmetsScraperTests.ScrapeAllPagesAsync" /></Playlist>
