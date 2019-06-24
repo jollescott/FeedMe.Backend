@@ -258,13 +258,7 @@ paket-files/
 
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
-<<<<<<< HEAD
 *.pyc
 /Ramsey.NET/ramsey.yml
-/Ramsey.NET/output/
-/Ramsey.NET.Runner/output
-=======
-*.pyc
->>>>>>> parent of b6b97fb... changed to mysql
-/Ramsey.NET/output.zip
-/Ramsey.NET.Runner/output.zip
+**/out
+**/output.zip
