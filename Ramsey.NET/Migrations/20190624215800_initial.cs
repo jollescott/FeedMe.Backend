@@ -1,10 +1,10 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Ramsey.NET.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Username = table.Column<string>(nullable: true),
@@ -30,7 +30,7 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     BadWordId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Word = table.Column<string>(nullable: true),
                     Locale = table.Column<int>(nullable: false, defaultValue: 0)
                 },
@@ -44,7 +44,7 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     FailedRecipeId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Url = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: true)
                 },
@@ -58,8 +58,9 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     IngredientId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IngredientName = table.Column<string>(nullable: true)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    IngredientName = table.Column<string>(nullable: true),
+                    Locale = table.Column<int>(nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -71,7 +72,7 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     IngredientSynonymId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Correct = table.Column<string>(nullable: true),
                     Wrong = table.Column<string>(nullable: true),
                     Locale = table.Column<int>(nullable: false, defaultValue: 0)
@@ -79,17 +80,6 @@ namespace Ramsey.NET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IngredientSynonyms", x => x.IngredientSynonymId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RamseyUsers",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RamseyUsers", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,29 +101,17 @@ namespace Ramsey.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RecipeFavorites",
+                name: "Tags",
                 columns: table => new
                 {
-                    RecipeFavoriteId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
-                    RecipeId = table.Column<string>(nullable: true)
+                    TagId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Locale = table.Column<int>(nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeFavorites", x => x.RecipeFavoriteId);
-                    table.ForeignKey(
-                        name: "FK_RecipeFavorites_Recipes_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RecipeFavorites_RamseyUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "RamseyUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_Tags", x => x.TagId);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,7 +119,7 @@ namespace Ramsey.NET.Migrations
                 columns: table => new
                 {
                     RecipePartId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     IngredientId = table.Column<int>(nullable: false),
                     RecipeId = table.Column<string>(nullable: true),
                     Unit = table.Column<string>(nullable: true),
@@ -165,41 +143,30 @@ namespace Ramsey.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RecipeRatings",
+                name: "RecipeTags",
                 columns: table => new
                 {
-                    RecipeRatingId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
+                    RecipeTagId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     RecipeId = table.Column<string>(nullable: true),
-                    Score = table.Column<double>(nullable: false)
+                    TagId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeRatings", x => x.RecipeRatingId);
+                    table.PrimaryKey("PK_RecipeTags", x => x.RecipeTagId);
                     table.ForeignKey(
-                        name: "FK_RecipeRatings_Recipes_RecipeId",
+                        name: "FK_RecipeTags_Recipes_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RecipeRatings_RamseyUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "RamseyUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_RecipeTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "TagId",
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeFavorites_RecipeId",
-                table: "RecipeFavorites",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeFavorites_UserId",
-                table: "RecipeFavorites",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeParts_IngredientId",
@@ -212,14 +179,14 @@ namespace Ramsey.NET.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeRatings_RecipeId",
-                table: "RecipeRatings",
+                name: "IX_RecipeTags_RecipeId",
+                table: "RecipeTags",
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeRatings_UserId",
-                table: "RecipeRatings",
-                column: "UserId");
+                name: "IX_RecipeTags_TagId",
+                table: "RecipeTags",
+                column: "TagId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -237,13 +204,10 @@ namespace Ramsey.NET.Migrations
                 name: "IngredientSynonyms");
 
             migrationBuilder.DropTable(
-                name: "RecipeFavorites");
-
-            migrationBuilder.DropTable(
                 name: "RecipeParts");
 
             migrationBuilder.DropTable(
-                name: "RecipeRatings");
+                name: "RecipeTags");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
@@ -252,7 +216,7 @@ namespace Ramsey.NET.Migrations
                 name: "Recipes");
 
             migrationBuilder.DropTable(
-                name: "RamseyUsers");
+                name: "Tags");
         }
     }
 }

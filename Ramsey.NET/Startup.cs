@@ -36,7 +36,8 @@ namespace Ramsey.NET
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddMvc().AddJsonOptions(options => {
+            services.AddMvc().AddJsonOptions(options =>
+            {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
@@ -46,18 +47,11 @@ namespace Ramsey.NET
                 configuration.RootPath = "ClientApp/build";
             });
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-            {
-                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RamseyRelease")));
-                services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("RamseyRelease"), new Hangfire.SqlServer.SqlServerStorageOptions {
-                    JobExpirationCheckInterval = TimeSpan.FromMinutes(120),
-                }));
-            }
-            else
-            {
-                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.ConnectRamseyTestServer(Configuration));
-                services.AddHangfire(config => config.UseMemoryStorage(new MemoryStorageOptions { FetchNextJobTimeout = TimeSpan.FromHours(24), JobExpirationCheckInterval = TimeSpan.FromMinutes(120) }));
-            }
+
+            var connectionString = Configuration.GetConnectionString(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production" ? "RamseyRelease" : "RamseyDebug");
+            services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseNpgsql(connectionString));
+
+            services.AddHangfire(config => config.UseMemoryStorage(new MemoryStorageOptions { FetchNextJobTimeout = TimeSpan.FromHours(24), JobExpirationCheckInterval = TimeSpan.FromMinutes(120) }));
 
             services.AddScoped<IWordRemover, BasicWordRemover>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
@@ -106,8 +100,10 @@ namespace Ramsey.NET
             app.UseHangfireDashboard();
 
             if (!env.IsDevelopment())
-                RecurringJob.AddOrUpdate(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate(),
-                    Cron.Weekly);
+            {
+                RecurringJob.AddOrUpdate(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate(), Cron.Weekly);
+                BackgroundJob.Enqueue(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate());
+            }
 
             app.UseSpa(spa =>
             {

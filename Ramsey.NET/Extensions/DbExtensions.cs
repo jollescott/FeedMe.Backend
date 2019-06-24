@@ -10,26 +10,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace Ramsey.NET.Extensions
 {
-    public static class DbExtensions
-    {
-        public static readonly string TestConnectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=ramsey_unit;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-        public static DbContextOptionsBuilder ConnectRamseyTestServer(this DbContextOptionsBuilder options, IConfiguration config, bool isUnitTest = false)
-        {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return options.UseSqlite(isUnitTest
-                    ? "Data Source=ramsey-test.db"
-                    : config.GetConnectionString("SqliteDebug"));
-            if (!isUnitTest && config == null)
-                throw new NullReferenceException("Config cannot be null if is not Unit Test");
-
-            var connectString = isUnitTest ? TestConnectionString : config.GetConnectionString("RamseyDebug");
-            return options.UseSqlServer(connectString);
-
-        }
-    }
-
     public static class DbSetExtensions
     {
         public static T AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()

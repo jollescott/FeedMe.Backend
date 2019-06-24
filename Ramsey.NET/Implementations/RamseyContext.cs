@@ -21,6 +21,9 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<FailedRecipe>()
                 .HasKey(x => x.FailedRecipeId);
 
+            modelBuilder.Entity<FailedRecipe>()
+               .ToTable("failedRecipes");
+
             //Ingredient
             modelBuilder.Entity<Ingredient>()
                 .HasKey(x => x.IngredientId);
@@ -28,6 +31,9 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<Ingredient>()
                 .Property(x => x.IngredientName)
                 .ValueGeneratedNever();
+
+            modelBuilder.Entity<Ingredient>()
+              .ToTable("ingredients");
 
             //Tags
             modelBuilder.Entity<Tag>()
@@ -46,6 +52,12 @@ namespace Ramsey.NET.Implementations
                 .WithMany(x => x.RecipeTags)
                 .HasForeignKey(x => x.TagId);
 
+            modelBuilder.Entity<Tag>()
+              .ToTable("tags");
+
+            modelBuilder.Entity<RecipeTag>()
+              .ToTable("recipeTags");
+
             //Recipe Meta
             modelBuilder.Entity<RecipeMeta>()
                 .HasKey(x => x.RecipeId);
@@ -53,6 +65,9 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<RecipeMeta>()
                 .Property(x => x.RecipeId)
                 .ValueGeneratedNever();
+
+            modelBuilder.Entity<RecipeMeta>()
+              .ToTable("recipes");
 
             //Locale setup
             modelBuilder.Entity<RecipeMeta>()
@@ -74,14 +89,21 @@ namespace Ramsey.NET.Implementations
             modelBuilder.Entity<Ingredient>()
                 .Property(x => x.Locale)
                 .HasDefaultValue(RamseyLocale.Swedish);
+
+            modelBuilder.Entity<RecipePart>()
+              .ToTable("recipeParts");
+
+            modelBuilder.Entity<IngredientSynonym>()
+              .ToTable("ingredientSynonyms");
+
+            modelBuilder.Entity<BadWord>()
+              .ToTable("badWords");
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeMeta> Recipes { get; set; }
         public DbSet<RecipePart> RecipeParts { get; set; }
         public DbSet<FailedRecipe> FailedRecipes { get; set; }
-
-        public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<IngredientSynonym> IngredientSynonyms { get; set; }
         public DbSet<BadWord> BadWords { get; set; }
 

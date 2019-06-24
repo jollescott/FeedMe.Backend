@@ -9,7 +9,7 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - calzone
+      - ramsey
 
   ramsey:
     image: ramsey.net:latest
@@ -21,10 +21,11 @@ services:
       - db
 
   db:
-    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    image: postgres:11-alpine
+    restart: always
     environment:
-      SA_PASSWORD: "@JagGillarJulmust"
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Express "
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: ramsey
     expose:
-      - "1433"
+      - "5432"

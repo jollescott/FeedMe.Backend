@@ -2,31 +2,29 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ramsey.NET.Implementations;
-using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Migrations
 {
     [DbContext(typeof(RamseyContext))]
-    [Migration("20190210175215_MoreTags")]
-    partial class MoreTags
+    [Migration("20190624215800_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Ramsey.Core.Models.RecipeTag", b =>
                 {
                     b.Property<int>("RecipeTagId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("RecipeId");
 
@@ -44,8 +42,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.Core.Models.Tag", b =>
                 {
                     b.Property<int>("TagId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("Locale")
                         .ValueGeneratedOnAdd()
@@ -61,8 +58,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.AdminUser", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("FirstName");
 
@@ -82,8 +78,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.BadWord", b =>
                 {
                     b.Property<int>("BadWordId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("Locale")
                         .ValueGeneratedOnAdd()
@@ -99,8 +94,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.FailedRecipe", b =>
                 {
                     b.Property<int>("FailedRecipeId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Message");
 
@@ -114,8 +108,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("IngredientName");
 
@@ -131,8 +124,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.IngredientSynonym", b =>
                 {
                     b.Property<int>("IngredientSynonymId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Correct");
 
@@ -175,8 +167,7 @@ namespace Ramsey.NET.Migrations
             modelBuilder.Entity("Ramsey.NET.Models.RecipePart", b =>
                 {
                     b.Property<int>("RecipePartId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("IngredientId");
 
