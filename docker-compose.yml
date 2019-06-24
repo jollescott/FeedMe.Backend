@@ -14,7 +14,7 @@ services:
   ramsey:
     image: ramsey.net:latest
     expose:
-      - "5000"
+      - "80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
