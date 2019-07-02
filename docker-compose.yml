@@ -1,15 +1,20 @@
 version: '3'
 
 services:
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+  https-portal:
+    image: steveltn/https-portal
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
+    links:
+      - ramsey
+    restart: always
     depends_on:
       - ramsey
+    environment:
+      DOMAINS: 'feedmeapp.se -> http://ramsey:80'
+      STAGE: 'production'
+      FORCE_RENEW: 'true'
 
   ramsey:
     image: ramsey.net:latest
