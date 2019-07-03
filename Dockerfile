@@ -4,9 +4,11 @@ WORKDIR /app
 RUN apk --update add yarn nodejs
 
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o out /p:NoBuild=false
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine3.9
+
 WORKDIR /app
 COPY --from=build-env /app/Ramsey.NET/out .
+
 CMD [ "dotnet","Ramsey.NET.dll" ]

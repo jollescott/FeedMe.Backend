@@ -26,6 +26,8 @@ services:
       - db
 
   db:
+    ports:
+      - '5433:5432'
     image: postgres:11-alpine
     restart: always
     environment:
