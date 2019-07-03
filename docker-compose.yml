@@ -17,7 +17,9 @@ services:
       FORCE_RENEW: 'true'
 
   ramsey:
-    image: ramsey.net:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     expose:
       - "80"
     environment:
