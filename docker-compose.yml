@@ -12,7 +12,7 @@ services:
     depends_on:
       - ramsey
     environment:
-      DOMAINS: 'feedmeapp.se -> http://ramsey:80'
+      DOMAINS: 'www.feedmeapp.se -> http://ramsey:80, api.feedmeapp.se -> http://ramsey:80'
       STAGE: 'production'
       FORCE_RENEW: 'true'
 
