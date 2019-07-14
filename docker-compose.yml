@@ -14,7 +14,6 @@ services:
     environment:
       DOMAINS: 'www.feedmeapp.se -> http://ramsey:80, api.feedmeapp.se -> http://ramsey:80'
       STAGE: 'production'
-      FORCE_RENEW: 'true'
 
   ramsey:
     build:
