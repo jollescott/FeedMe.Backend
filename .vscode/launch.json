@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Ramsey.NET/bin/Debug/netcoreapp2.2/Ramsey.NET.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/Ramsey.NET",
             "console": "internalConsole",
             "stopAtEntry": false
         },
