@@ -1,3 +1,6 @@
 [submodule "FeedMe.Shared"]
 	path = FeedMe.Shared
 	url = https://github.com/jollescott/FeedMe.Shared.git
+[submodule "Ramsey.NET/ClientApp"]
+	path = Ramsey.NET/ClientApp
+	url = https://github.com/jollescott/FeedMe.React.git
