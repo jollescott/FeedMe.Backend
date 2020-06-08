@@ -1,4 +1,0 @@
-[submodule "Ramsey.NET/ClientApp"]
-	path = Ramsey.NET/ClientApp
-	url = https://fourme.visualstudio.com/FeedMe.Web/_git/FeedMe.Web
-	ignore = dirty
