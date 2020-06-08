@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
+    <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
   </ItemGroup>
 
 </Project>

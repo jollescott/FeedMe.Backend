@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
     <ProjectReference Include="..\Ramsey.Core\Ramsey.Core.csproj" />
-    <ProjectReference Include="..\Ramsey.Shared\Ramsey.Shared.csproj" />
   </ItemGroup>
 
 </Project>
