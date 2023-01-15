@@ -136,10 +136,9 @@ namespace Ramsey.NET.Auto.Implementations
                 {
                     //Find ingredient name
                     var sb = new StringBuilder();
-                    var matches = nameMatch.Where(x => x.Success).Select(x => x.Value);
+                    var matches = nameMatch.Cast<Match>().Where(x => x.Success).Select(x => x.Value);
 
-                    foreach (var match in matches)
-                        sb = sb.Append(" ").Append(match);
+                    sb = matches.Aggregate(sb, (current, match) => current.Append(" ").Append(match));
 
                     var actualName = sb.ToString().Trim();
 

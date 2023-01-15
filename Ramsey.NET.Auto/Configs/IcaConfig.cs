@@ -56,17 +56,17 @@ namespace Ramsey.NET.Auto.Configs
             else
             {
                 var quantity = match.Value;
-                var parts = quantity.Split(" ");
+                var parts = quantity.Split(' ');
                 float count = 0;
 
                 foreach(var part in parts)
                 {
-                    if(part.Contains('/'))
+                    if(part.Contains("/"))
                     {
                         var divParts = part.Split('/');
 
-                        float.TryParse(divParts[0], out float num1);
-                        float.TryParse(divParts[1], out float num2);
+                        float.TryParse(divParts[0], out var num1);
+                        float.TryParse(divParts[1], out var num2);
 
                         if (Math.Abs(num2) < 0.00001) continue;
                         var result = num1 / num2;
@@ -74,7 +74,7 @@ namespace Ramsey.NET.Auto.Configs
                     }
                     else
                     {
-                        float.TryParse(part, out float result);
+                        float.TryParse(part, out var result);
                         count += result;
                     }
                 }

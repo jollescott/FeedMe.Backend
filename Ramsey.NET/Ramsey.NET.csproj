@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
@@ -51,10 +51,6 @@
   <ItemGroup>
     <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
     <ProjectReference Include="..\Ramsey.NET.Auto\Ramsey.NET.Auto.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" ('$(Configuration)' == 'Debug') And !Exists('$(SpaRoot)node_modules') ">
