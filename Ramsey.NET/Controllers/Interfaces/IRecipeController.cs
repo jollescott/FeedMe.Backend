@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Ramsey.Shared.Dto;
-using Ramsey.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

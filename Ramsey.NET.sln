@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ramsey.NET.Auto", "Ramsey.N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ramsey.Core", "Ramsey.Core\Ramsey.Core.csproj", "{9ABD7360-9464-4862-B4F2-DEA27D979E00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedMe.Shared", "FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj", "{DCA86AFF-6132-4CC3-BA12-0478382F6FD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedMe.Shared", "FeedMe.Shared\FeedMe.Shared.csproj", "{999C8960-5853-4136-BB07-026226F62920}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{9ABD7360-9464-4862-B4F2-DEA27D979E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ABD7360-9464-4862-B4F2-DEA27D979E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ABD7360-9464-4862-B4F2-DEA27D979E00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCA86AFF-6132-4CC3-BA12-0478382F6FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCA86AFF-6132-4CC3-BA12-0478382F6FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCA86AFF-6132-4CC3-BA12-0478382F6FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCA86AFF-6132-4CC3-BA12-0478382F6FD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{999C8960-5853-4136-BB07-026226F62920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999C8960-5853-4136-BB07-026226F62920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999C8960-5853-4136-BB07-026226F62920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999C8960-5853-4136-BB07-026226F62920}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

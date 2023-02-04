@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
     <ProjectReference Include="..\Ramsey.Core\Ramsey.Core.csproj" />
   </ItemGroup>
 

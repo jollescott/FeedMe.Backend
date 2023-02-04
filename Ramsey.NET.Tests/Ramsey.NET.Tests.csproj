@@ -20,8 +20,4 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

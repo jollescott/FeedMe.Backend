@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FeedMe.Shared\FeedMe.Shared\FeedMe.Shared.csproj" />
     <ProjectReference Include="..\Ramsey.NET.Auto\Ramsey.NET.Auto.csproj" />
   </ItemGroup>
 
