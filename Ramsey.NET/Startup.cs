@@ -37,15 +37,17 @@ namespace Ramsey.NET
             // TODO: Migrate endpoints.
             services.AddMvc().AddMvcOptions(opt => opt.EnableEndpointRouting = false);
 
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
-                configuration.RootPath = "ClientApp/build";
-            });
-
-            var connectionString = Configuration.GetConnectionString(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production" ? "RamseyRelease" : "RamseyDebug");
-            services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseNpgsql(connectionString));
-
+                var connectionString = Configuration.GetConnectionString("RAM_CONNECTION_STRING");
+                services.AddDbContext<IRamseyContext, RamseyContext>(options => options.UseNpgsql(connectionString!));
+            }
+            else
+            {
+                services.AddDbContext<IRamseyContext, RamseyContext>(options =>
+                    options.UseSqlite($"Data Source=ramsey.db"));
+            }
+            
             services.AddHangfire(config => config.UseMemoryStorage(new MemoryStorageOptions { FetchNextJobTimeout = TimeSpan.FromHours(24), JobExpirationCheckInterval = TimeSpan.FromMinutes(120) }));
 
             services.AddScoped<IWordRemover, BasicWordRemover>();
@@ -73,7 +75,6 @@ namespace Ramsey.NET
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseCors(x => x
                 .AllowAnyOrigin()
