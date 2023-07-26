@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FeedMe.Crawler": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
