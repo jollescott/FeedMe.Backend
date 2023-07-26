@@ -6,9 +6,7 @@ using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
-using Ramsey.NET.Auto;
 using Ramsey.NET.Auto.Configs;
-using Hangfire;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Implementations;
 
@@ -16,14 +14,12 @@ namespace Ramsey.NET.Implementations
 {
     public class CrawlerService : ICrawlerService
     {
-        private readonly IRamseyContext _context;
         private readonly IRecipeManager _recipeManager;
 
         private readonly Dictionary<RecipeProvider, IRecipeCrawler> _crawlers;
 
-        public CrawlerService(IRamseyContext context, IRecipeManager recipeManager, IWordRemover illegalRemover)
+        public CrawlerService(IRecipeManager recipeManager, IWordRemover illegalRemover)
         {
-            _context = context;
             _recipeManager = recipeManager;
 
             _crawlers = new Dictionary<RecipeProvider, IRecipeCrawler>
@@ -35,7 +31,6 @@ namespace Ramsey.NET.Implementations
             };
         }
 
-        [AutomaticRetry(Attempts = 0)]
         public async Task ReindexProviderAsync(RecipeProvider provider)
         {
             var crawler = _crawlers[provider];
@@ -53,12 +48,7 @@ namespace Ramsey.NET.Implementations
 
         public void StartIndexUpdate()
         {
-            string lastJobId = null;
-            foreach(var provider in _crawlers.Keys)
-            {
-                lastJobId = lastJobId == null ? BackgroundJob.Enqueue(() => ReindexProviderAsync(provider)) : 
-                    BackgroundJob.ContinueJobWith(lastJobId, () => ReindexProviderAsync(provider));
-            }
+
         }
     }
 }

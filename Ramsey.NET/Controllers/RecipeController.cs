@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ramsey.NET.Controllers.Interfaces;
 using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
 using Ramsey.Shared.Dto;
 
 namespace Ramsey.NET.Controllers

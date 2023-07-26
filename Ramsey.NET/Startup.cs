@@ -1,23 +1,17 @@
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Ramsey.NET.Implementations;
 using Ramsey.NET.Interfaces;
 using System;
 using System.Text;
-using Ramsey.NET.Extensions;
 using Ramsey.NET.Shared.Interfaces;
-using System.Threading.Tasks;
-using Hangfire.MemoryStorage;
 using System.Globalization;
 using Ramsey.Core;
 using Ramsey.NET.Auto.Implementations;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.Extensions.Hosting;
 
 namespace Ramsey.NET
 {
@@ -48,15 +42,13 @@ namespace Ramsey.NET
                     options.UseSqlite($"Data Source=ramsey.db"));
             }
             
-            services.AddHangfire(config => config.UseMemoryStorage(new MemoryStorageOptions { FetchNextJobTimeout = TimeSpan.FromHours(24), JobExpirationCheckInterval = TimeSpan.FromMinutes(120) }));
-
             services.AddScoped<IWordRemover, BasicWordRemover>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<ICrawlerService, CrawlerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -89,15 +81,6 @@ namespace Ramsey.NET
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
-
-            GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
-
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
-
-            if (env.IsDevelopment()) return;
-            RecurringJob.AddOrUpdate(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate(), Cron.Weekly);
-            BackgroundJob.Enqueue(() => serviceProvider.GetRequiredService<ICrawlerService>().StartIndexUpdate());
         }
     }
 }
