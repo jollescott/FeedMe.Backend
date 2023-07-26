@@ -166,6 +166,9 @@ namespace Ramsey.NET.Auto.Implementations
 
             Logger.Information("Recipe {0} took {1} ms to scrape.", recipe.Name, stopWatch.Elapsed.Milliseconds);
 
+            // Try to show some courtesy to the websites we scrape.
+            await Task.Delay(2000);
+
             return recipe;
         }
 
