@@ -1,16 +1,13 @@
-﻿using Ramsey.NET.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using FeedMe.Crawler.Interfaces;
+using Ramsey.Core;
+using Ramsey.NET.Auto.Configs;
+using Ramsey.NET.Auto.Implementations;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
-using Ramsey.NET.Auto.Configs;
-using Ramsey.Core;
-using Ramsey.NET.Auto.Implementations;
 
-namespace Ramsey.NET.Implementations
+namespace FeedMe.Crawler.Implementations
 {
     public class CrawlerService : ICrawlerService
     {
@@ -39,16 +36,16 @@ namespace Ramsey.NET.Implementations
 
         public Task<RecipeDtoV2> ScrapeRecipeAsync(string url, RecipeProvider provider)
         {
-            if(!_crawlers.ContainsKey(provider))
+            if (!_crawlers.ContainsKey(provider))
                 throw new Exception("Crawler mapped to: " + Enum.GetName(typeof(RecipeProvider), provider) + " was not found.");
-            
+
             var crawler = _crawlers[provider];
             return crawler.ScrapeRecipeAsync(url, true);
         }
 
         public void StartIndexUpdate()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

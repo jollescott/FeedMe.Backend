@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ramsey.Core", "Ramsey.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedMe.Shared", "FeedMe.Shared\FeedMe.Shared.csproj", "{FAD391FD-BA0E-4FBA-A9EA-D112375D7DF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedMe.Crawler", "FeedMe.Crawler\FeedMe.Crawler.csproj", "{2D88D96D-4113-47AC-8F41-0AD9EA318B3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FAD391FD-BA0E-4FBA-A9EA-D112375D7DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAD391FD-BA0E-4FBA-A9EA-D112375D7DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAD391FD-BA0E-4FBA-A9EA-D112375D7DF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D88D96D-4113-47AC-8F41-0AD9EA318B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D88D96D-4113-47AC-8F41-0AD9EA318B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D88D96D-4113-47AC-8F41-0AD9EA318B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D88D96D-4113-47AC-8F41-0AD9EA318B3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
