@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Ramsey.NET.Models;
-using Ramsey.NET.Interfaces;
-using Ramsey.Shared.Enums;
+using Ramsey.Core.Interfaces;
 using Ramsey.Core.Models;
+using Ramsey.NET.Models;
+using Ramsey.Shared.Enums;
 
-namespace Ramsey.NET.Implementations
+namespace FeedMe.EF
 {
     public class RamseyContext : DbContext, IRamseyContext
     {

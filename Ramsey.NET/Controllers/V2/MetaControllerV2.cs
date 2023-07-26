@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Ramsey.Core.Interfaces;
 using Ramsey.NET.Controllers.Interfaces.V2;
-using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Enums;
 using System;
 using System.Collections.Generic;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Ramsey.Core.Models;
 using Ramsey.NET.Models;
 
-namespace Ramsey.NET.Interfaces
+namespace Ramsey.Core.Interfaces
 {
     public interface IRamseyContext : IDisposable
     {
@@ -22,6 +22,6 @@ namespace Ramsey.NET.Interfaces
 
         DatabaseFacade Database { get; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

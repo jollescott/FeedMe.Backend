@@ -1,13 +1,15 @@
 ﻿using FeedMe.Crawler.Interfaces;
-using Ramsey.Core;
+using Ramsey.Core.Interfaces;
 using Ramsey.NET.Auto.Configs;
-using Ramsey.NET.Auto.Implementations;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace FeedMe.Crawler.Implementations
+namespace Ramsey.Core.Implementations
 {
     public class CrawlerService : ICrawlerService
     {

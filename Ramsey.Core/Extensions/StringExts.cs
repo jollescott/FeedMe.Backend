@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Ramsey.NET.Auto.Extensions
+namespace Ramsey.Core.Extensions
 {
     public static class StringExts
     {

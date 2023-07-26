@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Ramsey.Shared.Enums;
 
-namespace Ramsey.NET.Auto.Interfaces
+namespace Ramsey.Core.Interfaces
 {
     public interface IAutoConfig
     {

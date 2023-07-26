@@ -1,12 +1,12 @@
-﻿using Ramsey.NET.Extensions;
-using Ramsey.NET.Interfaces;
-using Ramsey.NET.Models;
+﻿using Ramsey.NET.Models;
 using System.Threading.Tasks;
 using Ramsey.NET.Shared.Interfaces;
 using Ramsey.Shared.Dto.V2;
 using System.Diagnostics;
+using Ramsey.Core.Interfaces;
+using Ramsey.Core.Extensions;
 
-namespace Ramsey.NET.Implementations
+namespace Ramsey.Core.Implementations
 {
     public class SqlRecipeManager : IRecipeManager
     {
@@ -38,7 +38,7 @@ namespace Ramsey.NET.Implementations
             recipe.Source = recipeMetaDto.Source;
 
             //Ingredients
-            foreach(var partDto in recipeMetaDto.RecipeParts)
+            foreach (var partDto in recipeMetaDto.RecipeParts)
             {
                 if (string.IsNullOrEmpty(partDto.IngredientName))
                     continue;
@@ -70,21 +70,21 @@ namespace Ramsey.NET.Implementations
                 _context.RecipeParts.Update(part);
 
                 await SaveRecipeChangesAsync();
-                
+
                 recipe.RecipeParts.Add(part);
             }
 
             //Tags
-            foreach(var tagDto in recipeMetaDto.Tags)
+            foreach (var tagDto in recipeMetaDto.Tags)
             {
-                var tag = _context.Tags.AddIfNotExists(new Core.Models.Tag
+                var tag = _context.Tags.AddIfNotExists(new Models.Tag
                 {
                     Name = tagDto.Name,
                 }, x => x.Name == tagDto.Name);
 
                 await _context.SaveChangesAsync();
 
-                _context.RecipeTags.AddIfNotExists(new Core.Models.RecipeTag
+                _context.RecipeTags.AddIfNotExists(new Models.RecipeTag
                 {
                     RecipeId = recipe.RecipeId,
                     TagId = tag.TagId

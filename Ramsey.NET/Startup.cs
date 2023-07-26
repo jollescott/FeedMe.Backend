@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ramsey.NET.Implementations;
-using Ramsey.NET.Interfaces;
 using System;
 using System.Text;
 using Ramsey.NET.Shared.Interfaces;
 using System.Globalization;
-using Ramsey.Core;
-using Ramsey.NET.Auto.Implementations;
 using Microsoft.Extensions.Hosting;
+using Ramsey.Core.Interfaces;
+using Ramsey.Core.Implementations;
+using FeedMe.EF;
+using FeedMe.Crawler.Interfaces;
 
 namespace Ramsey.NET
 {
@@ -42,7 +42,7 @@ namespace Ramsey.NET
                     options.UseSqlite($"Data Source=ramsey.db"));
             }
             
-            services.AddScoped<IWordRemover, BasicWordRemover>();
+            services.AddScoped<IWordRemover, IllegalRemover>();
             services.AddScoped<IRecipeManager, SqlRecipeManager>();
             services.AddScoped<ICrawlerService, CrawlerService>();
         }

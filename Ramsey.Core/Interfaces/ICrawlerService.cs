@@ -1,5 +1,6 @@
 ﻿using Ramsey.Shared.Dto.V2;
 using Ramsey.Shared.Enums;
+using System.Threading.Tasks;
 
 namespace FeedMe.Crawler.Interfaces
 {

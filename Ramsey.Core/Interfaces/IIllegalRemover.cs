@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Ramsey.Core
+﻿namespace Ramsey.Core.Interfaces
 {
     public interface IWordRemover
     {

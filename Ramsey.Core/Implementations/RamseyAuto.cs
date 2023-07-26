@@ -7,10 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using MoreLinq.Extensions;
-using Ramsey.Core;
-using Ramsey.NET.Auto.Extensions;
-using Ramsey.NET.Auto.Interfaces;
+using Microsoft.Extensions.Logging;
+using Ramsey.Core.Extensions;
+using Ramsey.Core.Interfaces;
 using Ramsey.NET.Crawlers.Interfaces;
 using Ramsey.NET.Crawlers.Misc;
 using Ramsey.NET.Shared.Interfaces;
@@ -19,7 +18,7 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Ramsey.NET.Auto.Implementations
+namespace Ramsey.Core.Implementations
 {
     public class RamseyAuto : IRecipeCrawler
     {
@@ -75,7 +74,7 @@ namespace Ramsey.NET.Auto.Implementations
                 recipe.RecipeId = Config.ProviderId + id.Remove(id.Count() - 1).Split('/').Last();
             }
 
-            if(includeAll)
+            if (includeAll)
             {
                 recipe.Directions = document.DocumentNode
                     .SelectNodes(Config.DirectionsXPath)
@@ -100,7 +99,7 @@ namespace Ramsey.NET.Auto.Implementations
 
             var parts = new List<RecipePartDtoV2>();
 
-            foreach(var ing in recipe.Ingredients)
+            foreach (var ing in recipe.Ingredients)
             {
                 var ingredient = ing;
 
@@ -112,7 +111,7 @@ namespace Ramsey.NET.Auto.Implementations
                 var ingMatch = ingRegex.Match(ingredient);
                 var amount = ingMatch.Value;
 
-                if(ingredient.Split(' ').Count() > 2 && amount != string.Empty)
+                if (ingredient.Split(' ').Count() > 2 && amount != string.Empty)
                     ingredient = ingredient.Replace(amount, string.Empty);
 
                 var quantityMatch = quantRegex.Match(amount);
@@ -179,22 +178,22 @@ namespace Ramsey.NET.Auto.Implementations
 
             var tags = new List<TagDto>();
 
-            foreach(var path in Config.TagXPaths)
+            foreach (var path in Config.TagXPaths)
             {
-                if(Config.ProcessTag != null)
+                if (Config.ProcessTag != null)
                 {
                     var names = Config.ProcessTag(document);
-                    
-                    if(names != null)
+
+                    if (names != null)
                     {
                         names = names.Where(x => x != string.Empty)
                             .Select(x => x.RemoveSpecialCharacters())
                             .ToArray();
 
-                        names.ForEach(x => tags.Add(new TagDto
+                        foreach (var name in names)
                         {
-                            Name = x,
-                        }));
+                            tags.Add(new TagDto { Name = name });
+                        }
                     }
                 }
                 else
@@ -207,10 +206,10 @@ namespace Ramsey.NET.Auto.Implementations
                                         .Select(x => x.InnerText.ToLower())
                                         .Select(x => x.RemoveSpecialCharacters());
 
-                        names.ForEach(x => tags.Add(new TagDto
+                        foreach(var name in names)
                         {
-                            Name = x,
-                        }));
+                            tags.Add(new TagDto { Name = name });
+                        }
                     }
                 }
             }
@@ -238,8 +237,8 @@ namespace Ramsey.NET.Auto.Implementations
                 document.LoadHtml(html);
 
                 var list = document.DocumentNode.SelectNodes(Config.RecipeItemXPath);
-                
-                if(list != null)
+
+                if (list != null)
                 {
                     var links = list.Select(x => x.Attributes["href"].Value).ToList();
 
@@ -266,10 +265,8 @@ namespace Ramsey.NET.Auto.Implementations
                         }
                     }
                 }
-                else
-                {
 
-                }
+                await Task.Delay(5000);
             }
 
             stopWatch.Stop();

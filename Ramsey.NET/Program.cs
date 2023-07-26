@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ramsey.NET.Interfaces;
+using Ramsey.Core.Interfaces;
 
 namespace Ramsey.NET
 {

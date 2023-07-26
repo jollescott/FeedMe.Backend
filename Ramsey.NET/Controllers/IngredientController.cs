@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Ramsey.Core.Interfaces;
 using Ramsey.NET.Controllers.Interfaces;
-using Ramsey.NET.Interfaces;
 using Ramsey.Shared.Dto;
 using Ramsey.Shared.Enums;
 

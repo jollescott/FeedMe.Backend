@@ -1,15 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
-using Ramsey.Core;
-using Ramsey.NET.Interfaces;
+using Ramsey.Core.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
-namespace Ramsey.NET.Auto.Implementations
+namespace Ramsey.Core.Implementations
 {
-    public class BasicWordRemover : IWordRemover
+    public class IllegalRemover : IWordRemover
     {
         private readonly IRamseyContext _ramseyContext;
 
@@ -20,8 +17,8 @@ namespace Ramsey.NET.Auto.Implementations
             "till",
             "gärna"
         };
- 
-        public BasicWordRemover(IRamseyContext ramseyContext)
+
+        public IllegalRemover(IRamseyContext ramseyContext)
         {
             _ramseyContext = ramseyContext;
         }
@@ -45,7 +42,7 @@ namespace Ramsey.NET.Auto.Implementations
                 if (_breakWords.Any(x => x == word))
                 {
                     //Check if it STILL contains
-                    if(output.Contains(word))
+                    if (output.Contains(word))
                         output = output.Substring(0, output.IndexOf(word, StringComparison.Ordinal));
                 }
             }

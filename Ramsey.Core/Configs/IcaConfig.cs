@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Ramsey.NET.Auto.Interfaces;
+using Ramsey.Core.Interfaces;
 using Ramsey.Shared.Enums;
 
 namespace Ramsey.NET.Auto.Configs
